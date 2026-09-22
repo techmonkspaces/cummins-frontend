@@ -46,14 +46,14 @@ export const PpwrExportModal: React.FC<PpwrExportModalProps> = ({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
               <span className="badge badge-confirmed">
-                <ShieldCheck size={12} /> IntegrityNext Ready
+                <ShieldCheck size={12} /> Standard Data Model
               </span>
               <span className="text-xs text-muted">
-                Standard: EU PPWR 2024/0000 Article 9/11
+                Structured Output Format (JSON)
               </span>
             </div>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A' }}>
-              IntegrityNext & PPWR JSON Compliance Payload
+              Packaging Bill-of-Materials JSON Dataset
             </h2>
           </div>
 
@@ -65,7 +65,7 @@ export const PpwrExportModal: React.FC<PpwrExportModalProps> = ({
         {/* Body */}
         <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <p style={{ fontSize: '0.85rem', color: '#475569' }}>
-            This schema maps recorded packaging materials and calculated mass fractions directly to the upstream ERP / downstream IntegrityNext enterprise compliance API.
+            Standardized JSON format capturing product details, recorded packaging line items, and mass category totals.
           </p>
 
           <div style={{ position: 'relative' }}>

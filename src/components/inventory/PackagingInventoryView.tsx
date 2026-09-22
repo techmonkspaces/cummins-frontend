@@ -104,9 +104,9 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>PPWR Classified</div>
+                <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Commodity Master</div>
                 <div className="font-mono font-bold text-base" style={{ color: '#059669' }}>
-                  100% Verified
+                  Active Catalog
                 </div>
               </div>
             </div>
@@ -160,8 +160,8 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
               <tr>
                 <th>Material ID</th>
                 <th>Material Name & Description</th>
-                <th>PPWR Category</th>
-                <th>PPWR Code</th>
+                <th>Category</th>
+                <th>Standard Code</th>
                 <th>Available Inventory</th>
                 <th>Standard Unit Mass</th>
                 <th>Recycled Content</th>

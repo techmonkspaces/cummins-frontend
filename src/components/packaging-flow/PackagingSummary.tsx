@@ -83,7 +83,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
               {getMethodBadge()}
             </div>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A' }}>
-              Packaging Bill-of-Materials & PPWR Summary
+              Packaging Bill-of-Materials & Summary Review
             </h1>
             <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '2px' }}>
               {getMethodDescription()}
@@ -243,11 +243,11 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
           </table>
         </div>
 
-        {/* PPWR Compliance & Material Fractions Card Grid */}
+        {/* Material Category Fractions Card Grid */}
         <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
           <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ShieldCheck size={18} color="#059669" />
-            EU PPWR Compliance & Environmental Metrics
+            Material Category & Recyclability Breakdown
           </h4>
 
           <div className="grid-cols-4">
@@ -286,7 +286,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
                 {ppwrSummary.avgRecyclablePct}%
               </div>
               <div style={{ fontSize: '0.75rem', color: '#059669', marginTop: '2px' }}>
-                ✓ PPWR Article 9 Class A
+                ✓ Recyclable Materials
               </div>
             </div>
 

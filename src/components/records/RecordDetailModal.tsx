@@ -132,21 +132,21 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
             </div>
           </div>
 
-          {/* PPWR Summary */}
+          {/* Material Breakdown Summary */}
           <div style={{ padding: '0.85rem 1rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.6rem', color: '#059669', fontSize: '0.85rem', fontWeight: 700 }}>
-              <ShieldCheck size={16} /> PPWR Article 9/11 Material Compliance Data
+              <ShieldCheck size={16} /> Material Category & Recyclability Breakdown
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
               <div>
-                <span className="text-xs text-muted">Paper / Cardboard Fraction:</span>
+                <span className="text-xs text-muted">Paper / Cardboard:</span>
                 <div className="font-mono font-semibold" style={{ color: '#D97706' }}>
                   {record.ppwrSummary.paperCardboardKg.toFixed(2)} kg ({record.ppwrSummary.paperCardboardPct}%)
                 </div>
               </div>
               <div>
-                <span className="text-xs text-muted">Plastic / Polymer Fraction:</span>
+                <span className="text-xs text-muted">Plastic / Polymer:</span>
                 <div className="font-mono font-semibold" style={{ color: '#DB2777' }}>
                   {record.ppwrSummary.plasticKg.toFixed(2)} kg ({record.ppwrSummary.plasticPct}%)
                 </div>
