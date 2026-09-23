@@ -184,18 +184,18 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
           </span>
         </div>
 
-        <div className="table-wrapper" style={{ marginBottom: '1.5rem' }}>
-          <table className="custom-table">
+        <div className="table-wrapper" style={{ marginBottom: '1.5rem', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <table className="custom-table" style={{ minWidth: '860px', width: '100%' }}>
             <thead>
               <tr>
-                <th>Material ID</th>
-                <th>Material Description</th>
-                <th>PPWR Category</th>
-                <th>Quantity / Unit</th>
-                <th>Total Mass</th>
-                <th>Per Unit Mass</th>
-                <th>% Share</th>
-                <th>Line Notes</th>
+                <th style={{ width: '110px' }}>Material ID</th>
+                <th style={{ width: '200px' }}>Material Description</th>
+                <th style={{ width: '130px' }}>PPWR Category</th>
+                <th style={{ width: '110px' }}>Quantity / Unit</th>
+                <th style={{ width: '110px' }}>Total Mass</th>
+                <th style={{ width: '110px' }}>Per Unit Mass</th>
+                <th style={{ width: '90px' }}>% Share</th>
+                <th style={{ minWidth: '160px' }}>Line Notes</th>
               </tr>
             </thead>
             <tbody>
@@ -246,8 +246,19 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
                         <span className="font-mono text-xs text-muted">{sharePct}%</span>
                       </div>
                     </td>
-                    <td>
-                      <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
+                    <td style={{ maxWidth: '240px' }}>
+                      <span 
+                        style={{ 
+                          fontSize: '0.72rem', 
+                          color: '#475569', 
+                          background: '#F8FAFC', 
+                          padding: '3px 8px', 
+                          borderRadius: '4px', 
+                          border: '1px solid #E2E8F0',
+                          display: 'inline-block',
+                          lineHeight: '1.3'
+                        }}
+                      >
                         {mat.notes || 'Standard packaging allocation'}
                       </span>
                     </td>

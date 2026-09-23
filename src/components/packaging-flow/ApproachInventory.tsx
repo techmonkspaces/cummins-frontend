@@ -87,7 +87,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
         weightUnit: 'kg',
         weightKg: entry.consumedKg,
         isSystemGenerated: true,
-        notes: `SAP Doc ${entry.sapDoc} | MVT-261 | ${entry.sloc} → ${entry.consumedKg}kg / ${safeQty} units = ${(perUnitKg * 1000).toFixed(0)}g/unit`
+        notes: `SAP Doc #${entry.sapDoc} • MVT-261 (${entry.sloc})`
       };
     });
 

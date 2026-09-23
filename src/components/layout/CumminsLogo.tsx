@@ -47,27 +47,40 @@ export const CumminsLogo: React.FC<CumminsLogoProps> = ({
 
       {showWordmark && (
         <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <span 
+              style={{ 
+                fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+                fontSize: `${Math.max(14, height * 0.44)}px`, 
+                fontWeight: 800, 
+                color: '#DA291C',
+                letterSpacing: '-0.02em'
+              }}
+            >
+              Cummins
+            </span>
+            <span 
+              style={{ 
+                fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+                fontSize: `${Math.max(14, height * 0.44)}px`, 
+                fontWeight: 800, 
+                color: '#0F172A',
+                letterSpacing: '-0.02em'
+              }}
+            >
+              PPWR
+            </span>
+          </div>
           <span 
             style={{ 
-              fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-              fontSize: `${Math.max(13, height * 0.42)}px`, 
-              fontWeight: 800, 
-              color: '#0F172A',
-              letterSpacing: '-0.02em'
-            }}
-          >
-            PPWR Platform
-          </span>
-          <span 
-            style={{ 
-              fontSize: `${Math.max(9, height * 0.26)}px`, 
+              fontSize: `${Math.max(8.5, height * 0.24)}px`, 
               fontWeight: 700, 
-              color: '#64748B',
+              color: '#64748B', 
               letterSpacing: '0.06em',
               textTransform: 'uppercase'
             }}
           >
-            Industrial Packaging
+            Packaging Compliance Tool
           </span>
         </div>
       )}
