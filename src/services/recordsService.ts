@@ -9,7 +9,7 @@ import {
 } from '../types';
 import { INITIAL_PACKAGING_RECORDS, MOCK_PACKAGING_INVENTORY } from '../data/mockData';
 
-const STORAGE_KEY = 'cummins_ppwr_packaging_records_v1';
+const STORAGE_KEY = 'cummins_ppwr_packaging_records_v4';
 
 class RecordsService {
   private records: PackagingRecord[] = [];
@@ -104,6 +104,8 @@ class RecordsService {
     product: Product;
     productQuantity: number;
     method: RecordingMethod;
+    plantId?: string;
+    plantName?: string;
     materials: PackagingLineItem[];
     status: RecordStatus;
     period?: string;
@@ -122,6 +124,8 @@ class RecordsService {
       productSku: params.product.sku,
       productQuantity: params.productQuantity,
       method: params.method,
+      plantId: params.plantId,
+      plantName: params.plantName,
       materials: params.materials,
       totalPackagingWeightKg: ppwrSummary.totalPackagingWeightKg,
       perUnitPackagingWeightKg: ppwrSummary.perUnitPackagingWeightKg,
@@ -269,6 +273,12 @@ class RecordsService {
       }))
     };
     return JSON.stringify(payload, null, 2);
+  }
+
+  public resetMockRecords(): PackagingRecord[] {
+    this.records = [...INITIAL_PACKAGING_RECORDS];
+    this.saveToStorage();
+    return [...this.records];
   }
 
   public exportCsv(records?: PackagingRecord[]): string {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Sidebar, NavTab } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
-import { DemoGuideBar } from './components/layout/DemoGuideBar';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { ProductList } from './components/products/ProductList';
 import { PackagingWorkflow } from './components/packaging-flow/PackagingWorkflow';
@@ -8,24 +8,41 @@ import { PackagingRecordsList } from './components/records/PackagingRecordsList'
 import { RecordDetailModal } from './components/records/RecordDetailModal';
 import { PpwrExportModal } from './components/records/PpwrExportModal';
 import { PackagingInventoryView } from './components/inventory/PackagingInventoryView';
+import { PlantListView } from './components/plants/PlantListView';
+import { UsersListView } from './components/users/UsersListView';
+import { RulesConfigView } from './components/rules/RulesConfigView';
+import { LoginView } from './components/auth/LoginView';
 
 import { productService } from './services/productService';
 import { inventoryService } from './services/inventoryService';
 import { recordsService } from './services/recordsService';
+import { plantService } from './services/plantService';
+import { authService } from './services/authService';
 import { 
   Product, 
   PackagingMaterialMaster, 
   PackagingRecord, 
   DashboardKPIs,
-  RecordStatus
+  RecordStatus,
+  Plant,
+  UserPersona
 } from './types';
-import { Sparkles, CheckCircle2 } from 'lucide-react';
+import { Sparkles, CheckCircle2, Building2 } from 'lucide-react';
 
 export const App: React.FC = () => {
+  // Auth State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [currentUser, setCurrentUser] = useState<UserPersona>(authService.getCurrentUser() || plantService.getActivePersona());
+
   // Navigation State
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'records' | 'inventory'>('dashboard');
+  const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
   const [inRecordingFlow, setInRecordingFlow] = useState<boolean>(false);
   const [selectedProductForFlow, setSelectedProductForFlow] = useState<Product | undefined>(undefined);
+
+  // Plant State
+  const [plants, setPlants] = useState<Plant[]>(plantService.getPlants());
+  const [personas, setPersonas] = useState<UserPersona[]>(plantService.getPersonas());
+  const [activePlant, setActivePlant] = useState<Plant>(plantService.getActivePlant());
 
   // Data State
   const [products, setProducts] = useState<Product[]>([]);
@@ -38,9 +55,6 @@ export const App: React.FC = () => {
   const [selectedRecordForDetail, setSelectedRecordForDetail] = useState<PackagingRecord | null>(null);
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<{ title: string; desc: string; type: 'success' | 'info' } | null>(null);
-
-  // Demo Story Step (1 to 8)
-  const [demoStep, setDemoStep] = useState<number>(1);
 
   // Load Initial Data
   const refreshData = async () => {
@@ -55,6 +69,9 @@ export const App: React.FC = () => {
     setRecords(recs);
     setCategories(cats);
     setKpis(dashboardKpis);
+    setPlants(plantService.getPlants());
+    setActivePlant(plantService.getActivePlant());
+    setPersonas(plantService.getPersonas());
   };
 
   useEffect(() => {
@@ -68,6 +85,53 @@ export const App: React.FC = () => {
     }, 4000);
   };
 
+  // Auth Handlers
+  const handleLogin = (persona: UserPersona) => {
+    authService.loginWithPersona(persona.id);
+    setCurrentUser(persona);
+    setIsAuthenticated(true);
+    if (persona.plantId && persona.plantId !== 'ALL_PLANTS') {
+      const p = plantService.setActivePlant(persona.plantId);
+      setActivePlant(p);
+    }
+    setActiveTab('dashboard');
+    setInRecordingFlow(false);
+    showToast('Signed In Successfully', `Welcome ${persona.name} (${persona.roleTitle.split('•')[0]}).`, 'success');
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    setIsAuthenticated(false);
+    showToast('Signed Out', 'You have been signed out from Cummins Packaging Hub.', 'info');
+  };
+
+  // Plant & Persona Switchers
+  const handleSelectPlant = (plantId: string) => {
+    const updated = plantService.setActivePlant(plantId);
+    setActivePlant(updated);
+    const matchedPersona = personas.find(p => p.plantId === plantId);
+    if (matchedPersona) {
+      setCurrentUser(matchedPersona);
+    }
+    showToast('Active Factory Switched', `Switched active factory to ${updated.name} (Pre-configured: Approach ${updated.configuredMethod === 'INVENTORY' ? 'A' : updated.configuredMethod === 'CALCULATED' ? 'B' : 'C'}).`, 'info');
+  };
+
+  const handleSelectPersona = (personaId: string) => {
+    const updated = authService.loginWithPersona(personaId);
+    if (updated) {
+      setCurrentUser(updated);
+      plantService.setActivePersona(personaId);
+      setActivePlant(plantService.getActivePlant());
+      showToast('Role Switched', `Active role: ${updated.name} (${updated.roleTitle.split('•')[0]}).`, 'info');
+    }
+  };
+
+  const handleUpdatePlantConfig = (plantId: string, updates: Partial<Plant>) => {
+    plantService.updatePlantConfig(plantId, updates);
+    refreshData();
+    showToast('Factory Configuration Saved', `Updated pre-configured approach for ${plantId}.`, 'success');
+  };
+
   // Start Packaging Flow Handler
   const handleStartRecording = (productSku?: string) => {
     let prod = products[0];
@@ -77,6 +141,7 @@ export const App: React.FC = () => {
     }
     setSelectedProductForFlow(prod);
     setInRecordingFlow(true);
+    setActiveTab('packaging');
   };
 
   // Status Change for a Record
@@ -86,204 +151,218 @@ export const App: React.FC = () => {
     showToast('Status Updated', `Record ${id} confirmed and committed to PPWR ledger.`, 'success');
   };
 
-  // Delete Record
-  const handleDeleteRecord = (id: string) => {
-    recordsService.deleteRecord(id);
-    refreshData();
-    showToast('Record Deleted', `Record ${id} removed from ledger.`, 'info');
-  };
+  // If user is not authenticated, show Login Screen
+  if (!isAuthenticated) {
+    return <LoginView onLogin={handleLogin} />;
+  }
 
-  // Reset to Mock Dataset
-  const handleResetMockData = () => {
-    recordsService.resetToMockData();
-    refreshData();
-    showToast('Mock Data Reset', 'Dataset restored to initial baseline demonstration records.', 'info');
-  };
-
-  // Workflow Finish
-  const handleWorkflowFinish = (newRecord: PackagingRecord) => {
-    setInRecordingFlow(false);
-    refreshData();
-    setActiveTab('records');
-    showToast('Record Created', `Successfully generated ${newRecord.id} for ${newRecord.productName}!`, 'success');
-  };
-
-  // Guided Demo Story Stepper Handler
-  const handleSelectDemoStep = (stepNumber: number) => {
-    setDemoStep(stepNumber);
-    const gearAssembly = products.find(p => p.sku === 'GA-102') || products[0];
-
-    switch (stepNumber) {
-      case 1: // Select Product
-        setInRecordingFlow(false);
-        setActiveTab('products');
-        showToast('Demo Step 1: Select Product', 'Viewing Products Catalog with GA-102 Gear Assembly highlighted.', 'info');
-        break;
-
-      case 2: // Choose Method
-        setSelectedProductForFlow(gearAssembly);
-        setInRecordingFlow(true);
-        showToast('Demo Step 2: Choose Method', 'Comparing the 3 packaging recording approaches for Gear Assembly.', 'info');
-        break;
-
-      case 3: // Approach A: Inventory
-        setSelectedProductForFlow(gearAssembly);
-        setInRecordingFlow(true);
-        showToast('Demo Step 3: Inventory Method', 'Demonstrating 500kg Cardboard ÷ 1,000 products = 0.5kg/unit.', 'info');
-        break;
-
-      case 4: // Approach B: Calculated
-        setSelectedProductForFlow(gearAssembly);
-        setInRecordingFlow(true);
-        showToast('Demo Step 4: System Calculated', 'Rule engine calculates box, cushioning, thermocol, and tape.', 'info');
-        break;
-
-      case 5: // Approach C: User Input
-        setSelectedProductForFlow(gearAssembly);
-        setInRecordingFlow(true);
-        showToast('Demo Step 5: User Input Method', 'Floor operator logs actual materials used at packing station.', 'info');
-        break;
-
-      case 6: // Review Summary
-        setSelectedProductForFlow(gearAssembly);
-        setInRecordingFlow(true);
-        showToast('Demo Step 6: Review Summary', 'Reviewing unified Bill-of-Materials and PPWR material breakdown.', 'info');
-        break;
-
-      case 7: // Confirm Record
-        setSelectedProductForFlow(gearAssembly);
-        setInRecordingFlow(true);
-        showToast('Demo Step 7: Confirm Record', 'Commit the record to the compliance data model.', 'info');
-        break;
-
-      case 8: // Audit & Export
-        setInRecordingFlow(false);
-        setActiveTab('records');
-        setIsExportModalOpen(true);
-        showToast('Demo Step 8: Audit & Export', 'View confirmed record and inspect IntegrityNext / PPWR JSON payload.', 'info');
-        break;
-    }
-  };
+  // Filter records based on role / active plant
+  const displayedRecords = currentUser.role === 'SUPER_ADMIN' 
+    ? records 
+    : records.filter(r => r.plantId === activePlant.id || r.plantName?.toLowerCase().includes(activePlant.shortName.toLowerCase()));
 
   return (
-    <div className="app-container">
-      {/* Header */}
-      <Header
-        activeTab={activeTab}
-        onSelectTab={(tab) => {
-          setInRecordingFlow(false);
-          setActiveTab(tab);
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#F8FAFC' }}>
+      
+      {/* Left Enterprise Sidebar (Clean White Background) */}
+      <Sidebar
+        activeTab={inRecordingFlow ? 'packaging' : activeTab}
+        onSelectTab={(tab: NavTab) => {
+          if (tab === 'reports') {
+            setIsExportModalOpen(true);
+          } else {
+            setActiveTab(tab);
+            setInRecordingFlow(false);
+          }
         }}
-        onStartNewRecord={() => handleStartRecording('GA-102')}
-      />
-
-      {/* Guided Demo Story Assistant */}
-      <DemoGuideBar
-        currentDemoStep={demoStep}
-        onSelectDemoStep={handleSelectDemoStep}
+        currentUser={currentUser}
+        activePlant={activePlant}
+        onLogout={handleLogout}
+        onStartPackagingFlow={() => handleStartRecording()}
       />
 
       {/* Main Content Area */}
-      <main className="main-content">
-        {inRecordingFlow ? (
-          <PackagingWorkflow
-            initialProduct={selectedProductForFlow}
-            availableProducts={products}
-            availableMaterials={materials}
-            onFinish={handleWorkflowFinish}
-            onCancel={() => setInRecordingFlow(false)}
-          />
-        ) : (
-          <>
-            {activeTab === 'dashboard' && (
-              <Dashboard
-                kpis={kpis}
-                recentRecords={records.slice(0, 5)}
-                onStartRecord={handleStartRecording}
-                onViewRecord={(rec) => setSelectedRecordForDetail(rec)}
-                onViewAllRecords={() => setActiveTab('records')}
-                onViewProducts={() => setActiveTab('products')}
-              />
-            )}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflowX: 'hidden' }}>
+        
+        {/* Top Header */}
+        <Header
+          currentUser={currentUser}
+          activePlant={activePlant}
+          plants={plants}
+          personas={personas}
+          onSelectPlant={handleSelectPlant}
+          onSelectPersona={handleSelectPersona}
+          onLogout={handleLogout}
+          onStartNewRecord={() => handleStartRecording()}
+        />
 
-            {activeTab === 'products' && (
-              <ProductList
-                products={products}
-                categories={categories}
-                onSelectProductForPackaging={(prod) => {
-                  setSelectedProductForFlow(prod);
-                  setInRecordingFlow(true);
-                  setDemoStep(2);
-                }}
-                onAddNewProduct={async (newProd) => {
-                  await productService.addProduct(newProd);
-                  refreshData();
-                  showToast('Product Added', `Added ${newProd.sku} (${newProd.name}) to Master Catalog.`, 'success');
-                }}
-              />
-            )}
+        {/* Dynamic Viewport Content */}
+        <main style={{ flex: 1, padding: '1.75rem 2rem 3rem', maxWidth: '1400px', width: '100%', margin: '0 auto' }}>
+          
+          {/* Packaging Workflow Active */}
+          {inRecordingFlow ? (
+            <PackagingWorkflow
+              initialProduct={selectedProductForFlow}
+              activePlant={activePlant}
+              availableProducts={products}
+              availableMaterials={materials}
+              onFinish={(record: PackagingRecord) => {
+                refreshData();
+                setInRecordingFlow(false);
+                setActiveTab('records');
+                showToast('Record Committed', `Successfully committed ${record.id} into compliance ledger.`, 'success');
+              }}
+              onCancel={() => {
+                setInRecordingFlow(false);
+                setActiveTab('dashboard');
+              }}
+              onViewRecordDetail={(rec: PackagingRecord) => setSelectedRecordForDetail(rec)}
+            />
+          ) : (
+            <>
+              {/* Tab 1: Dashboard */}
+              {activeTab === 'dashboard' && (
+                <Dashboard
+                  kpis={kpis}
+                  recentRecords={displayedRecords}
+                  plants={plants}
+                  activePlant={activePlant}
+                  currentUser={currentUser}
+                  onSelectPlant={handleSelectPlant}
+                  onStartRecord={handleStartRecording}
+                  onViewRecord={(rec: PackagingRecord) => setSelectedRecordForDetail(rec)}
+                  onViewAllRecords={() => setActiveTab('records')}
+                  onViewProducts={() => setActiveTab('products')}
+                  onViewPlants={() => setActiveTab('plants')}
+                />
+              )}
 
-            {activeTab === 'records' && (
-              <PackagingRecordsList
-                records={records}
-                onSelectRecord={(rec) => setSelectedRecordForDetail(rec)}
-                onStatusChange={handleStatusChange}
-                onDeleteRecord={handleDeleteRecord}
-                onResetMockData={handleResetMockData}
-                onOpenExportModal={() => setIsExportModalOpen(true)}
-                onStartNewRecord={() => handleStartRecording('GA-102')}
-              />
-            )}
+              {/* Tab 2: Factories (Super Admin Only) */}
+              {activeTab === 'plants' && (
+                <PlantListView
+                  plants={plants}
+                  activePlantId={activePlant.id}
+                  onSelectPlant={handleSelectPlant}
+                  onUpdatePlantConfig={handleUpdatePlantConfig}
+                  onNavigateToFactory={(plantId: string) => {
+                    handleSelectPlant(plantId);
+                    setActiveTab('dashboard');
+                  }}
+                />
+              )}
 
-            {activeTab === 'inventory' && (
-              <PackagingInventoryView
-                materials={materials}
-                onAddNewMaterial={async (newMat) => {
-                  await inventoryService.addMaterial(newMat);
-                  refreshData();
-                  showToast('Material Added', `Added ${newMat.id} (${newMat.name}) to Packaging Master.`, 'success');
-                }}
-              />
-            )}
-          </>
-        )}
-      </main>
+              {/* Tab 3: Products */}
+              {activeTab === 'products' && (
+                <ProductList
+                  products={products}
+                  categories={categories}
+                  onSelectProductForPackaging={(product: Product) => handleStartRecording(product.sku)}
+                  onAddNewProduct={(prod: Product) => {
+                    productService.addProduct(prod);
+                    refreshData();
+                    showToast('Product Added', `Added ${prod.name} to product master.`, 'success');
+                  }}
+                />
+              )}
+
+              {/* Tab 4: Packaging Inventory */}
+              {activeTab === 'inventory' && (
+                <PackagingInventoryView
+                  materials={materials}
+                />
+              )}
+
+              {/* Tab 5: Packaging Records */}
+              {activeTab === 'records' && (
+                <PackagingRecordsList
+                  records={displayedRecords}
+                  plants={plants}
+                  isSuperAdmin={currentUser.role === 'SUPER_ADMIN'}
+                  canDelete={currentUser.permissions.canDeleteRecords}
+                  canApprove={currentUser.permissions.canApproveRecords}
+                  canExport={currentUser.permissions.canExportPpwr}
+                  onSelectRecord={(record: PackagingRecord) => setSelectedRecordForDetail(record)}
+                  onStatusChange={handleStatusChange}
+                  onDeleteRecord={(id: string) => {
+                    recordsService.deleteRecord(id);
+                    refreshData();
+                    showToast('Record Deleted', `Record ${id} removed.`, 'info');
+                  }}
+                  onResetMockData={() => {
+                    recordsService.resetMockRecords();
+                    refreshData();
+                    showToast('Data Reset', 'Mock packaging records reset to initial seed state.', 'info');
+                  }}
+                  onOpenExportModal={() => setIsExportModalOpen(true)}
+                  onStartNewRecord={() => handleStartRecording()}
+                />
+              )}
+
+              {/* Tab 6: Users (Super Admin Only) */}
+              {activeTab === 'users' && (
+                <UsersListView
+                  onImpersonateUser={(persona: UserPersona) => handleLogin(persona)}
+                />
+              )}
+
+              {/* Tab 7: Rules & Configuration (Super Admin Only) */}
+              {activeTab === 'rules' && (
+                <RulesConfigView />
+              )}
+            </>
+          )}
+
+        </main>
+      </div>
 
       {/* Record Detail Modal */}
       {selectedRecordForDetail && (
         <RecordDetailModal
           record={selectedRecordForDetail}
           onClose={() => setSelectedRecordForDetail(null)}
-          onStatusToggle={handleStatusChange}
-          onOpenExport={() => {
-            setSelectedRecordForDetail(null);
-            setIsExportModalOpen(true);
-          }}
+          onStatusToggle={(id: string, status: RecordStatus) => handleStatusChange(id, status)}
+          onOpenExport={() => setIsExportModalOpen(true)}
         />
       )}
 
-      {/* IntegrityNext / PPWR JSON Export Modal */}
+      {/* PPWR / IntegrityNext Export Modal */}
       {isExportModalOpen && (
         <PpwrExportModal
-          records={records}
+          records={displayedRecords}
           onClose={() => setIsExportModalOpen(false)}
         />
       )}
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="toast-container">
-          <div className="toast">
-            <div style={{ color: toastMessage.type === 'success' ? '#10B981' : '#38BDF8' }}>
-              {toastMessage.type === 'success' ? <CheckCircle2 size={20} /> : <Sparkles size={20} />}
-            </div>
-            <div>
-              <div style={{ fontWeight: 700, color: '#F8FAFC' }}>{toastMessage.title}</div>
-              <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>{toastMessage.desc}</div>
-            </div>
+        <div 
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            background: '#0F172A',
+            color: '#FFFFFF',
+            borderRadius: '10px',
+            padding: '12px 18px',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            zIndex: 9999,
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            animation: 'toastSlideUp 0.25s ease-out'
+          }}
+        >
+          <div style={{ background: toastMessage.type === 'success' ? '#059669' : '#0284C7', borderRadius: '50%', padding: '4px', display: 'flex' }}>
+            <CheckCircle2 size={16} color="#FFFFFF" />
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '0.86rem' }}>{toastMessage.title}</div>
+            <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>{toastMessage.desc}</div>
           </div>
         </div>
       )}
+
     </div>
   );
 };

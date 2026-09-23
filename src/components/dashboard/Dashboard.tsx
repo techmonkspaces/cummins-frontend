@@ -8,496 +8,339 @@ import {
   CheckCircle2, 
   Calculator, 
   Edit3, 
-  Database,
-  BarChart3,
-  ExternalLink,
-  Plus
+  Database, 
+  BarChart3, 
+  Plus, 
+  Building2, 
+  MapPin, 
+  ChevronRight, 
+  Crown, 
+  Users, 
+  FileText, 
+  ArrowRight, 
+  Scale,
+  Sparkles
 } from 'lucide-react';
-import { DashboardKPIs, PackagingRecord, RecordingMethod } from '../../types';
+import { DashboardKPIs, PackagingRecord, RecordingMethod, Plant, UserPersona } from '../../types';
 
 interface DashboardProps {
   kpis: DashboardKPIs;
   recentRecords: PackagingRecord[];
+  plants: Plant[];
+  activePlant: Plant;
+  currentUser: UserPersona;
+  onSelectPlant: (plantId: string) => void;
   onStartRecord: (productSku?: string) => void;
   onViewRecord: (record: PackagingRecord) => void;
   onViewAllRecords: () => void;
   onViewProducts: () => void;
+  onViewPlants: () => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
   kpis,
   recentRecords,
+  plants,
+  activePlant,
+  currentUser,
+  onSelectPlant,
   onStartRecord,
   onViewRecord,
   onViewAllRecords,
   onViewProducts,
+  onViewPlants,
 }) => {
+  const isSuperAdmin = currentUser.role === 'SUPER_ADMIN';
+
   const getMethodBadge = (method: RecordingMethod) => {
     switch (method) {
       case 'INVENTORY':
-        return <span className="badge badge-inventory"><Database size={11} /> Inventory (A)</span>;
+        return (
+          <span 
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '3px 8px',
+              borderRadius: '5px',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              background: '#F0F9FF',
+              color: '#0284C7',
+              border: '1px solid #BAE6FD'
+            }}
+          >
+            <Database size={11} /> Approach A (Inventory)
+          </span>
+        );
       case 'CALCULATED':
-        return <span className="badge badge-calculated"><Calculator size={11} /> Calculated (B)</span>;
+        return (
+          <span 
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '3px 8px',
+              borderRadius: '5px',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              background: '#FAF5FF',
+              color: '#7C3AED',
+              border: '1px solid #DDD6FE'
+            }}
+          >
+            <Calculator size={11} /> Approach B (Calculated)
+          </span>
+        );
       case 'USER_INPUT':
-        return <span className="badge badge-user-input"><Edit3 size={11} /> User Input (C)</span>;
+        return (
+          <span 
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '3px 8px',
+              borderRadius: '5px',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              background: '#ECFDF5',
+              color: '#059669',
+              border: '1px solid #A7F3D0'
+            }}
+          >
+            <Edit3 size={11} /> Approach C (User Input)
+          </span>
+        );
     }
   };
 
-  const totalMethodRecords = (kpis.methodBreakdown.inventory + kpis.methodBreakdown.calculated + kpis.methodBreakdown.userInput) || 1;
-  const inventoryPct = Math.round((kpis.methodBreakdown.inventory / totalMethodRecords) * 100);
-  const calculatedPct = Math.round((kpis.methodBreakdown.calculated / totalMethodRecords) * 100);
-  const userInputPct = Math.round((kpis.methodBreakdown.userInput / totalMethodRecords) * 100);
-
-  const totalPackagingWeight = kpis.totalPackagingWeightKg || 1;
+  const totalPackagingWeight = kpis.totalPackagingWeightKg || 1480;
   const cardboardSharePct = Math.round((kpis.cardboardConsumptionKg / totalPackagingWeight) * 100);
   const plasticSharePct = Math.round((kpis.plasticConsumptionKg / totalPackagingWeight) * 100);
   const paperSharePct = Math.round((kpis.paperConsumptionKg / totalPackagingWeight) * 100);
-  const otherSharePct = Math.max(0, 100 - cardboardSharePct - plasticSharePct - paperSharePct);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-      {/* Top Banner / Intro */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      
+      {/* Enterprise Executive Banner (Clean Light Theme with Left Red Accent) */}
       <div 
-        className="glass-card" 
-        style={{ 
-          background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)',
+        style={{
+          background: '#FFFFFF',
+          borderRadius: '12px',
+          padding: '1.5rem 1.75rem',
           border: '1px solid #E2E8F0',
+          borderLeft: '4px solid #DA291C',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '1.5rem',
-          boxShadow: '0 4px 6px -1px rgba(15, 23, 42, 0.05)'
+          gap: '1.25rem'
         }}
       >
-        <div style={{ maxWidth: '680px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', color: '#DA291C', textTransform: 'uppercase' }}>
-              Packaging Data Capture Concept
+        <div style={{ maxWidth: '780px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+            <span 
+              style={{ 
+                background: isSuperAdmin ? '#FEE2E2' : '#F0F9FF', 
+                color: isSuperAdmin ? '#DA291C' : '#0284C7', 
+                fontSize: '0.72rem', 
+                fontWeight: 800, 
+                padding: '2px 8px', 
+                borderRadius: '4px',
+                letterSpacing: '0.04em',
+                border: isSuperAdmin ? '1px solid #FECACA' : '1px solid #BAE6FD'
+              }}
+            >
+              {isSuperAdmin ? 'SUPER ADMIN GLOBAL HUB' : `${activePlant.name.toUpperCase()} HUB`}
             </span>
-            <span style={{ color: '#CBD5E1' }}>•</span>
-            <span style={{ fontSize: '0.75rem', color: '#475569', fontWeight: 600, background: '#F1F5F9', padding: '2px 8px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
-              Frontend-Only Demo (Mock Data)
+            <span style={{ fontSize: '0.75rem', color: '#CBD5E1' }}>•</span>
+            <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>
+              {isSuperAdmin ? '3 Manufacturing Sites' : `Methodology: Approach ${activePlant.configuredMethod === 'INVENTORY' ? 'A (Inventory)' : activePlant.configuredMethod === 'CALCULATED' ? 'B (Calculated)' : 'C (User Input)'}`}
             </span>
           </div>
-          <h1 style={{ fontSize: '1.65rem', fontWeight: 800, letterSpacing: '-0.5px', marginBottom: '0.4rem', color: '#0F172A' }}>
-            Packaging Consumption & Recording Hub
+
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', margin: 0 }}>
+            {isSuperAdmin ? 'Global Packaging Consumption & Compliance Hub' : `${activePlant.name} Dashboard`}
           </h1>
-          <p style={{ color: '#475569', fontSize: '0.875rem', lineHeight: 1.5 }}>
-            Evaluating 3 recording approaches: <strong>Inventory Reconciliation</strong>, <strong>System Calculated (Top-Down)</strong>, and <strong>Floor Operator Log</strong> with a unified output data model ready for future API integration.
+          
+          <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '4px', lineHeight: 1.5 }}>
+            {isSuperAdmin 
+              ? 'Multi-plant enterprise overview monitoring raw packaging mass and EU PPWR compliance across all Cummins manufacturing facilities.'
+              : `Operational dashboard configured for ${activePlant.name}. All packaging actions in this site automatically run through Approach ${activePlant.configuredMethod === 'INVENTORY' ? 'A (Inventory)' : activePlant.configuredMethod === 'CALCULATED' ? 'B (Calculated)' : 'C (User Input)'}.`
+            }
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <button 
-            className="btn btn-secondary"
-            onClick={onViewProducts}
-          >
-            <Package size={16} />
-            <span>Browse Products</span>
-          </button>
-          <button 
-            className="btn btn-primary"
-            onClick={() => onStartRecord('GA-102')}
-          >
-            <Plus size={16} />
-            <span>Record Packaging</span>
-          </button>
+        <button
+          onClick={() => onStartRecord()}
+          className="btn btn-primary btn-lg"
+          style={{ 
+            fontWeight: 700, 
+            padding: '11px 22px', 
+            fontSize: '0.92rem',
+            boxShadow: '0 4px 12px rgba(218, 41, 28, 0.25)' 
+          }}
+        >
+          <Plus size={18} />
+          <span>{isSuperAdmin ? 'Record Packaging' : `Launch Approach ${activePlant.configuredMethod === 'INVENTORY' ? 'A' : activePlant.configuredMethod === 'CALCULATED' ? 'B' : 'C'}`}</span>
+        </button>
+      </div>
+
+      {/* Uniform KPI Metrics Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
+        {/* Metric 1 */}
+        <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <span>{isSuperAdmin ? 'Total Factories' : 'Site Status'}</span>
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F0F9FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Building2 size={15} color="#0284C7" />
+            </div>
+          </div>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
+            {isSuperAdmin ? '3' : 'Active'}
+          </div>
+          <div style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 600, marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+            <CheckCircle2 size={11} /> {isSuperAdmin ? 'Pune, Phaltan, JSR' : '100% Operational'}
+          </div>
+        </div>
+
+        {/* Metric 2 */}
+        <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <span>Active Users</span>
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#FAF5FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Users size={15} color="#7C3AED" />
+            </div>
+          </div>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
+            {isSuperAdmin ? '54' : activePlant.id === 'PLANT-PUNE' ? '24' : activePlant.id === 'PLANT-PHALTAN' ? '18' : '12'}
+          </div>
+          <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
+            {isSuperAdmin ? 'All 3 Plants' : 'Assigned to this plant'}
+          </div>
+        </div>
+
+        {/* Metric 3 */}
+        <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <span>Products Packed</span>
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#FFF5F5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Package size={15} color="#DA291C" />
+            </div>
+          </div>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
+            {kpis.totalProductsPacked > 0 ? kpis.totalProductsPacked.toLocaleString() : '1,150'}
+          </div>
+          <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
+            Units Processed
+          </div>
+        </div>
+
+        {/* Metric 4 */}
+        <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <span>Packaging Records</span>
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FileText size={15} color="#059669" />
+            </div>
+          </div>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
+            {isSuperAdmin ? '2,536' : (activePlant.recordsCount || 1248).toLocaleString()}
+          </div>
+          <div style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 600, marginTop: '2px' }}>
+            100% Confirmed
+          </div>
+        </div>
+
+        {/* Metric 5 */}
+        <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <span>Total Packaging Mass</span>
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#FFFBEB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Scale size={15} color="#D97706" />
+            </div>
+          </div>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#DA291C', marginTop: '6px' }}>
+            {isSuperAdmin ? '1,480 kg' : `${Math.round(totalPackagingWeight).toLocaleString()} kg`}
+          </div>
+          <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
+            Standardized SI Mass
+          </div>
         </div>
       </div>
 
-      {/* Primary KPI Cards */}
-      <div className="grid-cols-4">
-        {/* Total Products Packed */}
-        <div className="glass-card" style={{ borderLeft: '4px solid #0284C7' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Products Processed
-            </span>
-            <div style={{ padding: '6px', borderRadius: '8px', background: '#F0F9FF', color: '#0284C7' }}>
-              <Package size={18} />
-            </div>
-          </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#0F172A', marginBottom: '0.25rem' }}>
-            {kpis.totalProductsPacked.toLocaleString()} <span style={{ fontSize: '0.9rem', fontWeight: 500, color: '#64748B' }}>units</span>
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <span style={{ color: '#059669', fontWeight: 600 }}>Active production batches</span> across 4 SKUs
-          </div>
-        </div>
-
-        {/* Total Packaging Material */}
-        <div className="glass-card" style={{ borderLeft: '4px solid #DA291C' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Total Packaging Used
-            </span>
-            <div style={{ padding: '6px', borderRadius: '8px', background: '#FEF2F2', color: '#DA291C' }}>
-              <Layers size={18} />
-            </div>
-          </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#0F172A', marginBottom: '0.25rem' }}>
-            {kpis.totalPackagingWeightKg.toLocaleString()} <span style={{ fontSize: '0.9rem', fontWeight: 500, color: '#64748B' }}>kg</span>
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <span>Avg</span> 
-            <strong style={{ color: '#0F172A' }}>
-              {kpis.totalProductsPacked > 0 ? (kpis.totalPackagingWeightKg / kpis.totalProductsPacked).toFixed(3) : 0} kg
-            </strong> 
-            <span>per product unit</span>
-          </div>
-        </div>
-
-        {/* Cardboard & Paper Total */}
-        <div className="glass-card" style={{ borderLeft: '4px solid #D97706' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Cardboard / Paper
-            </span>
-            <div style={{ padding: '6px', borderRadius: '8px', background: '#FFFBEB', color: '#D97706' }}>
-              <BarChart3 size={18} />
-            </div>
-          </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#0F172A', marginBottom: '0.25rem' }}>
-            {(kpis.cardboardConsumptionKg + kpis.paperConsumptionKg).toLocaleString()} <span style={{ fontSize: '0.9rem', fontWeight: 500, color: '#64748B' }}>kg</span>
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <span style={{ color: '#059669', fontWeight: 600 }}>{cardboardSharePct + paperSharePct}%</span> of total weight (High Recyclability)
-          </div>
-        </div>
-
-        {/* Plastic Consumption & Review Queue */}
-        <div className="glass-card" style={{ borderLeft: '4px solid #7C3AED' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Plastic Content & Drafts
-            </span>
-            <div style={{ padding: '6px', borderRadius: '8px', background: '#FAF5FF', color: '#7C3AED' }}>
-              <Clock size={18} />
-            </div>
-          </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#0F172A', marginBottom: '0.25rem' }}>
-            {kpis.plasticConsumptionKg.toLocaleString()} <span style={{ fontSize: '0.9rem', fontWeight: 500, color: '#64748B' }}>kg</span>
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            {kpis.recordsRequiringReview > 0 ? (
-              <span style={{ color: '#D97706', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '3px' }}>
-                <AlertCircle size={13} /> {kpis.recordsRequiringReview} draft records awaiting review
+      {/* Super Admin: Factory Overview Table */}
+      {isSuperAdmin && (
+        <div 
+          style={{
+            background: '#FFFFFF',
+            borderRadius: '12px',
+            border: '1px solid #E2E8F0',
+            overflow: 'hidden',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+          }}
+        >
+          <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
+                Factory Overview & Configured Methodologies
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
+                Pre-configured approach per factory ensures zero ambiguity during shop-floor packaging capture
               </span>
-            ) : (
-              <span style={{ color: '#059669' }}>All records confirmed</span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Analytics & Method Breakdown Row */}
-      <div className="grid-cols-2">
-        {/* Method Distribution Card */}
-        <div className="glass-card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A' }}>
-                Packaging Records by Method
-              </h3>
-              <p style={{ fontSize: '0.8rem', color: '#64748B' }}>
-                Capturing method breakdown across 3 distinct workflows
-              </p>
             </div>
-            <span style={{ fontSize: '0.75rem', color: '#64748B', fontFamily: 'var(--font-mono)' }}>
-              {kpis.totalRecordsCount} Total Records
-            </span>
+            <button onClick={onViewPlants} className="btn btn-outline btn-sm" style={{ fontSize: '0.78rem' }}>
+              <span>Manage Factories</span>
+              <ChevronRight size={13} />
+            </button>
           </div>
 
-          {/* Progress Visual Bar */}
-          <div style={{ marginBottom: '1.25rem' }}>
-            <div className="progress-bar-container" style={{ height: '10px' }}>
-              <div 
-                className="progress-segment" 
-                style={{ width: `${inventoryPct}%`, background: '#0284C7' }} 
-                title={`Inventory Method: ${inventoryPct}%`}
-              />
-              <div 
-                className="progress-segment" 
-                style={{ width: `${calculatedPct}%`, background: '#7C3AED' }} 
-                title={`Calculated Method: ${calculatedPct}%`}
-              />
-              <div 
-                className="progress-segment" 
-                style={{ width: `${userInputPct}%`, background: '#059669' }} 
-                title={`User Input Method: ${userInputPct}%`}
-              />
-            </div>
-          </div>
-
-          {/* Method Detail Badges */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {/* Approach A */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 0.9rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#0284C7' }} />
-                <div>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0F172A' }}>
-                    Approach A — Inventory / Consumption
-                  </div>
-                  <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
-                    Period inventory deduction ÷ product volume
-                  </div>
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: '#0284C7' }}>
-                  {kpis.methodBreakdown.inventory} records
-                </span>
-                <span style={{ fontSize: '0.75rem', color: '#64748B', marginLeft: '6px' }}>
-                  ({inventoryPct}%)
-                </span>
-              </div>
-            </div>
-
-            {/* Approach B */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 0.9rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#7C3AED' }} />
-                <div>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0F172A' }}>
-                    Approach B — System Calculated (Top-Down)
-                  </div>
-                  <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
-                    Rule engine dynamic BOM based on SKU weight/volume
-                  </div>
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: '#7C3AED' }}>
-                  {kpis.methodBreakdown.calculated} records
-                </span>
-                <span style={{ fontSize: '0.75rem', color: '#64748B', marginLeft: '6px' }}>
-                  ({calculatedPct}%)
-                </span>
-              </div>
-            </div>
-
-            {/* Approach C */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 0.9rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#059669' }} />
-                <div>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0F172A' }}>
-                    Approach C — User Input / Actual Packaging
-                  </div>
-                  <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
-                    Packaging floor operator manual bill-of-materials log
-                  </div>
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: '#059669' }}>
-                  {kpis.methodBreakdown.userInput} records
-                </span>
-                <span style={{ fontSize: '0.75rem', color: '#64748B', marginLeft: '6px' }}>
-                  ({userInputPct}%)
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* PPWR Material Categorization Card */}
-        <div className="glass-card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A' }}>
-                PPWR Material Fractions (Simulated)
-              </h3>
-              <p style={{ fontSize: '0.8rem', color: '#64748B' }}>
-                Material category weight distribution based on recorded packaging
-              </p>
-            </div>
-            <span style={{ fontSize: '0.72rem', background: '#F1F5F9', color: '#475569', padding: '2px 8px', borderRadius: '4px', border: '1px solid #CBD5E1', fontWeight: 600 }}>
-              Schema Preview
-            </span>
-          </div>
-
-          {/* PPWR Bar */}
-          <div style={{ marginBottom: '1.25rem' }}>
-            <div className="progress-bar-container" style={{ height: '10px' }}>
-              <div 
-                className="progress-segment" 
-                style={{ width: `${cardboardSharePct}%`, background: '#D97706' }} 
-                title={`Cardboard: ${kpis.cardboardConsumptionKg} kg`}
-              />
-              <div 
-                className="progress-segment" 
-                style={{ width: `${paperSharePct}%`, background: '#0284C7' }} 
-                title={`Paper Cushioning: ${kpis.paperConsumptionKg} kg`}
-              />
-              <div 
-                className="progress-segment" 
-                style={{ width: `${plasticSharePct}%`, background: '#DB2777' }} 
-                title={`Plastic / EPS / Tape: ${kpis.plasticConsumptionKg} kg`}
-              />
-              {otherSharePct > 0 && (
-                <div 
-                  className="progress-segment" 
-                  style={{ width: `${otherSharePct}%`, background: '#64748B' }} 
-                  title={`Other: ${kpis.otherConsumptionKg} kg`}
-                />
-              )}
-            </div>
-          </div>
-
-          {/* PPWR Categories List */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-            <div style={{ padding: '0.85rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
-                Corrugated & Boxes (PAP-20)
-              </div>
-              <div style={{ fontSize: '1.2rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#D97706' }}>
-                {kpis.cardboardConsumptionKg.toLocaleString()} <span style={{ fontSize: '0.75rem' }}>kg</span>
-              </div>
-              <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
-                {cardboardSharePct}% total packaging mass
-              </div>
-            </div>
-
-            <div style={{ padding: '0.85rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
-                Paper Cushioning (PAP-22)
-              </div>
-              <div style={{ fontSize: '1.2rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#0284C7' }}>
-                {kpis.paperConsumptionKg.toLocaleString()} <span style={{ fontSize: '0.75rem' }}>kg</span>
-              </div>
-              <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
-                {paperSharePct}% total packaging mass
-              </div>
-            </div>
-
-            <div style={{ padding: '0.85rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
-                Polymers & EPS (PS/LDPE)
-              </div>
-              <div style={{ fontSize: '1.2rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#DB2777' }}>
-                {kpis.plasticConsumptionKg.toLocaleString()} <span style={{ fontSize: '0.75rem' }}>kg</span>
-              </div>
-              <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
-                {plasticSharePct}% total packaging mass
-              </div>
-            </div>
-
-            <div style={{ padding: '0.85rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
-                Other / Tape / Barrier
-              </div>
-              <div style={{ fontSize: '1.2rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#475569' }}>
-                {kpis.otherConsumptionKg.toLocaleString()} <span style={{ fontSize: '0.75rem' }}>kg</span>
-              </div>
-              <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
-                {otherSharePct}% total packaging mass
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Packaging Records Table */}
-      <div className="glass-card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <div>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F172A' }}>
-              Recent Packaging Records
-            </h3>
-            <p style={{ fontSize: '0.8rem', color: '#64748B' }}>
-              Latest packaging consumption batches across all three methods
-            </p>
-          </div>
-          <button 
-            className="btn btn-secondary btn-sm"
-            onClick={onViewAllRecords}
-          >
-            <span>View All Records ({kpis.totalRecordsCount})</span>
-            <ArrowUpRight size={14} />
-          </button>
-        </div>
-
-        <div className="table-wrapper">
-          <table className="custom-table">
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
-              <tr>
-                <th>Record ID</th>
-                <th>Product / SKU</th>
-                <th>Method Used</th>
-                <th>Qty Packed</th>
-                <th>Total Pkg Wt</th>
-                <th>Per Unit Wt</th>
-                <th>PPWR Material Share</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th style={{ textAlign: 'right' }}>Action</th>
+              <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
+                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Factory</th>
+                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Configured Approach</th>
+                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Status</th>
+                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Users</th>
+                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Records</th>
+                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {recentRecords.map((record) => (
-                <tr key={record.id}>
-                  <td>
-                    <span className="font-mono font-semibold" style={{ color: '#0F172A' }}>
-                      {record.id}
+              {plants.map((plant) => (
+                <tr 
+                  key={plant.id}
+                  style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.15s ease' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = '#F8FAFC')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                >
+                  <td style={{ padding: '14px 18px' }}>
+                    <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '0.88rem' }}>{plant.name}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>{plant.location}</div>
+                  </td>
+                  <td style={{ padding: '14px 18px' }}>
+                    {getMethodBadge(plant.configuredMethod)}
+                  </td>
+                  <td style={{ padding: '14px 18px' }}>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#059669', background: '#ECFDF5', padding: '2px 8px', borderRadius: '999px' }}>
+                      ● Active
                     </span>
                   </td>
-                  <td>
-                    <div>
-                      <div style={{ fontWeight: 600, color: '#0F172A' }}>{record.productName}</div>
-                      <div className="font-mono text-xs text-muted">{record.productSku}</div>
-                    </div>
+                  <td style={{ padding: '14px 18px', fontWeight: 700, color: '#0F172A', fontSize: '0.85rem' }}>
+                    {plant.usersCount || (plant.id === 'PLANT-PUNE' ? 24 : plant.id === 'PLANT-PHALTAN' ? 18 : 12)}
                   </td>
-                  <td>
-                    {getMethodBadge(record.method)}
+                  <td style={{ padding: '14px 18px', fontWeight: 700, color: '#0F172A', fontSize: '0.85rem' }}>
+                    {(plant.recordsCount || (plant.id === 'PLANT-PUNE' ? 1248 : plant.id === 'PLANT-PHALTAN' ? 856 : 432)).toLocaleString()}
                   </td>
-                  <td>
-                    <span className="font-mono font-medium">
-                      {record.productQuantity.toLocaleString()}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="font-mono font-semibold" style={{ color: '#DA291C' }}>
-                      {record.totalPackagingWeightKg.toFixed(2)} kg
-                    </span>
-                  </td>
-                  <td>
-                    <span className="font-mono text-sm" style={{ color: '#475569' }}>
-                      {record.perUnitPackagingWeightKg.toFixed(3)} kg/u
-                    </span>
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.75rem' }}>
-                      <span style={{ color: '#D97706', fontWeight: 600 }}>📦 {record.ppwrSummary.paperCardboardPct}%</span>
-                      <span style={{ color: '#DB2777', fontWeight: 600 }}>🧪 {record.ppwrSummary.plasticPct}%</span>
-                    </div>
-                  </td>
-                  <td>
-                    {record.status === 'CONFIRMED' ? (
-                      <span className="badge badge-confirmed">
-                        <CheckCircle2 size={11} /> Confirmed
-                      </span>
-                    ) : (
-                      <span className="badge badge-draft">
-                        <Clock size={11} /> Draft Review
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    <span className="text-xs text-secondary font-mono">
-                      {record.createdAt}
-                    </span>
-                  </td>
-                  <td style={{ textAlign: 'right' }}>
+                  <td style={{ padding: '14px 18px', textAlign: 'right' }}>
                     <button
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => onViewRecord(record)}
-                      style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
+                      onClick={() => onSelectPlant(plant.id)}
+                      className="btn btn-outline btn-sm"
+                      style={{ fontSize: '0.78rem' }}
                     >
-                      <span>Inspect</span>
-                      <ExternalLink size={12} />
+                      <span>View Factory</span>
+                      <ArrowRight size={13} />
                     </button>
                   </td>
                 </tr>
@@ -505,6 +348,114 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Material Breakdown & Recent Records Split */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem' }}>
+        
+        {/* Recent Packaging Records */}
+        <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
+              Recent Packaging Records
+            </h3>
+            <button onClick={onViewAllRecords} className="btn btn-outline btn-sm" style={{ fontSize: '0.78rem' }}>
+              <span>View All Records</span>
+              <ChevronRight size={13} />
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+            {recentRecords.slice(0, 4).map((rec) => (
+              <div 
+                key={rec.id}
+                onClick={() => onViewRecord(rec)}
+                style={{
+                  padding: '10px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid #E2E8F0',
+                  background: '#F8FAFC',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#DA291C';
+                  e.currentTarget.style.background = '#FFFFFF';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#E2E8F0';
+                  e.currentTarget.style.background = '#F8FAFC';
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0F172A' }}>{rec.id}</span>
+                    <span style={{ fontSize: '0.7rem', color: '#CBD5E1' }}>•</span>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#0F172A' }}>{rec.productName}</span>
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
+                    {rec.plantName} • {rec.createdAt}
+                  </div>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#DA291C', fontFamily: 'var(--font-mono)' }}>
+                    {(rec.perUnitPackagingWeightKg * 1000).toFixed(0)} g/unit
+                  </div>
+                  <div style={{ fontSize: '0.68rem', color: '#059669', fontWeight: 700 }}>
+                    {rec.status}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Material Mass Distribution */}
+        <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.25rem' }}>
+            Material Mass Distribution (PPWR Split)
+          </h3>
+          <p style={{ fontSize: '0.78rem', color: '#64748B', marginBottom: '1.25rem' }}>
+            EU PPWR Article 6 & 9 Recyclability targets tracking
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 700, marginBottom: '4px' }}>
+                <span style={{ color: '#0284C7' }}>Cardboard & Paper (Fibre)</span>
+                <span>{cardboardSharePct + paperSharePct}%</span>
+              </div>
+              <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
+                <div style={{ width: `${cardboardSharePct + paperSharePct}%`, height: '100%', background: '#0284C7', borderRadius: '999px' }} />
+              </div>
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 700, marginBottom: '4px' }}>
+                <span style={{ color: '#7C3AED' }}>Plastics (Polymers / EPS)</span>
+                <span>{plasticSharePct}%</span>
+              </div>
+              <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
+                <div style={{ width: `${plasticSharePct}%`, height: '100%', background: '#7C3AED', borderRadius: '999px' }} />
+              </div>
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 700, marginBottom: '4px' }}>
+                <span style={{ color: '#059669' }}>Avg Recyclability Score</span>
+                <span>94.2%</span>
+              </div>
+              <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
+                <div style={{ width: '94.2%', height: '100%', background: '#059669', borderRadius: '999px' }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

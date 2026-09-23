@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="100%" height="100%">
+  <defs>
+    <style>
+      .cummins-red { fill: #DA291C; }
+      .cummins-white { fill: #FFFFFF; }
+      .cummins-font {
+        font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+    </style>
+  </defs>
+  <!-- Official Cummins Red 'C' Emblem -->
+  <g transform="translate(180, 0)">
+    <!-- Main Red 'C' Body -->
+    <path class="cummins-red" fill-rule="evenodd" d="
+      M 370,0 
+      L 580,0 
+      L 580,180 
+      L 350,180 
+      C 275,180 230,225 230,280 
+      C 230,335 275,380 350,380 
+      L 580,380 
+      L 580,560 
+      L 370,560 
+      C 165,560 0,435 0,280 
+      C 0,125 165,0 370,0 
+      Z
+    "/>
+    <!-- Diagonal "Cummins" Text Inside Red Upper Arch -->
+    <g transform="translate(240, 195) rotate(-35)">
+      <text x="-95" y="10" class="cummins-white cummins-font" font-size="112" font-style="italic">Cummins</text>
+    </g>
+  </g>
+</svg>

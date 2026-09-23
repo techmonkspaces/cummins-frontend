@@ -28,6 +28,7 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
   const [newStock, setNewStock] = useState(1000);
   const [newUnit, setNewUnit] = useState<'pcs' | 'kg' | 'rolls' | 'm'>('pcs');
   const [newWeightPerUnit, setNewWeightPerUnit] = useState(0.45);
+  const [newDimensions, setNewDimensions] = useState('35 × 25 × 20 cm');
   const [newRecycledPct, setNewRecycledPct] = useState(80);
   const [newRecyclable, setNewRecyclable] = useState(true);
   const [newPpwrCode, setNewPpwrCode] = useState('PAP-20');
@@ -59,6 +60,7 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
       stockUnit: newUnit,
       weightPerUnitKg: Number(newWeightPerUnit) || 1.0,
       unitName: newUnit,
+      dimensions: newDimensions.trim() || undefined,
       recycledContentPct: Number(newRecycledPct) || 50,
       recyclable: newRecyclable,
       ppwrMaterialCode: newPpwrCode.toUpperCase().trim() || 'PAP-20',
@@ -73,6 +75,7 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
     setIsAddModalOpen(false);
     setNewId('');
     setNewName('');
+    setNewDimensions('35 × 25 × 20 cm');
     setNewDesc('');
   };
 
@@ -162,6 +165,7 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
                 <th>Material Name & Description</th>
                 <th>Category</th>
                 <th>Standard Code</th>
+                <th>Dimensions / Specs</th>
                 <th>Available Inventory</th>
                 <th>Standard Unit Mass</th>
                 <th>Recycled Content</th>
@@ -180,7 +184,7 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
                   <td>
                     <div>
                       <div style={{ fontWeight: 600, color: '#0F172A' }}>{mat.name}</div>
-                      <div className="text-xs text-muted" style={{ maxWidth: '340px' }}>
+                      <div className="text-xs text-muted" style={{ maxWidth: '300px' }}>
                         {mat.description}
                       </div>
                     </div>
@@ -193,6 +197,11 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
                   <td>
                     <span className="font-mono font-semibold text-xs" style={{ color: '#0284C7', background: '#F0F9FF', padding: '2px 6px', borderRadius: '4px', border: '1px solid #BAE6FD' }}>
                       {mat.ppwrMaterialCode}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="font-mono text-xs" style={{ color: '#334155', background: '#F8FAFC', padding: '2px 6px', borderRadius: '4px', border: '1px solid #E2E8F0', whiteSpace: 'nowrap' }}>
+                      {mat.dimensions || 'Standard / Roll'}
                     </span>
                   </td>
                   <td>
@@ -280,9 +289,9 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                   <div className="form-group" style={{ margin: 0 }}>
-                    <label className="form-label">PPWR Category</label>
+                    <label className="form-label">Category</label>
                     <select
                       className="form-select"
                       value={newCat}
@@ -298,7 +307,7 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
                   </div>
 
                   <div className="form-group" style={{ margin: 0 }}>
-                    <label className="form-label">PPWR Material Code</label>
+                    <label className="form-label">Material Code</label>
                     <input
                       type="text"
                       className="form-input font-mono"
@@ -306,6 +315,17 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
                       value={newPpwrCode}
                       onChange={(e) => setNewPpwrCode(e.target.value)}
                       required
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label className="form-label">Dimensions / Specs</label>
+                    <input
+                      type="text"
+                      className="form-input font-mono"
+                      placeholder="e.g. 35 × 25 × 20 cm or 50mm × 66m"
+                      value={newDimensions}
+                      onChange={(e) => setNewDimensions(e.target.value)}
                     />
                   </div>
                 </div>

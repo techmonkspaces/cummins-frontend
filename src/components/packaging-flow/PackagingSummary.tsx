@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   CheckCircle2, 
   ArrowLeft, 
@@ -6,7 +6,11 @@ import {
   Calculator, 
   Edit3, 
   ShieldCheck, 
-  Clock
+  Clock,
+  Send,
+  X,
+  Leaf,
+  FileText
 } from 'lucide-react';
 import { 
   Product, 
@@ -38,7 +42,18 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
   onSave,
   onBackToEdit,
 }) => {
+  const [showExportModal, setShowExportModal] = useState(false);
   const ppwrSummary: PpwrSummaryBreakdown = recordsService.calculatePpwrSummary(materials, productQuantity);
+
+  // EU PPWR Recyclability Grade (A to D)
+  const getRecyclabilityGrade = (pct: number): { grade: string; color: string; bg: string; label: string } => {
+    if (pct >= 95) return { grade: 'A', color: '#065F46', bg: '#ECFDF5', label: 'Excellent — Fully Recyclable (PPWR Preferred)' };
+    if (pct >= 80) return { grade: 'B', color: '#1D4ED8', bg: '#EFF6FF', label: 'Good — Mostly Recyclable (PPWR Compliant)' };
+    if (pct >= 60) return { grade: 'C', color: '#92400E', bg: '#FFFBEB', label: 'Moderate — Partially Recyclable (Improvement Needed)' };
+    return { grade: 'D', color: '#991B1B', bg: '#FEF2F2', label: 'Poor — Low Recyclability (Non-Compliant Risk)' };
+  };
+
+  const grade = getRecyclabilityGrade(ppwrSummary.avgRecyclablePct);
 
   const getMethodBadge = () => {
     switch (method) {
@@ -76,8 +91,8 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#DA291C', textTransform: 'uppercase' }}>
-                Step 3 of 4: Common Review Screen
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#DA291C', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                PPWR Compliance Verification
               </span>
               <span style={{ color: '#CBD5E1' }}>•</span>
               {getMethodBadge()}
@@ -277,16 +292,19 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
               </div>
             </div>
 
-            {/* Recyclability Score */}
-            <div style={{ padding: '0.85rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+            {/* Recyclability Grade */}
+            <div style={{ padding: '0.85rem', background: grade.bg, borderRadius: '8px', border: `1px solid ${grade.color}33` }}>
               <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
-                Avg Recyclable Content
+                PPWR Recyclability Grade
               </div>
-              <div className="font-mono font-bold text-lg" style={{ color: '#059669', marginTop: '2px' }}>
-                {ppwrSummary.avgRecyclablePct}%
-              </div>
-              <div style={{ fontSize: '0.75rem', color: '#059669', marginTop: '2px' }}>
-                ✓ Recyclable Materials
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                <span style={{ fontSize: '1.8rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: grade.color, lineHeight: 1 }}>
+                  {grade.grade}
+                </span>
+                <div>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: grade.color }}>{ppwrSummary.avgRecyclablePct}% Recyclable</div>
+                  <div style={{ fontSize: '0.66rem', color: '#64748B', maxWidth: '120px' }}>{grade.label.split('—')[0].trim()}</div>
+                </div>
               </div>
             </div>
 
@@ -302,6 +320,18 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
                 {(ppwrSummary.estimatedCo2eKg / productQuantity).toFixed(3)} kg CO₂e / unit
               </div>
             </div>
+          </div>
+
+          {/* Recyclability Grade Banner */}
+          <div style={{ marginTop: '1rem', padding: '10px 14px', background: grade.bg, borderRadius: '8px', border: `1px solid ${grade.color}44`, display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Leaf size={16} color={grade.color} />
+            <div style={{ flex: 1 }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: grade.color }}>EU PPWR Recyclability: Grade {grade.grade} — </span>
+              <span style={{ fontSize: '0.78rem', color: '#475569' }}>{grade.label}</span>
+            </div>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: grade.color, background: 'white', padding: '2px 8px', borderRadius: '4px', border: `1px solid ${grade.color}44`, whiteSpace: 'nowrap' }}>
+              {ppwrSummary.avgRecyclablePct}% Recyclable Content
+            </span>
           </div>
         </div>
 
@@ -332,6 +362,16 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
           <button
             type="button"
             className="btn btn-secondary"
+            onClick={() => setShowExportModal(true)}
+            style={{ borderColor: '#7C3AED', color: '#7C3AED' }}
+          >
+            <Send size={15} />
+            <span>Export to ESG / PPWR Portal</span>
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-secondary"
             onClick={() => onSave('DRAFT')}
           >
             <Clock size={16} />
@@ -348,6 +388,99 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
           </button>
         </div>
       </div>
+
+      {/* PPWR ESG Downstream Export Modal */}
+      {showExportModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.55)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ background: '#FFFFFF', borderRadius: '16px', width: '100%', maxWidth: '680px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.35)', overflow: 'hidden' }}>
+            {/* Modal Header */}
+            <div style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)', padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.75)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                  Downstream Dispatch — PPWR Compliance Engine
+                </div>
+                <h3 style={{ color: '#FFFFFF', fontWeight: 800, fontSize: '1.1rem', margin: 0 }}>
+                  Export Packaging Record to Compliance Systems
+                </h3>
+              </div>
+              <button onClick={() => setShowExportModal(false)} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: '8px', color: '#FFFFFF', padding: '6px', cursor: 'pointer' }}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {/* Record Summary Strip */}
+              <div style={{ background: '#F8FAFC', borderRadius: '10px', padding: '1rem', border: '1px solid #E2E8F0', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Product SKU</div>
+                  <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#DA291C' }}>{product.sku}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Total Packaging Mass</div>
+                  <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#0F172A' }}>{ppwrSummary.totalPackagingWeightKg.toFixed(3)} kg</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>PPWR Grade</div>
+                  <div style={{ fontWeight: 900, fontFamily: 'var(--font-mono)', color: grade.color, fontSize: '1.15rem' }}>Grade {grade.grade}</div>
+                </div>
+              </div>
+
+              {/* Export Targets */}
+              <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#0F172A', marginBottom: '2px' }}>Select Downstream Export Target:</div>
+              {[
+                { icon: '🇪🇺', title: 'EU PPWR Digital Product Passport (DPP)', sub: 'Submit to European Single Market compliance portal (Article 9 & 10 verification)', status: 'Ready to Submit', statusColor: '#059669' },
+                { icon: '🌱', title: 'Cummins Corporate ESG / Scope 3 Data Lake', sub: `Dispatch packaging CO₂e: ${ppwrSummary.estimatedCo2eKg.toFixed(2)} kg to IntegrityNext sustainability platform`, status: 'Ready to Submit', statusColor: '#059669' },
+                { icon: '💼', title: 'SAP ERP Financial Ledger (EPR/Plastic Tax)', sub: 'Dispatch plastic mass for Extended Producer Responsibility fee calculation', status: 'Ready to Submit', statusColor: '#059669' },
+                { icon: '📄', title: 'Audit-Ready PDF Compliance Dossier', sub: 'Generate official tamper-evident certificate with cryptographic ledger hash', status: 'Generate PDF', statusColor: '#7C3AED' },
+              ].map((target, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', border: '1px solid #E2E8F0', borderRadius: '10px', background: '#FAFAFA', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                    <span style={{ fontSize: '1.4rem' }}>{target.icon}</span>
+                    <div>
+                      <div style={{ fontWeight: 700, color: '#0F172A', fontSize: '0.85rem' }}>{target.title}</div>
+                      <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>{target.sub}</div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setTimeout(() => alert(`✅ Successfully dispatched to: ${target.title}\n\nThis would send the normalized PPWR compliance payload to the target system in a live environment.`), 100);
+                    }}
+                    style={{ background: target.statusColor, color: '#FFFFFF', border: 'none', borderRadius: '7px', padding: '6px 14px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                  >
+                    {target.status}
+                  </button>
+                </div>
+              ))}
+
+              {/* JSON Preview */}
+              <div>
+                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#475569', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <FileText size={13} /> PPWR Normalized Payload Preview (JSON)
+                </div>
+                <pre style={{ background: '#0F172A', color: '#A3E635', padding: '14px', borderRadius: '8px', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', overflowX: 'auto', margin: 0, maxHeight: '160px', overflowY: 'auto' }}>
+{`{
+  "ppwr_record_id": "PR-${Date.now().toString().slice(-6)}",
+  "product_sku": "${product.sku}",
+  "product_name": "${product.name}",
+  "batch_quantity": ${productQuantity},
+  "total_packaging_kg": ${ppwrSummary.totalPackagingWeightKg.toFixed(3)},
+  "per_unit_kg": ${ppwrSummary.perUnitPackagingWeightKg.toFixed(4)},
+  "paper_cardboard_kg": ${ppwrSummary.paperCardboardKg.toFixed(3)},
+  "plastic_kg": ${ppwrSummary.plasticKg.toFixed(3)},
+  "recyclability_pct": ${ppwrSummary.avgRecyclablePct},
+  "ppwr_grade": "${grade.grade}",
+  "co2e_kg": ${ppwrSummary.estimatedCo2eKg.toFixed(3)},
+  "recording_method": "${method}",
+  "compliance_standard": "EU PPWR 2024 (Art. 9 & 10)",
+  "cummins_plant": "IN-PUN-01",
+  "timestamp": "${new Date().toISOString()}"
+}`}
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

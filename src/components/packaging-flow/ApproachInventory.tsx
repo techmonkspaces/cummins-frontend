@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { 
   Database, 
-  Plus, 
-  Trash2, 
   ArrowRight, 
   Calculator, 
   Calendar, 
-  Layers
+  Layers,
+  CheckCircle2,
+  Lock,
+  Building2,
+  FileSpreadsheet,
+  Info,
+  PackageCheck
 } from 'lucide-react';
 import { Product, PackagingLineItem, PackagingMaterialMaster } from '../../types';
 
@@ -22,378 +26,288 @@ interface ApproachInventoryProps {
   onBack: () => void;
 }
 
-interface InventoryConsumedEntry {
-  id: string;
-  materialId: string;
-  consumedQuantity: number;
-  unit: string;
-}
-
 export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
   product,
   availableMaterials,
   onComplete,
   onBack,
 }) => {
-  const [period, setPeriod] = useState('2026-W38 (Sep 15 - Sep 21)');
-  const [productQuantity, setProductQuantity] = useState<number>(1000);
-  const [notes, setNotes] = useState('Production Line 4 packaging inventory reconciliation. Consumption drawn from SAP batch issue logs.');
+  const [period, setPeriod] = useState('September 2026');
+  const [productQuantity, setProductQuantity] = useState<number>(product.defaultBatchSize || 1000);
+  const [notes, setNotes] = useState('Pune Factory automated inventory batch deduction. Reconciled via SAP S/4HANA MVT 261.');
 
-  // Pre-fill with the spec example for Gear Assembly (500kg Cardboard, 80kg Cushioning, 20kg Tape)
-  const [consumedList, setConsumedList] = useState<InventoryConsumedEntry[]>([
-    {
-      id: 'inv-1',
-      materialId: 'MAT-001', // Cardboard Box
-      consumedQuantity: 500,
-      unit: 'kg'
-    },
-    {
-      id: 'inv-2',
-      materialId: 'MAT-003', // Cushioning
-      consumedQuantity: 80,
-      unit: 'kg'
-    },
-    {
-      id: 'inv-3',
-      materialId: 'MAT-007', // Packaging Tape
-      consumedQuantity: 20,
-      unit: 'kg'
+  // SKU-specific batch consumption data from ERP (SAP MM Goods Issue MVT-261)
+  const getBatchConsumptionBySku = (sku: string) => {
+    switch (sku) {
+      case 'GA-102': // Gear Assembly — Heavy, 8kg, high volume 1000 units
+        return [
+          { id: 'inv-1', materialId: 'MAT-001', materialName: 'Cardboard Box', category: 'Paper/Cardboard' as const, consumedKg: 450, sapDoc: '4900182741', sloc: 'SLOC 1001' },
+          { id: 'inv-2', materialId: 'MAT-003', materialName: 'Kraft Paper Cushioning', category: 'Paper' as const, consumedKg: 85, sapDoc: '4900182742', sloc: 'SLOC 1001' },
+          { id: 'inv-3', materialId: 'MAT-007', materialName: 'Packaging Seam Tape', category: 'Plastic' as const, consumedKg: 22, sapDoc: '4900182743', sloc: 'SLOC 1001' },
+        ];
+      case 'BP-201': // Brake Assembly — 5.5kg, batch 500 units
+        return [
+          { id: 'inv-1', materialId: 'MAT-001', materialName: 'Cardboard Box', category: 'Paper/Cardboard' as const, consumedKg: 225, sapDoc: '4900183102', sloc: 'SLOC 1001' },
+          { id: 'inv-2', materialId: 'MAT-003', materialName: 'Kraft Paper Cushioning', category: 'Paper' as const, consumedKg: 40, sapDoc: '4900183103', sloc: 'SLOC 1001' },
+          { id: 'inv-3', materialId: 'MAT-006', materialName: 'VCI Anti-Rust Poly Bag', category: 'Plastic' as const, consumedKg: 15, sapDoc: '4900183104', sloc: 'SLOC 1002' },
+          { id: 'inv-4', materialId: 'MAT-007', materialName: 'Packaging Seam Tape', category: 'Plastic' as const, consumedKg: 9, sapDoc: '4900183105', sloc: 'SLOC 1001' },
+        ];
+      case 'IN-108': // Fuel Injector — small/light 1.4kg, high volume 1200 units
+        return [
+          { id: 'inv-1', materialId: 'MAT-001', materialName: 'Cardboard Box', category: 'Paper/Cardboard' as const, consumedKg: 240, sapDoc: '4900184210', sloc: 'SLOC 1003' },
+          { id: 'inv-2', materialId: 'MAT-006', materialName: 'VCI Anti-Rust Poly Bag', category: 'Plastic' as const, consumedKg: 36, sapDoc: '4900184211', sloc: 'SLOC 1002' },
+          { id: 'inv-3', materialId: 'MAT-005', materialName: 'LDPE Bubble Wrap', category: 'Plastic' as const, consumedKg: 18, sapDoc: '4900184212', sloc: 'SLOC 1002' },
+        ];
+      default:
+        return [
+          { id: 'inv-1', materialId: 'MAT-001', materialName: 'Cardboard Box', category: 'Paper/Cardboard' as const, consumedKg: 300, sapDoc: '4900180001', sloc: 'SLOC 1001' },
+          { id: 'inv-2', materialId: 'MAT-003', materialName: 'Kraft Paper Cushioning', category: 'Paper' as const, consumedKg: 60, sapDoc: '4900180002', sloc: 'SLOC 1001' },
+          { id: 'inv-3', materialId: 'MAT-007', materialName: 'Packaging Seam Tape', category: 'Plastic' as const, consumedKg: 15, sapDoc: '4900180003', sloc: 'SLOC 1001' },
+        ];
     }
-  ]);
-
-  const handleAddMaterial = () => {
-    const usedIds = new Set(consumedList.map(c => c.materialId));
-    const nextMat = availableMaterials.find(m => !usedIds.has(m.id)) || availableMaterials[0];
-    
-    setConsumedList([
-      ...consumedList,
-      {
-        id: `inv-${Date.now()}`,
-        materialId: nextMat.id,
-        consumedQuantity: 10,
-        unit: 'kg'
-      }
-    ]);
   };
 
-  const handleRemoveMaterial = (id: string) => {
-    if (consumedList.length <= 1) return;
-    setConsumedList(consumedList.filter(c => c.id !== id));
-  };
+  const consumedData = getBatchConsumptionBySku(product.sku);
+  const totalPackagingKg = consumedData.reduce((sum, item) => sum + item.consumedKg, 0);
+  const safeQty = Math.max(1, productQuantity || 1);
+  const perProductTotalKg = totalPackagingKg / safeQty;
+  const perProductTotalGrams = perProductTotalKg * 1000;
 
-  const handleMaterialChange = (id: string, materialId: string) => {
-    setConsumedList(consumedList.map(c => c.id === id ? { ...c, materialId } : c));
-  };
-
-  const handleQuantityChange = (id: string, quantity: number) => {
-    setConsumedList(consumedList.map(c => c.id === id ? { ...c, consumedQuantity: Math.max(0, quantity) } : c));
-  };
-
-  // Calculations
-  const validQuantity = Math.max(1, productQuantity || 1);
-  const totalConsumedKg = consumedList.reduce((sum, item) => sum + (Number(item.consumedQuantity) || 0), 0);
-  const perProductTotalKg = totalConsumedKg / validQuantity;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const lineItems: PackagingLineItem[] = consumedList.map((entry) => {
-      const master = availableMaterials.find(m => m.id === entry.materialId) || availableMaterials[0];
-      const weightKg = Number(entry.consumedQuantity) || 0;
-      
+  const handleProceed = () => {
+    const lineItems: PackagingLineItem[] = consumedData.map((entry) => {
+      const perUnitKg = entry.consumedKg / safeQty;
       return {
-        id: `line-${entry.id}`,
-        materialId: master.id,
-        materialName: master.name,
-        category: master.category,
-        quantity: weightKg,
+        id: `line-${entry.materialId}-${Date.now()}`,
+        materialId: entry.materialId,
+        materialName: entry.materialName,
+        category: entry.category,
+        quantity: entry.consumedKg,
         unit: 'kg',
-        weight: weightKg,
+        weight: entry.consumedKg,
         weightUnit: 'kg',
-        weightKg: weightKg,
-        notes: `Inventory allocation: ${weightKg} kg ÷ ${validQuantity} units = ${(weightKg / validQuantity).toFixed(4)} kg/unit`
+        weightKg: entry.consumedKg,
+        isSystemGenerated: true,
+        notes: `SAP Doc ${entry.sapDoc} | MVT-261 | ${entry.sloc} → ${entry.consumedKg}kg / ${safeQty} units = ${(perUnitKg * 1000).toFixed(0)}g/unit`
       };
     });
 
     onComplete({
-      productQuantity: validQuantity,
+      productQuantity: safeQty,
       period,
       materials: lineItems,
       notes
     });
   };
 
+
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Context Banner */}
-      <div className="glass-card" style={{ borderLeft: '4px solid var(--method-inventory)', background: '#FFFFFF' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '880px', margin: '0 auto' }}>
+      
+      {/* Approach Header Banner */}
+      <div 
+        style={{
+          background: 'linear-gradient(135deg, #0284C7 0%, #0369A1 100%)',
+          borderRadius: '14px',
+          padding: '1.5rem',
+          color: '#FFFFFF',
+          boxShadow: '0 10px 25px -5px rgba(2, 132, 199, 0.3)'
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-              <span className="badge badge-inventory">
-                <Database size={12} /> Approach A
-              </span>
-              <span style={{ fontSize: '0.8rem', color: '#64748B' }}>
-                Inventory / Consumption Based Method
-              </span>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.2)', padding: '3px 10px', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 700, marginBottom: '6px' }}>
+              <Building2 size={13} /> PUNE FACTORY • APPROACH A
             </div>
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0F172A' }}>
-              Batch Packaging Consumption Allocation
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>
+              Approach A — Inventory / Consumption Based
             </h2>
+            <p style={{ fontSize: '0.85rem', opacity: 0.9, marginTop: '4px' }}>
+              Target SKU: <strong>{product.sku} — {product.name}</strong> ({product.weightKg} kg net mass)
+            </p>
           </div>
 
-          <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '6px 14px', borderRadius: '8px', textAlign: 'right' }}>
-            <div style={{ fontSize: '0.7rem', color: '#0284C7', fontWeight: 700, textTransform: 'uppercase' }}>
-              Target SKU
-            </div>
-            <div className="font-mono font-bold" style={{ color: '#0F172A' }}>
-              {product.sku} • {product.name}
-            </div>
+          <div 
+            style={{
+              background: '#FFFFFF',
+              color: '#0369A1',
+              padding: '8px 14px',
+              borderRadius: '8px',
+              fontWeight: 800,
+              fontSize: '0.82rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            }}
+          >
+            <Lock size={15} /> NO MANUAL INPUT REQUIRED
           </div>
         </div>
       </div>
 
-      <div className="grid-cols-12">
-        {/* Left Column: Input Form (7 cols) */}
-        <div style={{ gridColumn: 'span 7' }} className="glass-card">
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F172A', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Calendar size={18} color="#0284C7" />
-            1. Select Period & Production Quantity
-          </h3>
+      {/* Zero Input Explanation Notice */}
+      <div 
+        style={{
+          background: '#F0F9FF',
+          border: '1px solid #BAE6FD',
+          borderRadius: '10px',
+          padding: '12px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          fontSize: '0.82rem',
+          color: '#0369A1'
+        }}
+      >
+        <Info size={20} style={{ flexShrink: 0 }} />
+        <div>
+          <strong>Automated WMS Reconciliation:</strong> On high-speed assembly lines, operators do not log tape meters or cardboard sheets. The system automatically reads inventory material deductions and divides by packed quantity.
+        </div>
+      </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label">
-                <span>Accounting Period / Batch Window</span>
-              </label>
-              <select 
-                className="form-select"
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-              >
-                <option value="2026-W38 (Sep 15 - Sep 21)">2026-W38 (Sep 15 - Sep 21)</option>
-                <option value="2026-W37 (Sep 08 - Sep 14)">2026-W37 (Sep 08 - Sep 14)</option>
-                <option value="September 2026 (Monthly Batch)">September 2026 (Monthly Batch)</option>
-                <option value="Q3 2026 Reconciliation">Q3 2026 Reconciliation</option>
-              </select>
-            </div>
-
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label">
-                <span>Total Products Packed / Sold</span>
-              </label>
-              <input 
-                type="number"
-                min="1"
-                step="1"
-                className="form-input font-mono"
-                value={productQuantity}
-                onChange={(e) => setProductQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                placeholder="e.g. 1000"
-                required
-              />
-            </div>
-          </div>
-
-          {/* Consumed Materials Table */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Layers size={18} color="#0284C7" />
-              2. Consumed Packaging Materials
-            </h3>
-
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={handleAddMaterial}
-              style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
-            >
-              <Plus size={14} />
-              <span>Add Material</span>
-            </button>
-          </div>
-
-          <div className="table-wrapper" style={{ marginBottom: '1.25rem' }}>
-            <table className="custom-table">
-              <thead>
-                <tr>
-                  <th>Packaging Material</th>
-                  <th>Category</th>
-                  <th style={{ width: '150px' }}>Total Consumed</th>
-                  <th style={{ textAlign: 'right', width: '50px' }}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {consumedList.map((item) => {
-                  const master = availableMaterials.find(m => m.id === item.materialId) || availableMaterials[0];
-
-                  return (
-                    <tr key={item.id}>
-                      <td>
-                        <select
-                          className="form-select"
-                          value={item.materialId}
-                          onChange={(e) => handleMaterialChange(item.id, e.target.value)}
-                          style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }}
-                        >
-                          {availableMaterials.map((m) => (
-                            <option key={m.id} value={m.id}>
-                              {m.name} ({m.availableStock.toLocaleString()} {m.stockUnit} avail)
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td>
-                        <span className="badge badge-neutral" style={{ fontSize: '0.7rem' }}>
-                          {master.category}
-                        </span>
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <input
-                            type="number"
-                            min="0.1"
-                            step="0.1"
-                            className="form-input font-mono"
-                            value={item.consumedQuantity}
-                            onChange={(e) => handleQuantityChange(item.id, parseFloat(e.target.value) || 0)}
-                            style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem', width: '90px' }}
-                            required
-                          />
-                          <span className="font-mono text-xs text-muted">kg</span>
-                        </div>
-                      </td>
-                      <td style={{ textAlign: 'right' }}>
-                        <button
-                          type="button"
-                          className="btn btn-outline-danger btn-sm"
-                          onClick={() => handleRemoveMaterial(item.id)}
-                          disabled={consumedList.length <= 1}
-                          style={{ padding: '0.35rem 0.5rem' }}
-                          title="Remove Material"
-                        >
-                          <Trash2 size={13} />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label">
-              <span>Accounting / Audit Notes (Optional)</span>
+      {/* Main Reconciliation Card */}
+      <div 
+        style={{
+          background: '#FFFFFF',
+          borderRadius: '14px',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+          overflow: 'hidden'
+        }}
+      >
+        {/* Period & Quantity Controls */}
+        <div 
+          style={{
+            padding: '1.25rem 1.5rem',
+            background: '#F8FAFC',
+            borderBottom: '1px solid #E2E8F0',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '1.5rem'
+          }}
+        >
+          <div>
+            <label className="form-label" style={{ fontSize: '0.78rem', color: '#64748B' }}>
+              <Calendar size={13} style={{ display: 'inline', marginRight: '4px' }} />
+              Reconciliation Period
             </label>
             <input
               type="text"
               className="form-input"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Add batch reconciliation reference..."
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+              style={{ fontWeight: 700, fontSize: '0.92rem', height: '40px' }}
+            />
+          </div>
+
+          <div>
+            <label className="form-label" style={{ fontSize: '0.78rem', color: '#64748B' }}>
+              <PackageCheck size={13} style={{ display: 'inline', marginRight: '4px' }} />
+              Total Products Packed (Units)
+            </label>
+            <input
+              type="number"
+              className="form-input font-mono"
+              value={productQuantity}
+              onChange={(e) => setProductQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              style={{ fontWeight: 800, fontSize: '1rem', height: '40px', color: '#0F172A' }}
             />
           </div>
         </div>
 
-        {/* Right Column: Live Calculation Breakdown (5 cols) */}
-        <div style={{ gridColumn: 'span 5', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <div className="glass-card" style={{ background: '#FFFFFF', border: '1px solid #BAE6FD' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <div style={{ padding: '6px', borderRadius: '6px', background: '#F0F9FF', color: '#0284C7' }}>
-                <Calculator size={18} />
-              </div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A' }}>
-                Per-Product Consumption Formula
-              </h3>
-            </div>
+        {/* Consumed Materials Table */}
+        <div style={{ padding: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Packaging Inventory Consumption (Batch Deductions)
+            </h3>
+            <span style={{ fontSize: '0.75rem', color: '#059669', background: '#ECFDF5', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
+              ● Synced from SAP MM
+            </span>
+          </div>
 
-            <div style={{ background: '#F8FAFC', padding: '0.85rem', borderRadius: '8px', border: '1px solid #E2E8F0', marginBottom: '1.25rem' }}>
-              <div style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Mathematical Model:
-              </div>
-              <div className="font-mono text-xs" style={{ color: '#0284C7', fontWeight: 600 }}>
-                Per-Product Material Mass (kg) = Consumed Stock (kg) ÷ Packed Products ({validQuantity.toLocaleString()})
-              </div>
-            </div>
-
-            {/* Step-by-Step Breakdown for Each Material */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1.25rem' }}>
-              {consumedList.map((entry) => {
-                const master = availableMaterials.find(m => m.id === entry.materialId) || availableMaterials[0];
-                const consumed = Number(entry.consumedQuantity) || 0;
-                const perUnit = validQuantity > 0 ? (consumed / validQuantity) : 0;
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '1.5rem' }}>
+            <thead>
+              <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
+                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Material</th>
+                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Category</th>
+                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#059669', textTransform: 'uppercase' }}>SAP Mat. Doc</th>
+                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>Total Consumed</th>
+                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#0284C7', textTransform: 'uppercase', textAlign: 'right' }}>Calculated Per Unit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {consumedData.map((item) => {
+                const perProductGrams = (item.consumedKg / safeQty) * 1000;
 
                 return (
-                  <div 
-                    key={entry.id} 
-                    style={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'center', 
-                      padding: '0.65rem 0.85rem', 
-                      background: '#F8FAFC', 
-                      borderRadius: '6px',
-                      border: '1px solid #E2E8F0'
-                    }}
-                  >
-                    <div>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0F172A' }}>
-                        {master.name}
-                      </div>
-                      <div className="font-mono text-xs text-muted">
-                        {consumed.toLocaleString()} kg consumed
-                      </div>
-                    </div>
-
-                    <div style={{ textAlign: 'right' }}>
-                      <div className="font-mono font-bold text-sm" style={{ color: '#0284C7' }}>
-                        {perUnit >= 0.001 ? perUnit.toFixed(3) : perUnit.toFixed(4)} kg
-                      </div>
-                      <div className="text-xs text-muted font-mono">
-                        / product unit
-                      </div>
-                    </div>
-                  </div>
+                  <tr key={item.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                    <td style={{ padding: '12px 14px', fontWeight: 700, color: '#0F172A' }}>
+                      {item.materialName}
+                    </td>
+                    <td style={{ padding: '12px 14px', fontSize: '0.82rem', color: '#64748B' }}>
+                      {item.category}
+                    </td>
+                    <td style={{ padding: '12px 14px' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', background: '#F0FDF4', color: '#15803D', padding: '2px 7px', borderRadius: '4px', border: '1px solid #BBF7D0', fontWeight: 700 }}>
+                        {item.sapDoc} • MVT-261
+                      </span>
+                    </td>
+                    <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#0F172A' }}>
+                      {item.consumedKg.toLocaleString()} kg
+                    </td>
+                    <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#0284C7', fontFamily: 'var(--font-mono)' }}>
+                      {perProductGrams.toFixed(0)} g
+                    </td>
+                  </tr>
                 );
               })}
-            </div>
+            </tbody>
+            <tfoot>
+              <tr style={{ background: '#F0F9FF', borderTop: '2px solid #BAE6FD' }}>
+                <td colSpan={2} style={{ padding: '12px 14px', fontWeight: 800, color: '#0369A1' }}>
+                  Total Packaging Consumption
+                </td>
+                <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 900, color: '#0369A1', fontSize: '1.05rem' }}>
+                  {totalPackagingKg.toLocaleString()} kg
+                </td>
+                <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 900, color: '#0284C7', fontSize: '1.05rem', fontFamily: 'var(--font-mono)' }}>
+                  {perProductTotalGrams.toFixed(0)} g / unit
+                </td>
+              </tr>
+            </tfoot>
+          </table>
 
-            {/* Total Aggregate Box */}
-            <div style={{ padding: '0.9rem', background: '#F0F9FF', borderRadius: '8px', border: '1px solid #BAE6FD', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 700 }}>
-                  Total Batch Consumption
-                </div>
-                <div className="font-mono font-bold text-lg" style={{ color: '#0F172A' }}>
-                  {totalConsumedKg.toLocaleString()} kg
-                </div>
-              </div>
-
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.72rem', color: '#0284C7', textTransform: 'uppercase', fontWeight: 700 }}>
-                  Total Per Unit
-                </div>
-                <div className="font-mono font-bold text-lg" style={{ color: '#0284C7' }}>
-                  {perProductTotalKg.toFixed(3)} kg/u
-                </div>
-              </div>
+          {/* Mathematical Formula Display */}
+          <div style={{ background: '#F8FAFC', borderRadius: '10px', padding: '1rem', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Calculator size={16} color="#0284C7" />
+              <span style={{ fontSize: '0.8rem', color: '#475569' }}>
+                Formula applied: <strong>Total Consumed ({totalPackagingKg} kg) ÷ Products Packed ({safeQty.toLocaleString()}) = {perProductTotalKg.toFixed(3)} kg/unit ({perProductTotalGrams.toFixed(0)}g)</strong>
+              </span>
             </div>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#059669', background: '#ECFDF5', padding: '2px 8px', borderRadius: '4px' }}>
+              Exact Division Validated
+            </span>
           </div>
         </div>
-      </div>
 
-      {/* Bottom Action Controls */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
-        <button type="button" className="btn btn-secondary" onClick={onBack}>
-          Back to Method Selection
-        </button>
-
-        <button type="submit" className="btn btn-primary btn-lg">
-          <span>Proceed to Packaging Summary Review</span>
-          <ArrowRight size={18} />
-        </button>
+        {/* Action Bar */}
+        <div style={{ padding: '1.25rem 1.5rem', background: '#F8FAFC', borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <button onClick={onBack} className="btn btn-secondary">
+            Back
+          </button>
+          
+          <button 
+            onClick={handleProceed}
+            className="btn btn-primary btn-lg"
+            style={{ padding: '10px 24px', fontSize: '0.95rem' }}
+          >
+            <span>View Packaging Details & Summary</span>
+            <ArrowRight size={17} />
+          </button>
+        </div>
       </div>
-    </form>
+    </div>
   );
 };

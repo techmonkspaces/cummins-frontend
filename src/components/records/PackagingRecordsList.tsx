@@ -9,16 +9,22 @@ import {
   Trash2, 
   Eye, 
   Share2, 
-  RefreshCw,
-  ShieldCheck,
-  FileSpreadsheet,
-  Layers
+  RefreshCw, 
+  ShieldCheck, 
+  FileSpreadsheet, 
+  Layers,
+  Building2
 } from 'lucide-react';
-import { PackagingRecord, RecordingMethod, RecordStatus } from '../../types';
+import { PackagingRecord, RecordingMethod, RecordStatus, Plant } from '../../types';
 import { recordsService } from '../../services/recordsService';
 
 interface PackagingRecordsListProps {
   records: PackagingRecord[];
+  plants?: Plant[];
+  isSuperAdmin?: boolean;
+  canDelete?: boolean;
+  canApprove?: boolean;
+  canExport?: boolean;
   onSelectRecord: (record: PackagingRecord) => void;
   onStatusChange: (id: string, status: RecordStatus) => void;
   onDeleteRecord: (id: string) => void;
@@ -29,6 +35,11 @@ interface PackagingRecordsListProps {
 
 export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
   records,
+  plants = [],
+  isSuperAdmin = false,
+  canDelete = true,
+  canApprove = true,
+  canExport = true,
   onSelectRecord,
   onStatusChange,
   onDeleteRecord,
@@ -39,18 +50,21 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [methodFilter, setMethodFilter] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
+  const [plantFilter, setPlantFilter] = useState<string>('ALL');
 
   const filteredRecords = records.filter((r) => {
     const q = searchQuery.toLowerCase();
     const matchesQuery = !q || 
       r.id.toLowerCase().includes(q) ||
       r.productName.toLowerCase().includes(q) ||
-      r.productSku.toLowerCase().includes(q);
+      r.productSku.toLowerCase().includes(q) ||
+      (r.plantName && r.plantName.toLowerCase().includes(q));
 
     const matchesMethod = methodFilter === 'ALL' || r.method === methodFilter;
     const matchesStatus = statusFilter === 'ALL' || r.status === statusFilter;
+    const matchesPlant = plantFilter === 'ALL' || r.plantId === plantFilter;
 
-    return matchesQuery && matchesMethod && matchesStatus;
+    return matchesQuery && matchesMethod && matchesStatus && matchesPlant;
   });
 
   const getMethodBadge = (method: RecordingMethod) => {
@@ -97,24 +111,28 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
 
           {/* Export & Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
-            <button
-              className="btn btn-secondary btn-sm"
-              onClick={handleExportCsv}
-              title="Download CSV table"
-            >
-              <FileSpreadsheet size={15} />
-              <span>Export CSV</span>
-            </button>
+            {canExport && (
+              <>
+                <button
+                  className="btn btn-secondary btn-sm"
+                  onClick={handleExportCsv}
+                  title="Download CSV table"
+                >
+                  <FileSpreadsheet size={15} />
+                  <span>Export CSV</span>
+                </button>
 
-            <button
-              className="btn btn-secondary btn-sm"
-              onClick={onOpenExportModal}
-              title="Generate JSON dataset formatted for downstream integration"
-              style={{ border: '1px solid #BAE6FD', color: '#0284C7', background: '#F0F9FF' }}
-            >
-              <Share2 size={15} />
-              <span>Export Dataset (JSON)</span>
-            </button>
+                <button
+                  className="btn btn-secondary btn-sm"
+                  onClick={onOpenExportModal}
+                  title="Generate JSON dataset formatted for downstream integration"
+                  style={{ border: '1px solid #BAE6FD', color: '#0284C7', background: '#F0F9FF' }}
+                >
+                  <Share2 size={15} />
+                  <span>Export Dataset (JSON)</span>
+                </button>
+              </>
+            )}
 
             <button
               className="btn btn-primary btn-sm"
@@ -133,7 +151,7 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
               <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
               <input
                 type="text"
-                placeholder="Search record ID, SKU, product..."
+                placeholder="Search record ID, SKU, plant..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="form-input"
@@ -153,6 +171,21 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
               <option value="CALCULATED">Calculated (B)</option>
               <option value="USER_INPUT">User Input (C)</option>
             </select>
+
+            {/* Super Admin: Factory Filter */}
+            {isSuperAdmin && plants.length > 0 && (
+              <select
+                className="form-select"
+                value={plantFilter}
+                onChange={(e) => setPlantFilter(e.target.value)}
+                style={{ width: '180px', height: '36px', padding: '0.35rem 0.6rem', fontSize: '0.8rem', borderColor: '#DA291C', color: '#DA291C', fontWeight: 700 }}
+              >
+                <option value="ALL">🏭 All Factories</option>
+                {plants.map(p => (
+                  <option key={p.id} value={p.id}>{p.shortName}</option>
+                ))}
+              </select>
+            )}
 
             {/* Status Filter */}
             <select
@@ -187,6 +220,7 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
               <tr>
                 <th>Record ID</th>
                 <th>Product & SKU</th>
+                <th>Factory Site</th>
                 <th>Methodology</th>
                 <th>Units Packed</th>
                 <th>Total Pkg Mass</th>
@@ -200,7 +234,7 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
             <tbody>
               {filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={10} style={{ textAlign: 'center', padding: '3rem', color: '#64748B' }}>
+                  <td colSpan={11} style={{ textAlign: 'center', padding: '3rem', color: '#64748B' }}>
                     No packaging records found matching your filters.
                   </td>
                 </tr>
@@ -221,6 +255,11 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                           {record.productSku}
                         </div>
                       </div>
+                    </td>
+                    <td>
+                      <span className="text-xs font-semibold" style={{ color: '#0F172A', background: '#F8FAFC', padding: '2px 6px', borderRadius: '4px', border: '1px solid #E2E8F0', whiteSpace: 'nowrap' }}>
+                        {record.plantName ? record.plantName.replace('Cummins ', '') : 'Pune Plant'}
+                      </span>
                     </td>
                     <td>
                       {getMethodBadge(record.method)}
@@ -251,15 +290,19 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                         <span className="badge badge-confirmed">
                           <CheckCircle2 size={11} /> Confirmed
                         </span>
-                      ) : (
+                      ) : canApprove ? (
                         <button
                           className="badge badge-draft"
                           onClick={() => onStatusChange(record.id, 'CONFIRMED')}
                           style={{ cursor: 'pointer' }}
-                          title="Click to confirm draft"
+                          title="Click to confirm and approve draft record"
                         >
-                          <Clock size={11} /> Draft (Confirm)
+                          <Clock size={11} /> Draft (Approve)
                         </button>
+                      ) : (
+                        <span className="badge badge-draft">
+                          <Clock size={11} /> Draft (Pending)
+                        </span>
                       )}
                     </td>
                     <td>
@@ -279,14 +322,16 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                           <span>View</span>
                         </button>
 
-                        <button
-                          className="btn btn-outline-danger btn-sm"
-                          onClick={() => onDeleteRecord(record.id)}
-                          style={{ padding: '0.3rem 0.5rem' }}
-                          title="Delete Record"
-                        >
-                          <Trash2 size={13} />
-                        </button>
+                        {canDelete && (
+                          <button
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={() => onDeleteRecord(record.id)}
+                            style={{ padding: '0.3rem 0.5rem' }}
+                            title="Delete Record"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

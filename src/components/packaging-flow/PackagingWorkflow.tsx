@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import { 
   CheckCircle2, 
   ArrowRight, 
-  RotateCcw
+  RotateCcw,
+  Building2,
+  ChevronRight
 } from 'lucide-react';
 import { 
   Product, 
   PackagingMaterialMaster, 
   RecordingMethod, 
   PackagingLineItem, 
-  RecordStatus,
-  PackagingRecord
+  RecordStatus, 
+  PackagingRecord,
+  Plant
 } from '../../types';
-import { MethodSelector } from './MethodSelector';
 import { ApproachInventory } from './ApproachInventory';
 import { ApproachCalculated } from './ApproachCalculated';
 import { ApproachUserInput } from './ApproachUserInput';
@@ -21,6 +23,7 @@ import { recordsService } from '../../services/recordsService';
 
 interface PackagingWorkflowProps {
   initialProduct?: Product;
+  activePlant: Plant;
   availableProducts: Product[];
   availableMaterials: PackagingMaterialMaster[];
   onFinish: (record: PackagingRecord) => void;
@@ -28,10 +31,11 @@ interface PackagingWorkflowProps {
   onViewRecordDetail?: (record: PackagingRecord) => void;
 }
 
-type FlowStep = 'SELECT_PRODUCT' | 'SELECT_METHOD' | 'METHOD_FORM' | 'REVIEW_SUMMARY' | 'CONFIRMED_SUCCESS';
+type FlowStep = 'SELECT_PRODUCT' | 'METHOD_FORM' | 'REVIEW_SUMMARY' | 'CONFIRMED_SUCCESS';
 
 export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
   initialProduct,
+  activePlant,
   availableProducts,
   availableMaterials,
   onFinish,
@@ -40,10 +44,13 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
   const [selectedProduct, setSelectedProduct] = useState<Product>(
     initialProduct || availableProducts[0]
   );
+
+  // Directly land on the configured method form
   const [currentStep, setCurrentStep] = useState<FlowStep>(
-    initialProduct ? 'SELECT_METHOD' : 'SELECT_PRODUCT'
+    initialProduct ? 'METHOD_FORM' : 'SELECT_PRODUCT'
   );
-  const [selectedMethod, setSelectedMethod] = useState<RecordingMethod | null>('INVENTORY');
+
+  const selectedMethod: RecordingMethod = activePlant.configuredMethod || 'INVENTORY';
 
   const [workingQuantity, setWorkingQuantity] = useState<number>(
     initialProduct?.defaultBatchSize || 1000
@@ -56,20 +63,20 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
   const handleProductSelected = (prod: Product) => {
     setSelectedProduct(prod);
     setWorkingQuantity(prod.defaultBatchSize);
-    setCurrentStep('SELECT_METHOD');
-  };
-
-  const handleMethodChosen = () => {
-    if (!selectedMethod) return;
+    // Direct routing to plant's pre-configured approach
     setCurrentStep('METHOD_FORM');
   };
 
   const handleMethodFormCompleted = (data: {
+    product?: Product;
     productQuantity: number;
     materials: PackagingLineItem[];
     period?: string;
     notes?: string;
   }) => {
+    if (data.product) {
+      setSelectedProduct(data.product);
+    }
     setWorkingQuantity(data.productQuantity);
     setWorkingMaterials(data.materials);
     setWorkingPeriod(data.period);
@@ -78,12 +85,12 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
   };
 
   const handleSaveRecord = (status: RecordStatus) => {
-    if (!selectedMethod) return;
-
     const newRecord = recordsService.createRecord({
       product: selectedProduct,
       productQuantity: workingQuantity,
       method: selectedMethod,
+      plantId: activePlant.id,
+      plantName: activePlant.name,
       materials: workingMaterials,
       status,
       period: workingPeriod,
@@ -94,68 +101,64 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
     setCurrentStep('CONFIRMED_SUCCESS');
   };
 
-  const getStepNumber = (step: FlowStep) => {
-    switch (step) {
-      case 'SELECT_PRODUCT': return 1;
-      case 'SELECT_METHOD': return 2;
-      case 'METHOD_FORM': return 3;
-      case 'REVIEW_SUMMARY': return 4;
-      case 'CONFIRMED_SUCCESS': return 5;
+  const getMethodBadgeText = () => {
+    switch (selectedMethod) {
+      case 'INVENTORY': return 'Approach A (ERP Inventory Reconciliation)';
+      case 'CALCULATED': return 'Approach B (Top-Down Automated Rules)';
+      case 'USER_INPUT': return 'Approach C (Floor Station Manual Log)';
     }
   };
 
-  const currentStepNum = getStepNumber(currentStep);
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Step Tracker Indicator */}
-      <div className="glass-card" style={{ padding: '0.85rem 1.5rem', background: '#FFFFFF', border: '1px solid #E2E8F0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          {[
-            { num: 1, label: '1. Select Product' },
-            { num: 2, label: '2. Choose Method' },
-            { num: 3, label: '3. Record / Calculate' },
-            { num: 4, label: '4. Common Summary' },
-            { num: 5, label: '5. Confirmation' },
-          ].map((s) => {
-            const isDone = currentStepNum > s.num;
-            const isCurrent = currentStepNum === s.num;
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      {/* Plant Context Header */}
+      <div 
+        style={{ 
+          padding: '0.85rem 1.25rem', 
+          background: '#0F172A', 
+          color: '#FFFFFF',
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          flexWrap: 'wrap', 
+          gap: '0.75rem',
+          borderRadius: '10px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ width: '32px', height: '32px', borderRadius: '6px', background: '#DA291C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Building2 size={18} color="#FFFFFF" />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.7rem', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Active Factory Context • {activePlant.code}
+            </div>
+            <div style={{ fontSize: '0.95rem', fontWeight: 800 }}>
+              {activePlant.name}
+            </div>
+          </div>
+        </div>
 
-            return (
-              <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: isCurrent || isDone ? 1 : 0.45 }}>
-                <div 
-                  style={{ 
-                    width: '24px', 
-                    height: '24px', 
-                    borderRadius: '50%', 
-                    background: isCurrent ? 'var(--cummins-red)' : isDone ? '#059669' : '#F1F5F9',
-                    color: isCurrent || isDone ? '#fff' : '#64748B',
-                    border: isDone || isCurrent ? 'none' : '1px solid #CBD5E1',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    fontFamily: 'var(--font-mono)'
-                  }}
-                >
-                  {isDone ? '✓' : s.num}
-                </div>
-                <span style={{ fontSize: '0.8rem', fontWeight: isCurrent ? 700 : 500, color: isCurrent ? '#0F172A' : '#64748B' }}>
-                  {s.label}
-                </span>
-              </div>
-            );
-          })}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '5px 12px', borderRadius: '6px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: '#38BDF8', fontWeight: 700 }}>Plant Standard:</span>
+            <span style={{ fontWeight: 600 }}>{getMethodBadgeText()}</span>
+          </div>
         </div>
       </div>
 
-      {/* Step 1: Select Product */}
+      {/* Step 1: Select Product (if no initial product) */}
       {currentStep === 'SELECT_PRODUCT' && (
         <div className="glass-card">
-          <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0F172A', marginBottom: '1rem' }}>
-            Select Product for Packaging Recording
-          </h2>
+          <div style={{ marginBottom: '1.25rem' }}>
+            <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0F172A' }}>
+              Select Product for {activePlant.shortName}
+            </h2>
+            <p style={{ fontSize: '0.85rem', color: '#64748B' }}>
+              Select an industrial product SKU to execute the site's pre-configured packaging capture flow.
+            </p>
+          </div>
+
           <div className="grid-cols-2">
             {availableProducts.map((p) => (
               <div 
@@ -170,21 +173,14 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
                 </div>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F172A' }}>{p.name}</h3>
                 <p style={{ fontSize: '0.8rem', color: '#475569', marginTop: '4px' }}>{p.description}</p>
+                <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'flex-end', color: '#0284C7', fontSize: '0.75rem', fontWeight: 600, alignItems: 'center', gap: '3px' }}>
+                  <span>Open Packaging Station</span>
+                  <ChevronRight size={14} />
+                </div>
               </div>
             ))}
           </div>
         </div>
-      )}
-
-      {/* Step 2: Choose Method */}
-      {currentStep === 'SELECT_METHOD' && (
-        <MethodSelector
-          product={selectedProduct}
-          selectedMethod={selectedMethod}
-          onSelectMethod={(m) => setSelectedMethod(m)}
-          onContinue={handleMethodChosen}
-          onBack={onCancel}
-        />
       )}
 
       {/* Step 3: Method Specific Recording Screens */}
@@ -193,7 +189,7 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
           product={selectedProduct}
           availableMaterials={availableMaterials}
           onComplete={handleMethodFormCompleted}
-          onBack={() => setCurrentStep('SELECT_METHOD')}
+          onBack={onCancel}
         />
       )}
 
@@ -202,7 +198,7 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
           product={selectedProduct}
           availableMaterials={availableMaterials}
           onComplete={handleMethodFormCompleted}
-          onBack={() => setCurrentStep('SELECT_METHOD')}
+          onBack={onCancel}
         />
       )}
 
@@ -211,12 +207,12 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
           product={selectedProduct}
           availableMaterials={availableMaterials}
           onComplete={handleMethodFormCompleted}
-          onBack={() => setCurrentStep('SELECT_METHOD')}
+          onBack={onCancel}
         />
       )}
 
       {/* Step 4: Common Packaging Summary Review */}
-      {currentStep === 'REVIEW_SUMMARY' && selectedMethod && (
+      {currentStep === 'REVIEW_SUMMARY' && (
         <PackagingSummary
           product={selectedProduct}
           productQuantity={workingQuantity}
@@ -245,7 +241,7 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
           </h2>
 
           <p style={{ color: '#475569', maxWidth: '560px', margin: '0 auto 1.5rem', fontSize: '0.9rem' }}>
-            {createdRecord.productQuantity.toLocaleString()} units of <strong>{createdRecord.productName}</strong> recorded via <strong>{createdRecord.method}</strong> methodology. Committed to the PPWR data ledger.
+            {createdRecord.productQuantity.toLocaleString()} units of <strong>{createdRecord.productName}</strong> recorded at <strong>{activePlant.name}</strong> via <strong>{createdRecord.method}</strong> methodology. Committed to the PPWR data ledger.
           </p>
 
           <div style={{ display: 'inline-flex', gap: '2rem', background: '#F8FAFC', padding: '1rem 2rem', borderRadius: '10px', border: '1px solid #E2E8F0', marginBottom: '2rem', textAlign: 'left' }}>
@@ -269,12 +265,12 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
             <button
               className="btn btn-secondary"
               onClick={() => {
-                setCurrentStep('SELECT_METHOD');
+                setCurrentStep('METHOD_FORM');
                 setWorkingMaterials([]);
               }}
             >
               <RotateCcw size={16} />
-              <span>Record Another Batch</span>
+              <span>Record Another Batch for {activePlant.shortName}</span>
             </button>
 
             <button

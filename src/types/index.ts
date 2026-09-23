@@ -27,6 +27,7 @@ export interface PackagingMaterialMaster {
   stockUnit: 'pcs' | 'kg' | 'm' | 'rolls';
   weightPerUnitKg: number; // Conversion weight to kg per stockUnit
   unitName: string;
+  dimensions?: string; // e.g. "35 × 25 × 20 cm" or "50 mm × 66 m"
   recycledContentPct: number;
   recyclable: boolean;
   ppwrMaterialCode: string;
@@ -61,6 +62,59 @@ export interface PpwrSummaryBreakdown {
   estimatedCo2eKg: number;
 }
 
+export interface Plant {
+  id: string; // e.g. "PLANT-PUNE", "PLANT-PHALTAN", "PLANT-JAMSHEDPUR"
+  name: string;
+  shortName: string;
+  code: string; // e.g. "IN-PUN-01"
+  location: string;
+  country: string;
+  configuredMethod: RecordingMethod;
+  primaryErpSystem: 'SAP S/4HANA (PP/MM)' | 'SAP EWM' | 'Oracle WMS';
+  description: string;
+  activeSkus: string[];
+  managerName: string;
+  roleTitle: string;
+  usersCount?: number;
+  recordsCount?: number;
+  status?: 'Active' | 'Under Maintenance';
+}
+
+export type UserRoleType = 'SUPER_ADMIN' | 'FACTORY_MANAGER' | 'DATA_ENTRY';
+
+export interface UserPersona {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRoleType;
+  roleTitle: string;
+  plantId: string;
+  plantName: string;
+  configuredMethod: RecordingMethod;
+  isGlobalAdmin?: boolean;
+  department?: string;
+  permissions: {
+    canConfigurePlants: boolean;
+    canManageCatalog: boolean;
+    canApproveRecords: boolean;
+    canDeleteRecords: boolean;
+    canExportPpwr: boolean;
+    canSwitchPlants: boolean;
+  };
+}
+
+export interface PackagingRuleDefinition {
+  id: string;
+  category: 'FACTORY' | 'PRODUCT_CLASS' | 'MATERIAL' | 'SKU_OVERRIDE';
+  name: string;
+  target: string;
+  condition: string;
+  action: string;
+  priority: number;
+  status: 'ACTIVE' | 'INACTIVE';
+  description: string;
+}
+
 export interface PackagingRecord {
   id: string; // e.g., "PR-1001"
   productId: string;
@@ -68,6 +122,8 @@ export interface PackagingRecord {
   productSku: string;
   productQuantity: number;
   method: RecordingMethod;
+  plantId?: string;
+  plantName?: string;
   materials: PackagingLineItem[];
   totalPackagingWeightKg: number;
   perUnitPackagingWeightKg: number;
@@ -146,3 +202,4 @@ export interface DashboardKPIs {
   totalRecordsCount: number;
   complianceReadinessPct: number;
 }
+
