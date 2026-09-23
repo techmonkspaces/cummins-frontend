@@ -41,7 +41,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
   const getRoleIcon = (role: UserRoleType) => {
     switch (role) {
       case 'SUPER_ADMIN': return <Crown size={14} color="#FBBF24" />;
-      case 'FACTORY_ADMIN': return <Building2 size={14} color="#0284C7" />;
+      case 'FACTORY_MANAGER': return <Building2 size={14} color="#0284C7" />;
       case 'DATA_ENTRY': return <Edit3 size={14} color="#059669" />;
     }
   };
@@ -54,10 +54,10 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
             SUPER ADMIN
           </span>
         );
-      case 'FACTORY_ADMIN':
+      case 'FACTORY_MANAGER':
         return (
           <span style={{ fontSize: '0.68rem', fontWeight: 800, background: '#F0F9FF', color: '#0284C7', padding: '2px 8px', borderRadius: '4px', border: '1px solid #BAE6FD' }}>
-            FACTORY ADMIN
+            FACTORY MANAGER
           </span>
         );
       case 'DATA_ENTRY':
@@ -93,7 +93,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
             width: '30px',
             height: '30px',
             borderRadius: '50%',
-            background: currentUser.role === 'SUPER_ADMIN' ? '#0F172A' : currentUser.role === 'FACTORY_ADMIN' ? '#0284C7' : '#059669',
+            background: currentUser.role === 'SUPER_ADMIN' ? '#0F172A' : currentUser.role === 'FACTORY_MANAGER' ? '#0284C7' : '#059669',
             color: '#FFFFFF',
             display: 'flex',
             alignItems: 'center',
@@ -193,7 +193,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
                           {p.name}
                         </div>
                         <div style={{ fontSize: '0.68rem', color: '#64748B' }}>
-                          {p.role === 'SUPER_ADMIN' ? 'Super Admin' : p.role === 'FACTORY_ADMIN' ? `Factory Admin (${p.plantName.replace('Cummins ', '')})` : 'Data Entry Operator'}
+                          {p.role === 'SUPER_ADMIN' ? 'Super Admin' : p.role === 'FACTORY_MANAGER' ? `Factory Manager (${p.plantName.replace('Cummins ', '')})` : `Data Entry (${p.plantName.replace('Cummins ', '')})`}
                         </div>
                       </div>
                     </div>

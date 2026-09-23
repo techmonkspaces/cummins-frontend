@@ -175,7 +175,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
           overflow: 'hidden'
         }}
       >
-        {/* Period & Quantity Controls */}
+        {/* Period & Quantity ERP Synced Header Bar */}
         <div 
           style={{
             padding: '1.25rem 1.5rem',
@@ -187,31 +187,58 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
           }}
         >
           <div>
-            <label className="form-label" style={{ fontSize: '0.78rem', color: '#64748B' }}>
-              <Calendar size={13} style={{ display: 'inline', marginRight: '4px' }} />
-              Reconciliation Period
+            <label style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px' }}>
+              <Calendar size={13} color="#0284C7" />
+              Reconciliation Period (ERP Billing Cycle)
             </label>
-            <input
-              type="text"
-              className="form-input"
-              value={period}
-              onChange={(e) => setPeriod(e.target.value)}
-              style={{ fontWeight: 700, fontSize: '0.92rem', height: '40px' }}
-            />
+            <div style={{ position: 'relative' }}>
+              <select
+                value={period}
+                onChange={(e) => setPeriod(e.target.value)}
+                style={{
+                  width: '100%',
+                  height: '42px',
+                  padding: '0 12px',
+                  background: '#FFFFFF',
+                  border: '1px solid #CBD5E1',
+                  borderRadius: '8px',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  color: '#0F172A',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="September 2026">September 2026 (Active Cycle)</option>
+                <option value="August 2026">August 2026 (Closed & Audited)</option>
+                <option value="July 2026">July 2026 (Closed & Audited)</option>
+              </select>
+            </div>
           </div>
 
           <div>
-            <label className="form-label" style={{ fontSize: '0.78rem', color: '#64748B' }}>
-              <PackageCheck size={13} style={{ display: 'inline', marginRight: '4px' }} />
-              Total Products Packed (Units)
+            <label style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px' }}>
+              <PackageCheck size={13} color="#059669" />
+              Total Products Packed (MES Line Output)
             </label>
-            <input
-              type="number"
-              className="form-input font-mono"
-              value={productQuantity}
-              onChange={(e) => setProductQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-              style={{ fontWeight: 800, fontSize: '1rem', height: '40px', color: '#0F172A' }}
-            />
+            <div 
+              style={{ 
+                height: '42px',
+                background: '#FFFFFF',
+                border: '1px solid #CBD5E1',
+                borderRadius: '8px',
+                padding: '0 12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <span style={{ fontWeight: 800, fontSize: '1rem', color: '#0F172A', fontFamily: 'var(--font-mono)' }}>
+                {safeQty.toLocaleString()} Units
+              </span>
+              <span style={{ fontSize: '0.72rem', color: '#059669', background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                ● Auto-Fetched from MES Line
+              </span>
+            </div>
           </div>
         </div>
 
@@ -265,7 +292,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
             </tbody>
             <tfoot>
               <tr style={{ background: '#F0F9FF', borderTop: '2px solid #BAE6FD' }}>
-                <td colSpan={2} style={{ padding: '12px 14px', fontWeight: 800, color: '#0369A1' }}>
+                <td colSpan={3} style={{ padding: '12px 14px', fontWeight: 800, color: '#0369A1' }}>
                   Total Packaging Consumption
                 </td>
                 <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 900, color: '#0369A1', fontSize: '1.05rem' }}>

@@ -125,9 +125,9 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
           </span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.25rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.25rem' }}>
           <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label" style={{ fontSize: '0.78rem' }}>Product Master SKU</label>
+            <label className="form-label" style={{ fontSize: '0.78rem' }}>Target Product SKU & Specification</label>
             <select
               className="form-select font-mono"
               value={selectedProduct.sku}
@@ -139,21 +139,10 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
             >
               {MOCK_PRODUCTS.map(p => (
                 <option key={p.sku} value={p.sku}>
-                  {p.sku} — {p.name} ({p.weightKg} kg)
+                  {p.sku} — {p.name} ({p.weightKg} kg | {p.dimensionsCm.length}×{p.dimensionsCm.width}×{p.dimensionsCm.height} cm | Fragility: {p.fragility})
                 </option>
               ))}
             </select>
-          </div>
-
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label" style={{ fontSize: '0.78rem' }}>Batch Packing Quantity (Units)</label>
-            <input
-              type="number"
-              className="form-input font-mono"
-              value={productQuantity}
-              onChange={(e) => setProductQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-              style={{ height: '42px', fontWeight: 700, fontSize: '0.95rem' }}
-            />
           </div>
         </div>
 
@@ -258,7 +247,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
                       {item.category}
                     </td>
                     <td style={{ padding: '12px 14px', fontWeight: 600, color: '#334155' }}>
-                      {item.unit === 'pcs' ? '1 pc' : `${(item.quantity / productQuantity).toFixed(0)} ${item.unit}`}
+                      {item.unit === 'pcs' ? '1 pc' : `${(item.quantity / productQuantity).toFixed(2)} ${item.unit}`}
                     </td>
                     <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#7C3AED', fontFamily: 'var(--font-mono)' }}>
                       {perUnitWeightGrams.toFixed(0)} g / unit
@@ -269,11 +258,8 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
             </tbody>
             <tfoot>
               <tr style={{ background: '#FAF5FF', borderTop: '2px solid #DDD6FE' }}>
-                <td colSpan={2} style={{ padding: '12px 14px', fontWeight: 800, color: '#6D28D9' }}>
-                  Total Recommended Packaging Mass
-                </td>
-                <td style={{ padding: '12px 14px', fontWeight: 700, color: '#6D28D9' }}>
-                  {productQuantity} Units Batch
+                <td colSpan={3} style={{ padding: '12px 14px', fontWeight: 800, color: '#6D28D9' }}>
+                  Total Recommended Packaging Mass (Per Unit)
                 </td>
                 <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 900, color: '#7C3AED', fontSize: '1.05rem', fontFamily: 'var(--font-mono)' }}>
                   {perUnitGrams.toFixed(0)} g / unit
