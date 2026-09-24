@@ -27,6 +27,7 @@ import {
   Plant,
   UserPersona
 } from './types';
+import { MOCK_PRODUCTS, MOCK_PACKAGING_INVENTORY } from './data/mockData';
 import { Sparkles, CheckCircle2, Building2 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -46,9 +47,9 @@ export const App: React.FC = () => {
   const [activePlant, setActivePlant] = useState<Plant>(plantService.getActivePlant());
 
   // Data State
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [categories, setCategories] = useState<string[]>([]);
-  const [materials, setMaterials] = useState<PackagingMaterialMaster[]>([]);
+  const [materials, setMaterials] = useState<PackagingMaterialMaster[]>(MOCK_PACKAGING_INVENTORY);
   const [records, setRecords] = useState<PackagingRecord[]>([]);
   const [kpis, setKpis] = useState<DashboardKPIs>(recordsService.getDashboardKPIs());
 

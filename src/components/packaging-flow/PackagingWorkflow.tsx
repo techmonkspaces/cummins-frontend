@@ -20,6 +20,7 @@ import { ApproachCalculated } from './ApproachCalculated';
 import { ApproachUserInput } from './ApproachUserInput';
 import { PackagingSummary } from './PackagingSummary';
 import { recordsService } from '../../services/recordsService';
+import { MOCK_PRODUCTS, MOCK_PACKAGING_INVENTORY } from '../../data/mockData';
 
 interface PackagingWorkflowProps {
   initialProduct?: Product;
@@ -36,19 +37,25 @@ type FlowStep = 'SELECT_PRODUCT' | 'METHOD_FORM' | 'REVIEW_SUMMARY' | 'CONFIRMED
 export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
   initialProduct,
   activePlant,
-  availableProducts,
-  availableMaterials,
+  availableProducts = MOCK_PRODUCTS,
+  availableMaterials = MOCK_PACKAGING_INVENTORY,
   onFinish,
   onCancel,
 }) => {
-  const [selectedProduct, setSelectedProduct] = useState<Product>(
-    initialProduct || availableProducts[0]
-  );
+  const defaultProduct = initialProduct || (availableProducts && availableProducts.length > 0 ? availableProducts[0] : MOCK_PRODUCTS[0]);
+  const [selectedProduct, setSelectedProduct] = useState<Product>(defaultProduct);
+
+  // Keep selectedProduct in sync if initialProduct changes
+  React.useEffect(() => {
+    if (initialProduct) {
+      setSelectedProduct(initialProduct);
+    } else if (!selectedProduct && availableProducts && availableProducts.length > 0) {
+      setSelectedProduct(availableProducts[0]);
+    }
+  }, [initialProduct, availableProducts]);
 
   // Directly land on the configured method form
-  const [currentStep, setCurrentStep] = useState<FlowStep>(
-    initialProduct ? 'METHOD_FORM' : 'SELECT_PRODUCT'
-  );
+  const [currentStep, setCurrentStep] = useState<FlowStep>('METHOD_FORM');
 
   const selectedMethod: RecordingMethod = activePlant.configuredMethod || 'INVENTORY';
 

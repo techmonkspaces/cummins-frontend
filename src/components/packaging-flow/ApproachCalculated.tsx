@@ -12,6 +12,7 @@ import {
 import { Product, PackagingLineItem, PackagingMaterialMaster } from '../../types';
 import { calculationEngine } from '../../services/calculationEngine';
 import { MOCK_PRODUCTS } from '../../data/mockData';
+import { ProductSearchCombobox } from './ProductSearchCombobox';
 
 interface ApproachCalculatedProps {
   product: Product;
@@ -30,20 +31,31 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
   onComplete,
   onBack,
 }) => {
-  const [selectedProduct, setSelectedProduct] = useState<Product>(initialProduct);
+  const defaultProd = initialProduct || MOCK_PRODUCTS[0];
+  const [selectedProduct, setSelectedProduct] = useState<Product>(defaultProd);
   const [productQuantity, setProductQuantity] = useState<number>(100);
   const [calculatedItems, setCalculatedItems] = useState<PackagingLineItem[]>([]);
   const [ruleExplanations, setRuleExplanations] = useState<string[]>([]);
   const [notes, setNotes] = useState('Top-down algorithmic rule engine calculation.');
 
+  // Sync with initialProduct when it changes
+  useEffect(() => {
+    if (initialProduct) {
+      setSelectedProduct(initialProduct);
+    }
+  }, [initialProduct]);
+
   const runCalculation = (prod: Product, qty: number) => {
+    if (!prod) return;
     const res = calculationEngine.calculatePackagingBOM(prod, qty);
     setCalculatedItems(res.recommendedMaterials);
     setRuleExplanations(res.ruleExplanations);
   };
 
   useEffect(() => {
-    runCalculation(selectedProduct, productQuantity);
+    if (selectedProduct) {
+      runCalculation(selectedProduct, productQuantity);
+    }
   }, [selectedProduct, productQuantity]);
 
   const totalBatchWeightKg = calculatedItems.reduce((sum, item) => sum + (item.weightKg || 0), 0);
@@ -128,21 +140,12 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
             <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
               Target Product SKU & Profile
             </label>
-            <select
-              className="form-select font-mono"
-              value={selectedProduct.sku}
-              onChange={(e) => {
-                const p = MOCK_PRODUCTS.find(x => x.sku === e.target.value) || selectedProduct;
-                setSelectedProduct(p);
-              }}
-              style={{ height: '38px', fontWeight: 700, fontSize: '0.84rem' }}
-            >
-              {MOCK_PRODUCTS.map(p => (
-                <option key={p.sku} value={p.sku}>
-                  {p.sku} — {p.name} ({p.weightKg} kg | {p.dimensionsCm.length}×{p.dimensionsCm.width}×{p.dimensionsCm.height} cm | {p.fragility})
-                </option>
-              ))}
-            </select>
+            <ProductSearchCombobox
+              products={MOCK_PRODUCTS}
+              selectedProduct={selectedProduct}
+              onSelectProduct={(p) => setSelectedProduct(p)}
+              accentColor="#7C3AED"
+            />
           </div>
 
           <div>

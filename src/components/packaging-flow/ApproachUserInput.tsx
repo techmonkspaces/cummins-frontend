@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Product, PackagingLineItem, PackagingMaterialMaster } from '../../types';
 import { MOCK_PRODUCTS } from '../../data/mockData';
+import { ProductSearchCombobox } from './ProductSearchCombobox';
 
 interface ApproachUserInputProps {
   product: Product;
@@ -146,12 +147,21 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
   onComplete,
   onBack,
 }) => {
-  const [selectedProduct, setSelectedProduct] = useState<Product>(initialProduct);
+  const defaultProd = initialProduct || MOCK_PRODUCTS[0];
+  const [selectedProduct, setSelectedProduct] = useState<Product>(defaultProd);
   const [productQuantity, setProductQuantity] = useState<number>(50);
   const [items, setItems] = useState<UserInputItemEntry[]>(
-    getDefaultMaterialsForProduct(initialProduct.sku)
+    getDefaultMaterialsForProduct(defaultProd.sku)
   );
   const [operatorNotes, setOperatorNotes] = useState<string>('Floor packing bench log.');
+
+  // Sync with initialProduct when it changes
+  React.useEffect(() => {
+    if (initialProduct) {
+      setSelectedProduct(initialProduct);
+      setItems(getDefaultMaterialsForProduct(initialProduct.sku));
+    }
+  }, [initialProduct]);
 
   const [newMaterialId, setNewMaterialId] = useState<string>(availableMaterials[0]?.id || 'MAT-001');
   const [newQuantity, setNewQuantity] = useState<number>(1);
@@ -326,24 +336,17 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
           <div>
             <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
-              Target Product SKU
+              Target Product SKU & Profile
             </label>
-            <select
-              className="form-select font-mono"
-              value={selectedProduct.sku}
-              onChange={(e) => {
-                const p = MOCK_PRODUCTS.find(x => x.sku === e.target.value) || selectedProduct;
+            <ProductSearchCombobox
+              products={MOCK_PRODUCTS}
+              selectedProduct={selectedProduct}
+              onSelectProduct={(p) => {
                 setSelectedProduct(p);
                 setItems(getDefaultMaterialsForProduct(p.sku));
               }}
-              style={{ height: '38px', fontWeight: 700, fontSize: '0.84rem' }}
-            >
-              {MOCK_PRODUCTS.map(p => (
-                <option key={p.sku} value={p.sku}>
-                  {p.sku} — {p.name} ({p.weightKg} kg)
-                </option>
-              ))}
-            </select>
+              accentColor="#059669"
+            />
           </div>
 
           <div>

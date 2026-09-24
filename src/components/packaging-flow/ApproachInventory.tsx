@@ -13,6 +13,7 @@ import {
   FileSpreadsheet
 } from 'lucide-react';
 import { Product, PackagingLineItem, PackagingMaterialMaster } from '../../types';
+import { MOCK_PRODUCTS } from '../../data/mockData';
 
 interface ApproachInventoryProps {
   product: Product;
@@ -43,11 +44,12 @@ const FACTORY_SKU_PRODUCTION: SkuProductionRow[] = [
 ];
 
 export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
-  product,
+  product: initialProduct,
   availableMaterials,
   onComplete,
   onBack,
 }) => {
+  const product = initialProduct || MOCK_PRODUCTS[0];
   const [period, setPeriod] = useState('September 2026');
   const [notes, setNotes] = useState('Automated inventory batch deduction. Reconciled via SAP S/4HANA MVT 261.');
 
