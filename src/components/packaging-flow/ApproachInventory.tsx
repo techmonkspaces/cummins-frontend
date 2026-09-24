@@ -4,13 +4,11 @@ import {
   ArrowRight, 
   Calculator, 
   Calendar, 
-  Layers,
+  PackageCheck,
   CheckCircle2,
-  Lock,
-  Building2,
-  FileSpreadsheet,
   Info,
-  PackageCheck
+  Layers,
+  Sparkles
 } from 'lucide-react';
 import { Product, PackagingLineItem, PackagingMaterialMaster } from '../../types';
 
@@ -34,7 +32,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
 }) => {
   const [period, setPeriod] = useState('September 2026');
   const [productQuantity, setProductQuantity] = useState<number>(product.defaultBatchSize || 1000);
-  const [notes, setNotes] = useState('Pune Factory automated inventory batch deduction. Reconciled via SAP S/4HANA MVT 261.');
+  const [notes, setNotes] = useState('Automated inventory batch deduction. Reconciled via SAP S/4HANA MVT 261.');
 
   // SKU-specific batch consumption data from ERP (SAP MM Goods Issue MVT-261)
   const getBatchConsumptionBySku = (sku: string) => {
@@ -75,7 +73,6 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
 
   const handleProceed = () => {
     const lineItems: PackagingLineItem[] = consumedData.map((entry) => {
-      const perUnitKg = entry.consumedKg / safeQty;
       return {
         id: `line-${entry.materialId}-${Date.now()}`,
         materialId: entry.materialId,
@@ -99,69 +96,61 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
     });
   };
 
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '880px', margin: '0 auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '960px', margin: '0 auto' }}>
       
-      {/* Approach Header Banner */}
+      {/* Minimalist Top Context Header */}
       <div 
         style={{
-          background: 'linear-gradient(135deg, #0284C7 0%, #0369A1 100%)',
-          borderRadius: '14px',
-          padding: '1.5rem',
-          color: '#FFFFFF',
-          boxShadow: '0 10px 25px -5px rgba(2, 132, 199, 0.3)'
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.2)', padding: '3px 10px', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 700, marginBottom: '6px' }}>
-              <Building2 size={13} /> PUNE FACTORY • APPROACH A
-            </div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>
-              Approach A — Inventory / Consumption Based
-            </h2>
-            <p style={{ fontSize: '0.85rem', opacity: 0.9, marginTop: '4px' }}>
-              Target SKU: <strong>{product.sku} — {product.name}</strong> ({product.weightKg} kg net mass)
-            </p>
-          </div>
-
-          <div 
-            style={{
-              background: '#FFFFFF',
-              color: '#0369A1',
-              padding: '8px 14px',
-              borderRadius: '8px',
-              fontWeight: 800,
-              fontSize: '0.82rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-            }}
-          >
-            <Lock size={15} /> NO MANUAL INPUT REQUIRED
-          </div>
-        </div>
-      </div>
-
-      {/* Zero Input Explanation Notice */}
-      <div 
-        style={{
-          background: '#F0F9FF',
-          border: '1px solid #BAE6FD',
+          background: '#FFFFFF',
           borderRadius: '10px',
-          padding: '12px 16px',
+          padding: '1rem 1.25rem',
+          border: '1px solid #E2E8F0',
+          borderLeft: '4px solid #0284C7',
           display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          gap: '12px',
-          fontSize: '0.82rem',
-          color: '#0369A1'
+          flexWrap: 'wrap',
+          gap: '0.75rem',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
         }}
       >
-        <Info size={20} style={{ flexShrink: 0 }} />
         <div>
-          <strong>Automated WMS Reconciliation:</strong> On high-speed assembly lines, operators do not log tape meters or cardboard sheets. The system automatically reads inventory material deductions and divides by packed quantity.
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#0284C7', background: '#F0F9FF', padding: '2px 7px', borderRadius: '4px', border: '1px solid #BAE6FD' }}>
+              {product.sku}
+            </span>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
+              {product.name}
+            </h2>
+            <span style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 600 }}>
+              ({product.weightKg} kg net)
+            </span>
+          </div>
+          <p style={{ fontSize: '0.76rem', color: '#64748B', marginTop: '3px' }}>
+            ERP batch goods issues (MVT 261) divided across MES output quantity.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span 
+            style={{ 
+              background: '#ECFDF5', 
+              color: '#059669', 
+              border: '1px solid #A7F3D0', 
+              padding: '3px 8px', 
+              borderRadius: '6px', 
+              fontSize: '0.72rem', 
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            data-tooltip="Automatic ERP ledger sync active"
+          >
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#059669' }} />
+            SAP MM Synced
+          </span>
         </div>
       </div>
 
@@ -169,98 +158,96 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
       <div 
         style={{
           background: '#FFFFFF',
-          borderRadius: '14px',
+          borderRadius: '10px',
           border: '1px solid #E2E8F0',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
           overflow: 'hidden'
         }}
       >
-        {/* Period & Quantity ERP Synced Header Bar */}
+        {/* Period & Quantity Header Bar */}
         <div 
           style={{
-            padding: '1.25rem 1.5rem',
+            padding: '1rem 1.25rem',
             background: '#F8FAFC',
             borderBottom: '1px solid #E2E8F0',
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            gap: '1.5rem'
+            gap: '1.25rem'
           }}
         >
           <div>
-            <label style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px' }}>
-              <Calendar size={13} color="#0284C7" />
-              Reconciliation Period (ERP Billing Cycle)
+            <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
+              <Calendar size={12} color="#0284C7" />
+              Reconciliation Period
             </label>
-            <div style={{ position: 'relative' }}>
-              <select
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-                style={{
-                  width: '100%',
-                  height: '42px',
-                  padding: '0 12px',
-                  background: '#FFFFFF',
-                  border: '1px solid #CBD5E1',
-                  borderRadius: '8px',
-                  fontWeight: 700,
-                  fontSize: '0.9rem',
-                  color: '#0F172A',
-                  cursor: 'pointer'
-                }}
-              >
-                <option value="September 2026">September 2026 (Active Cycle)</option>
-                <option value="August 2026">August 2026 (Closed & Audited)</option>
-                <option value="July 2026">July 2026 (Closed & Audited)</option>
-              </select>
-            </div>
+            <select
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+              style={{
+                width: '100%',
+                height: '38px',
+                padding: '0 10px',
+                background: '#FFFFFF',
+                border: '1px solid #CBD5E1',
+                borderRadius: '6px',
+                fontWeight: 700,
+                fontSize: '0.84rem',
+                color: '#0F172A',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="September 2026">September 2026 (Active Cycle)</option>
+              <option value="August 2026">August 2026 (Closed)</option>
+              <option value="July 2026">July 2026 (Closed)</option>
+            </select>
           </div>
 
           <div>
-            <label style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px' }}>
-              <PackageCheck size={13} color="#059669" />
-              Total Products Packed (MES Line Output)
+            <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
+              <PackageCheck size={12} color="#059669" />
+              MES Packed Output
             </label>
             <div 
               style={{ 
-                height: '42px',
+                height: '38px',
                 background: '#FFFFFF',
                 border: '1px solid #CBD5E1',
-                borderRadius: '8px',
-                padding: '0 12px',
+                borderRadius: '6px',
+                padding: '0 10px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between'
               }}
             >
-              <span style={{ fontWeight: 800, fontSize: '1rem', color: '#0F172A', fontFamily: 'var(--font-mono)' }}>
+              <span style={{ fontWeight: 800, fontSize: '0.92rem', color: '#0F172A', fontFamily: 'var(--font-mono)' }}>
                 {safeQty.toLocaleString()} Units
               </span>
-              <span style={{ fontSize: '0.72rem', color: '#059669', background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
-                ● Auto-Fetched from MES Line
+              <span style={{ fontSize: '0.68rem', color: '#059669', background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                MES Line Verified
               </span>
             </div>
           </div>
         </div>
 
         {/* Consumed Materials Table */}
-        <div style={{ padding: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Packaging Inventory Consumption (Batch Deductions)
+        <div style={{ padding: '1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+            <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Packaging Batch Deductions
             </h3>
-            <span style={{ fontSize: '0.75rem', color: '#059669', background: '#ECFDF5', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
-              ● Synced from SAP MM
+            <span style={{ fontSize: '0.7rem', color: '#64748B' }}>
+              SAP MVT-261 Material Issue Logs
             </span>
           </div>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '1.5rem' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '1rem' }}>
             <thead>
               <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
-                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Material</th>
-                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Category</th>
-                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#059669', textTransform: 'uppercase' }}>SAP Mat. Doc</th>
-                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>Total Consumed</th>
-                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#0284C7', textTransform: 'uppercase', textAlign: 'right' }}>Calculated Per Unit</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Material</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Category</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#059669', textTransform: 'uppercase' }}>Doc Reference</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>Total Mass</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#0284C7', textTransform: 'uppercase', textAlign: 'right' }}>Per Unit</th>
               </tr>
             </thead>
             <tbody>
@@ -269,21 +256,24 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
 
                 return (
                   <tr key={item.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                    <td style={{ padding: '12px 14px', fontWeight: 700, color: '#0F172A' }}>
+                    <td style={{ padding: '10px 12px', fontWeight: 700, color: '#0F172A', fontSize: '0.84rem' }}>
                       {item.materialName}
                     </td>
-                    <td style={{ padding: '12px 14px', fontSize: '0.82rem', color: '#64748B' }}>
+                    <td style={{ padding: '10px 12px', fontSize: '0.78rem', color: '#64748B' }}>
                       {item.category}
                     </td>
-                    <td style={{ padding: '12px 14px' }}>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', background: '#F0FDF4', color: '#15803D', padding: '2px 7px', borderRadius: '4px', border: '1px solid #BBF7D0', fontWeight: 700 }}>
-                        {item.sapDoc} • MVT-261
+                    <td style={{ padding: '10px 12px' }}>
+                      <span 
+                        style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', background: '#F0FDF4', color: '#15803D', padding: '2px 6px', borderRadius: '4px', border: '1px solid #BBF7D0', fontWeight: 700 }}
+                        data-tooltip={`Storage Location: ${item.sloc}`}
+                      >
+                        #{item.sapDoc}
                       </span>
                     </td>
-                    <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#0F172A' }}>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#0F172A', fontSize: '0.84rem' }}>
                       {item.consumedKg.toLocaleString()} kg
                     </td>
-                    <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#0284C7', fontFamily: 'var(--font-mono)' }}>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#0284C7', fontFamily: 'var(--font-mono)', fontSize: '0.84rem' }}>
                       {perProductGrams.toFixed(0)} g
                     </td>
                   </tr>
@@ -292,46 +282,46 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
             </tbody>
             <tfoot>
               <tr style={{ background: '#F0F9FF', borderTop: '2px solid #BAE6FD' }}>
-                <td colSpan={3} style={{ padding: '12px 14px', fontWeight: 800, color: '#0369A1' }}>
-                  Total Packaging Consumption
+                <td colSpan={3} style={{ padding: '10px 12px', fontWeight: 800, color: '#0369A1', fontSize: '0.84rem' }}>
+                  Total Batch Mass
                 </td>
-                <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 900, color: '#0369A1', fontSize: '1.05rem' }}>
+                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#0369A1', fontSize: '0.92rem' }}>
                   {totalPackagingKg.toLocaleString()} kg
                 </td>
-                <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 900, color: '#0284C7', fontSize: '1.05rem', fontFamily: 'var(--font-mono)' }}>
+                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#0284C7', fontSize: '0.92rem', fontFamily: 'var(--font-mono)' }}>
                   {perProductTotalGrams.toFixed(0)} g / unit
                 </td>
               </tr>
             </tfoot>
           </table>
 
-          {/* Mathematical Formula Display */}
-          <div style={{ background: '#F8FAFC', borderRadius: '10px', padding: '1rem', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Calculator size={16} color="#0284C7" />
-              <span style={{ fontSize: '0.8rem', color: '#475569' }}>
-                Formula applied: <strong>Total Consumed ({totalPackagingKg} kg) ÷ Products Packed ({safeQty.toLocaleString()}) = {perProductTotalKg.toFixed(3)} kg/unit ({perProductTotalGrams.toFixed(0)}g)</strong>
+          {/* Minimal Formula Strip */}
+          <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '8px 12px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Calculator size={14} color="#0284C7" />
+              <span style={{ fontSize: '0.75rem', color: '#475569' }}>
+                {totalPackagingKg} kg ÷ {safeQty.toLocaleString()} units = <strong>{perProductTotalKg.toFixed(3)} kg/unit ({perProductTotalGrams.toFixed(0)}g)</strong>
               </span>
             </div>
-            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#059669', background: '#ECFDF5', padding: '2px 8px', borderRadius: '4px' }}>
-              Exact Division Validated
+            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#059669' }}>
+              ✓ Reconciled
             </span>
           </div>
         </div>
 
         {/* Action Bar */}
-        <div style={{ padding: '1.25rem 1.5rem', background: '#F8FAFC', borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button onClick={onBack} className="btn btn-secondary">
-            Back
+        <div style={{ padding: '1rem 1.25rem', background: '#F8FAFC', borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <button onClick={onBack} className="btn btn-secondary btn-sm">
+            Cancel
           </button>
           
           <button 
             onClick={handleProceed}
-            className="btn btn-primary btn-lg"
-            style={{ padding: '10px 24px', fontSize: '0.95rem' }}
+            className="btn btn-primary"
+            style={{ padding: '8px 18px', fontSize: '0.85rem' }}
           >
-            <span>View Packaging Details & Summary</span>
-            <ArrowRight size={17} />
+            <span>Review & Commit Record</span>
+            <ArrowRight size={15} />
           </button>
         </div>
       </div>

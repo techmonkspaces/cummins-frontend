@@ -31,12 +31,13 @@ import { Sparkles, CheckCircle2, Building2 } from 'lucide-react';
 
 export const App: React.FC = () => {
   // Auth State
+  const initialUser = authService.getCurrentUser() || plantService.getActivePersona();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const [currentUser, setCurrentUser] = useState<UserPersona>(authService.getCurrentUser() || plantService.getActivePersona());
+  const [currentUser, setCurrentUser] = useState<UserPersona>(initialUser);
 
-  // Navigation State
-  const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
-  const [inRecordingFlow, setInRecordingFlow] = useState<boolean>(false);
+  // Navigation State - Data entry users go directly to their logging station
+  const [activeTab, setActiveTab] = useState<NavTab>(initialUser?.role === 'DATA_ENTRY' ? 'packaging' : 'dashboard');
+  const [inRecordingFlow, setInRecordingFlow] = useState<boolean>(initialUser?.role === 'DATA_ENTRY');
   const [selectedProductForFlow, setSelectedProductForFlow] = useState<Product | undefined>(undefined);
 
   // Plant State
@@ -94,8 +95,13 @@ export const App: React.FC = () => {
       const p = plantService.setActivePlant(persona.plantId);
       setActivePlant(p);
     }
-    setActiveTab('dashboard');
-    setInRecordingFlow(false);
+    if (persona.role === 'DATA_ENTRY') {
+      setActiveTab('packaging');
+      setInRecordingFlow(true);
+    } else {
+      setActiveTab('dashboard');
+      setInRecordingFlow(false);
+    }
     showToast('Signed In Successfully', `Welcome ${persona.name} (${persona.roleTitle.split('•')[0]}).`, 'success');
   };
 
@@ -112,8 +118,12 @@ export const App: React.FC = () => {
     const matchedPersona = personas.find(p => p.plantId === plantId);
     if (matchedPersona) {
       setCurrentUser(matchedPersona);
+      if (matchedPersona.role === 'DATA_ENTRY') {
+        setActiveTab('packaging');
+        setInRecordingFlow(true);
+      }
     }
-    showToast('Active Factory Switched', `Switched active factory to ${updated.name} (Pre-configured: Approach ${updated.configuredMethod === 'INVENTORY' ? 'A' : updated.configuredMethod === 'CALCULATED' ? 'B' : 'C'}).`, 'info');
+    showToast('Active Factory Switched', `Switched active factory to ${updated.name}.`, 'info');
   };
 
   const handleSelectPersona = (personaId: string) => {
@@ -122,6 +132,13 @@ export const App: React.FC = () => {
       setCurrentUser(updated);
       plantService.setActivePersona(personaId);
       setActivePlant(plantService.getActivePlant());
+      if (updated.role === 'DATA_ENTRY') {
+        setActiveTab('packaging');
+        setInRecordingFlow(true);
+      } else {
+        setActiveTab('dashboard');
+        setInRecordingFlow(false);
+      }
       showToast('Role Switched', `Active role: ${updated.name} (${updated.roleTitle.split('•')[0]}).`, 'info');
     }
   };

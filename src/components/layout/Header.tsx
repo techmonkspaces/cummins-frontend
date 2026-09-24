@@ -1,6 +1,5 @@
 import React from 'react';
 import { 
-  PlusCircle, 
   Building2, 
   Crown, 
   LogOut,
@@ -98,7 +97,7 @@ export const Header: React.FC<HeaderProps> = ({
         height: '60px',
         display: 'flex',
         alignItems: 'center',
-        padding: '0 1.75rem',
+        padding: '0 1.75rem 0 4.75rem',
         justifyContent: 'space-between',
         boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
       }}
@@ -143,7 +142,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Right: Quick Action CTAs & User Indicator */}
+      {/* Right: Clean Action Area with Sign Out */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
         
         {/* Super Admin Plant Switcher (Only visible to Super Admin) */}
@@ -171,37 +170,16 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         )}
 
-        {/* Quick Record CTA */}
-        <button 
-          className="btn btn-primary btn-sm"
-          onClick={onStartNewRecord}
-          style={{ whiteSpace: 'nowrap', fontWeight: 700, padding: '7px 14px' }}
+        {/* Minimal Clean Sign Out Button */}
+        <button
+          onClick={onLogout}
+          className="btn btn-secondary btn-sm"
+          style={{ padding: '6px 12px', fontSize: '0.78rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}
+          title="Sign Out"
         >
-          <PlusCircle size={15} />
-          <span>Record Packaging</span>
+          <LogOut size={14} />
+          <span>Sign Out</span>
         </button>
-
-        {/* User Pill & Sign Out */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', paddingLeft: '8px', borderLeft: '1px solid #E2E8F0' }}>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0F172A' }}>
-              {currentUser.name}
-            </div>
-            <div style={{ fontSize: '0.68rem', color: isSuperAdmin ? '#DA291C' : '#059669', fontWeight: 700 }}>
-              {isSuperAdmin ? 'Super Admin' : 'Factory User'}
-            </div>
-          </div>
-
-          <button
-            onClick={onLogout}
-            className="btn btn-secondary btn-sm"
-            style={{ padding: '6px 10px', fontSize: '0.75rem' }}
-            title="Sign Out"
-          >
-            <LogOut size={13} />
-            <span>Sign Out</span>
-          </button>
-        </div>
 
       </div>
     </header>

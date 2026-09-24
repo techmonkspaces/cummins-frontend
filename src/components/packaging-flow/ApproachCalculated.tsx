@@ -3,14 +3,11 @@ import {
   Calculator, 
   ArrowRight, 
   Sparkles, 
+  Cpu, 
   CheckCircle2, 
-  Building2,
-  Cpu,
+  Info,
   Layers,
-  Search,
-  Package,
-  ShieldAlert,
-  Info
+  ChevronRight
 } from 'lucide-react';
 import { Product, PackagingLineItem, PackagingMaterialMaster } from '../../types';
 import { calculationEngine } from '../../services/calculationEngine';
@@ -37,7 +34,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
   const [productQuantity, setProductQuantity] = useState<number>(100);
   const [calculatedItems, setCalculatedItems] = useState<PackagingLineItem[]>([]);
   const [ruleExplanations, setRuleExplanations] = useState<string[]>([]);
-  const [notes, setNotes] = useState('Phaltan Factory automated rule engine calculation based on CAD geometry and weight envelope.');
+  const [notes, setNotes] = useState('Top-down algorithmic rule engine calculation.');
 
   const runCalculation = (prod: Product, qty: number) => {
     const res = calculationEngine.calculatePackagingBOM(prod, qty);
@@ -62,72 +59,75 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '880px', margin: '0 auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '960px', margin: '0 auto' }}>
       
-      {/* Header Banner */}
-      <div 
-        style={{
-          background: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)',
-          borderRadius: '14px',
-          padding: '1.5rem',
-          color: '#FFFFFF',
-          boxShadow: '0 10px 25px -5px rgba(124, 58, 237, 0.3)'
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.2)', padding: '3px 10px', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 700, marginBottom: '6px' }}>
-              <Building2 size={13} /> PHALTAN FACTORY • APPROACH B
-            </div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>
-              Approach B — System Calculated (Smart Rule Engine)
-            </h2>
-            <p style={{ fontSize: '0.85rem', opacity: 0.9, marginTop: '4px' }}>
-              CAD & PLM top-down algorithmic rules determine optimal packaging with zero guess-work.
-            </p>
-          </div>
-
-          <div 
-            style={{
-              background: '#FFFFFF',
-              color: '#6D28D9',
-              padding: '8px 14px',
-              borderRadius: '8px',
-              fontWeight: 800,
-              fontSize: '0.82rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-            }}
-          >
-            <Sparkles size={15} color="#7C3AED" /> AUTOMATED CALCULATION
-          </div>
-        </div>
-      </div>
-
-      {/* Product Selector & Specs */}
+      {/* Minimalist Top Context Header */}
       <div 
         style={{
           background: '#FFFFFF',
-          borderRadius: '14px',
+          borderRadius: '10px',
+          padding: '1rem 1.25rem',
           border: '1px solid #E2E8F0',
-          padding: '1.25rem 1.5rem',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+          borderLeft: '4px solid #7C3AED',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '0.75rem',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>
-            Select SKU / Product Profile
-          </span>
-          <span style={{ fontSize: '0.72rem', color: '#7C3AED', background: '#FAF5FF', padding: '2px 8px', borderRadius: '4px', fontWeight: 600 }}>
-            Master Data Connected
-          </span>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#7C3AED', background: '#FAF5FF', padding: '2px 7px', borderRadius: '4px', border: '1px solid #DDD6FE' }}>
+              {selectedProduct.sku}
+            </span>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
+              {selectedProduct.name}
+            </h2>
+          </div>
+          <p style={{ fontSize: '0.76rem', color: '#64748B', marginTop: '3px' }}>
+            Automated BOM calculation based on CAD dimensions, mass envelope, and fragility rating.
+          </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.25rem' }}>
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label" style={{ fontSize: '0.78rem' }}>Target Product SKU & Specification</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span 
+            style={{ 
+              background: '#FAF5FF', 
+              color: '#7C3AED', 
+              border: '1px solid #DDD6FE', 
+              padding: '3px 8px', 
+              borderRadius: '6px', 
+              fontSize: '0.72rem', 
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            data-tooltip="Rule engine computes recommended packaging BOM in real-time"
+          >
+            <Sparkles size={12} color="#7C3AED" />
+            Auto Computed
+          </span>
+        </div>
+      </div>
+
+      {/* Target Product Selection Card */}
+      <div 
+        style={{
+          background: '#FFFFFF',
+          borderRadius: '10px',
+          border: '1px solid #E2E8F0',
+          padding: '1rem 1.25rem',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
+        }}
+      >
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
+          <div>
+            <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
+              Target Product SKU & Profile
+            </label>
             <select
               className="form-select font-mono"
               value={selectedProduct.sku}
@@ -135,103 +135,73 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
                 const p = MOCK_PRODUCTS.find(x => x.sku === e.target.value) || selectedProduct;
                 setSelectedProduct(p);
               }}
-              style={{ height: '42px', fontWeight: 700, fontSize: '0.9rem' }}
+              style={{ height: '38px', fontWeight: 700, fontSize: '0.84rem' }}
             >
               {MOCK_PRODUCTS.map(p => (
                 <option key={p.sku} value={p.sku}>
-                  {p.sku} — {p.name} ({p.weightKg} kg | {p.dimensionsCm.length}×{p.dimensionsCm.width}×{p.dimensionsCm.height} cm | Fragility: {p.fragility})
+                  {p.sku} — {p.name} ({p.weightKg} kg | {p.dimensionsCm.length}×{p.dimensionsCm.width}×{p.dimensionsCm.height} cm | {p.fragility})
                 </option>
               ))}
             </select>
           </div>
-        </div>
 
-        {/* Selected Product Specs Badges */}
-        <div 
-          style={{
-            marginTop: '1rem',
-            padding: '10px 14px',
-            background: '#F8FAFC',
-            borderRadius: '10px',
-            border: '1px solid #E2E8F0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '1rem'
-          }}
-        >
           <div>
-            <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Weight: </span>
-            <strong style={{ fontSize: '0.88rem', color: '#0F172A' }}>{selectedProduct.weightKg} kg</strong>
-          </div>
-          <div>
-            <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Dimensions: </span>
-            <strong style={{ fontSize: '0.88rem', color: '#0F172A' }}>{selectedProduct.dimensionsCm.length} × {selectedProduct.dimensionsCm.width} × {selectedProduct.dimensionsCm.height} cm</strong>
-          </div>
-          <div>
-            <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Fragility: </span>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#D97706', background: '#FFFBEB', padding: '2px 8px', borderRadius: '4px' }}>
-              {selectedProduct.fragility}
-            </span>
+            <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
+              Batch Quantity (Units)
+            </label>
+            <input
+              type="number"
+              min="1"
+              value={productQuantity}
+              onChange={(e) => setProductQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              style={{
+                width: '100%',
+                height: '38px',
+                padding: '0 10px',
+                background: '#FFFFFF',
+                border: '1px solid #CBD5E1',
+                borderRadius: '6px',
+                fontWeight: 700,
+                fontSize: '0.84rem',
+                color: '#0F172A',
+                fontFamily: 'var(--font-mono)'
+              }}
+            />
           </div>
         </div>
       </div>
 
-      {/* Available Packaging Materials Strip */}
+      {/* Computed Materials Table Card */}
       <div 
         style={{
           background: '#FFFFFF',
-          borderRadius: '12px',
-          padding: '1rem 1.25rem',
+          borderRadius: '10px',
           border: '1px solid #E2E8F0',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem'
+          boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+          overflow: 'hidden'
         }}
       >
-        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-          Available Packaging Materials:
-        </span>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-          {['Cardboard Box', 'Cushioning', 'Thermocol / EPS', 'Packaging Tape', 'Bubble Wrap'].map((mat) => (
-            <span key={mat} style={{ fontSize: '0.75rem', background: '#F1F5F9', color: '#334155', padding: '3px 8px', borderRadius: '6px', fontWeight: 600 }}>
-              {mat}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* System Generated Packaging Table */}
-      <div 
-        style={{
-          background: '#FFFFFF',
-          borderRadius: '14px',
-          border: '1px solid #E2E8F0',
-          overflow: 'hidden',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-        }}
-      >
-        <div style={{ padding: '1.25rem 1.5rem', background: '#FAF5FF', borderBottom: '1px solid #DDD6FE', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Cpu size={18} color="#7C3AED" />
-            <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
-              System Generated Packaging BOM
+        <div style={{ padding: '0.85rem 1.25rem', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Cpu size={15} color="#7C3AED" />
+            <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Rule-Determined Packaging BOM
             </h3>
           </div>
-          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#7C3AED', background: '#FFFFFF', padding: '3px 8px', borderRadius: '4px', border: '1px solid #DDD6FE' }}>
-            Computed in 12ms
+          <span style={{ fontSize: '0.7rem', color: '#64748B' }}>
+            Batch: {productQuantity.toLocaleString()} Units
           </span>
         </div>
 
-        <div style={{ padding: '1.5rem' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '1.25rem' }}>
+        <div style={{ padding: '1.25rem' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '1rem' }}>
             <thead>
               <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
-                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Material</th>
-                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Category</th>
-                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Per-Unit Qty</th>
-                <th style={{ padding: '10px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#7C3AED', textTransform: 'uppercase', textAlign: 'right' }}>Standard Mass</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Material</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Category</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Unit Allocation</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#7C3AED', textTransform: 'uppercase', textAlign: 'right' }}>Per-Unit Mass</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase', textAlign: 'right' }}>Batch Mass</th>
               </tr>
             </thead>
             <tbody>
@@ -240,17 +210,20 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
 
                 return (
                   <tr key={item.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                    <td style={{ padding: '12px 14px', fontWeight: 700, color: '#0F172A' }}>
+                    <td style={{ padding: '10px 12px', fontWeight: 700, color: '#0F172A', fontSize: '0.84rem' }}>
                       {item.materialName}
                     </td>
-                    <td style={{ padding: '12px 14px', fontSize: '0.8rem', color: '#64748B' }}>
+                    <td style={{ padding: '10px 12px', fontSize: '0.78rem', color: '#64748B' }}>
                       {item.category}
                     </td>
-                    <td style={{ padding: '12px 14px', fontWeight: 600, color: '#334155' }}>
+                    <td style={{ padding: '10px 12px', fontWeight: 600, color: '#334155', fontSize: '0.8rem' }}>
                       {item.unit === 'pcs' ? '1 pc' : `${(item.quantity / productQuantity).toFixed(2)} ${item.unit}`}
                     </td>
-                    <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#7C3AED', fontFamily: 'var(--font-mono)' }}>
-                      {perUnitWeightGrams.toFixed(0)} g / unit
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#7C3AED', fontFamily: 'var(--font-mono)', fontSize: '0.84rem' }}>
+                      {perUnitWeightGrams.toFixed(0)} g
+                    </td>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono)', fontSize: '0.84rem' }}>
+                      {item.weightKg.toFixed(2)} kg
                     </td>
                   </tr>
                 );
@@ -258,56 +231,46 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
             </tbody>
             <tfoot>
               <tr style={{ background: '#FAF5FF', borderTop: '2px solid #DDD6FE' }}>
-                <td colSpan={3} style={{ padding: '12px 14px', fontWeight: 800, color: '#6D28D9' }}>
-                  Total Recommended Packaging Mass (Per Unit)
+                <td colSpan={3} style={{ padding: '10px 12px', fontWeight: 800, color: '#6D28D9', fontSize: '0.84rem' }}>
+                  Total Batch Packaging Mass
                 </td>
-                <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 900, color: '#7C3AED', fontSize: '1.05rem', fontFamily: 'var(--font-mono)' }}>
+                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#7C3AED', fontSize: '0.92rem', fontFamily: 'var(--font-mono)' }}>
                   {perUnitGrams.toFixed(0)} g / unit
+                </td>
+                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#6D28D9', fontSize: '0.92rem', fontFamily: 'var(--font-mono)' }}>
+                  {totalBatchWeightKg.toFixed(2)} kg
                 </td>
               </tr>
             </tfoot>
           </table>
 
-          {/* WHY THIS PACKAGING? / Rules Applied Section */}
-          <div 
-            style={{
-              background: '#F8FAFC',
-              borderRadius: '12px',
-              padding: '1.25rem',
-              border: '1px solid #E2E8F0'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <CheckCircle2 size={16} color="#059669" />
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0F172A' }}>
-                WHY THIS PACKAGING? (Rules Applied)
-              </h4>
+          {/* Minimal Formula Strip */}
+          <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '8px 12px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Calculator size={14} color="#7C3AED" />
+              <span style={{ fontSize: '0.75rem', color: '#475569' }}>
+                {ruleExplanations[0] || 'Top-down algorithm matched CAD envelope.'}
+              </span>
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {ruleExplanations.map((rule, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.78rem', color: '#334155' }}>
-                  <span style={{ color: '#059669', fontWeight: 800 }}>✓</span>
-                  <span>{rule}</span>
-                </div>
-              ))}
-            </div>
+            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#7C3AED' }}>
+              ✓ Auto Verified
+            </span>
           </div>
         </div>
 
         {/* Action Bar */}
-        <div style={{ padding: '1.25rem 1.5rem', background: '#F8FAFC', borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button onClick={onBack} className="btn btn-secondary">
-            Back
+        <div style={{ padding: '1rem 1.25rem', background: '#F8FAFC', borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <button onClick={onBack} className="btn btn-secondary btn-sm">
+            Cancel
           </button>
           
           <button 
             onClick={handleConfirm}
-            className="btn btn-primary btn-lg"
-            style={{ padding: '10px 24px', fontSize: '0.95rem' }}
+            className="btn btn-primary"
+            style={{ padding: '8px 18px', fontSize: '0.85rem' }}
           >
-            <span>Confirm & View Packaging Summary</span>
-            <ArrowRight size={17} />
+            <span>Review & Commit Record</span>
+            <ArrowRight size={15} />
           </button>
         </div>
       </div>

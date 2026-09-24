@@ -110,42 +110,7 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-      {/* Plant Context Header */}
-      <div 
-        style={{ 
-          padding: '0.85rem 1.25rem', 
-          background: '#0F172A', 
-          color: '#FFFFFF',
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          flexWrap: 'wrap', 
-          gap: '0.75rem',
-          borderRadius: '10px'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '6px', background: '#DA291C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Building2 size={18} color="#FFFFFF" />
-          </div>
-          <div>
-            <div style={{ fontSize: '0.7rem', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Active Factory Context • {activePlant.code}
-            </div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 800 }}>
-              {activePlant.name}
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '5px 12px', borderRadius: '6px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ color: '#38BDF8', fontWeight: 700 }}>Plant Standard:</span>
-            <span style={{ fontWeight: 600 }}>{getMethodBadgeText()}</span>
-          </div>
-        </div>
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
       {/* Step 1: Select Product (if no initial product) */}
       {currentStep === 'SELECT_PRODUCT' && (
