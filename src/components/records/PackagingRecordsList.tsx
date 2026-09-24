@@ -213,112 +213,105 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
       </div>
 
       {/* Main Records Table */}
-      <div className="glass-card">
-        <div className="table-wrapper">
-          <table className="custom-table">
+      <div className="glass-card" style={{ padding: '0', overflow: 'hidden' }}>
+        <div className="table-wrapper" style={{ border: 'none', borderRadius: '0' }}>
+          <table className="custom-table" style={{ width: '100%' }}>
             <thead>
-              <tr>
-                <th>Record ID</th>
-                <th>Product & SKU</th>
-                <th>Factory Site</th>
-                <th>Methodology</th>
-                <th>Units Packed</th>
-                <th>Total Pkg Mass</th>
-                <th>Per-Unit Mass</th>
-                <th>Paper / Plastic Fraction</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th style={{ textAlign: 'right' }}>Actions</th>
+              <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Record ID</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Product & SKU</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Factory Site</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Methodology</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right', whiteSpace: 'nowrap' }}>Units</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Mass</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right', whiteSpace: 'nowrap' }}>Per-Unit Mass</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'center', whiteSpace: 'nowrap' }}>Status</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap', minWidth: '95px' }}>Date</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right', whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={11} style={{ textAlign: 'center', padding: '3rem', color: '#64748B' }}>
+                  <td colSpan={10} style={{ textAlign: 'center', padding: '2.5rem', color: '#64748B' }}>
                     No packaging records found matching your filters.
                   </td>
                 </tr>
               ) : (
                 filteredRecords.map((record) => (
-                  <tr key={record.id}>
-                    <td>
-                      <span className="font-mono font-bold" style={{ color: '#0F172A' }}>
+                  <tr key={record.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                    <td style={{ padding: '7px 12px' }}>
+                      <span className="font-mono font-bold" style={{ color: '#0F172A', fontSize: '0.8rem' }}>
                         {record.id}
                       </span>
                     </td>
-                    <td>
+                    <td style={{ padding: '7px 12px' }}>
                       <div>
-                        <div style={{ fontWeight: 600, color: '#0F172A' }}>
+                        <div style={{ fontWeight: 700, color: '#0F172A', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>
                           {record.productName}
                         </div>
-                        <div className="font-mono text-xs text-muted">
+                        <div className="font-mono text-muted" style={{ fontSize: '0.7rem' }}>
                           {record.productSku}
                         </div>
                       </div>
                     </td>
-                    <td>
-                      <span className="text-xs font-semibold" style={{ color: '#0F172A', background: '#F8FAFC', padding: '2px 6px', borderRadius: '4px', border: '1px solid #E2E8F0', whiteSpace: 'nowrap' }}>
-                        {record.plantName ? record.plantName.replace('Cummins ', '') : 'Pune Plant'}
+                    <td style={{ padding: '7px 12px' }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#0F172A', background: '#F8FAFC', padding: '2px 6px', borderRadius: '4px', border: '1px solid #E2E8F0', whiteSpace: 'nowrap' }}>
+                        {record.plantName ? record.plantName.replace('Cummins ', '') : 'Pune Factory'}
                       </span>
                     </td>
-                    <td>
+                    <td style={{ padding: '7px 12px', whiteSpace: 'nowrap' }}>
                       {getMethodBadge(record.method)}
                     </td>
-                    <td>
-                      <span className="font-mono font-semibold">
+                    <td style={{ padding: '7px 12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      <span className="font-mono font-bold" style={{ fontSize: '0.82rem', color: '#0F172A' }}>
                         {record.productQuantity.toLocaleString()}
                       </span>
                     </td>
-                    <td>
-                      <span className="font-mono font-bold" style={{ color: '#DA291C' }}>
+                    <td style={{ padding: '7px 12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      <span className="font-mono font-bold" style={{ color: '#DA291C', fontSize: '0.84rem' }}>
                         {record.totalPackagingWeightKg.toFixed(2)} kg
                       </span>
                     </td>
-                    <td>
-                      <span className="font-mono text-xs" style={{ color: '#0284C7' }}>
+                    <td style={{ padding: '7px 12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      <span className="font-mono font-bold" style={{ color: '#0284C7', fontSize: '0.8rem' }}>
                         {record.perUnitPackagingWeightKg.toFixed(3)} kg/u
                       </span>
                     </td>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.75rem' }}>
-                        <span style={{ color: '#D97706', fontWeight: 600 }}>📦 {record.ppwrSummary.paperCardboardPct}%</span>
-                        <span style={{ color: '#DB2777', fontWeight: 600 }}>🧪 {record.ppwrSummary.plasticPct}%</span>
-                      </div>
-                    </td>
-                    <td>
+                    <td style={{ padding: '7px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {record.status === 'CONFIRMED' ? (
-                        <span className="badge badge-confirmed">
-                          <CheckCircle2 size={11} /> Confirmed
+                        <span className="badge badge-confirmed" style={{ fontSize: '0.68rem', padding: '2px 7px' }}>
+                          <CheckCircle2 size={10} /> Confirmed
                         </span>
                       ) : canApprove ? (
                         <button
                           className="badge badge-draft"
                           onClick={() => onStatusChange(record.id, 'CONFIRMED')}
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', fontSize: '0.68rem', padding: '2px 7px' }}
                           title="Click to confirm and approve draft record"
                         >
-                          <Clock size={11} /> Draft (Approve)
+                          <Clock size={10} /> Draft (Approve)
                         </button>
                       ) : (
-                        <span className="badge badge-draft">
-                          <Clock size={11} /> Draft (Pending)
+                        <span className="badge badge-draft" style={{ fontSize: '0.68rem', padding: '2px 7px' }}>
+                          <Clock size={10} /> Draft
                         </span>
                       )}
                     </td>
-                    <td>
-                      <span className="text-xs text-secondary font-mono">
+                    <td style={{ padding: '7px 12px', whiteSpace: 'nowrap' }}>
+                      <span style={{ fontSize: '0.76rem', color: '#64748B', fontFamily: 'var(--font-mono)' }}>
                         {record.createdAt}
                       </span>
                     </td>
-                    <td style={{ textAlign: 'right' }}>
-                      <div style={{ display: 'inline-flex', gap: '0.35rem' }}>
+                    <td style={{ padding: '7px 12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'inline-flex', gap: '0.35rem', alignItems: 'center' }}>
                         <button
                           className="btn btn-secondary btn-sm"
                           onClick={() => onSelectRecord(record)}
-                          style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
+                          style={{ padding: '3px 8px', fontSize: '0.74rem' }}
                           title="Inspect full BOM & PPWR details"
                         >
-                          <Eye size={13} />
+                          <Eye size={12} />
                           <span>View</span>
                         </button>
 
@@ -326,10 +319,10 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                           <button
                             className="btn btn-outline-danger btn-sm"
                             onClick={() => onDeleteRecord(record.id)}
-                            style={{ padding: '0.3rem 0.5rem' }}
+                            style={{ padding: '3px 6px' }}
                             title="Delete Record"
                           >
-                            <Trash2 size={13} />
+                            <Trash2 size={12} />
                           </button>
                         )}
                       </div>

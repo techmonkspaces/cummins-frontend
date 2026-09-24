@@ -78,14 +78,15 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%', maxWidth: '1440px', margin: '0 auto' }}>
       {/* Header / Review Banner */}
       <div 
         className="glass-card" 
         style={{ 
           background: '#FFFFFF',
           border: '1px solid #E2E8F0',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)',
+          padding: '1.25rem 1.5rem'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
@@ -97,41 +98,44 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
               <span style={{ color: '#CBD5E1' }}>•</span>
               {getMethodBadge()}
             </div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A' }}>
+            <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
               Packaging Bill-of-Materials & Summary Review
             </h1>
-            <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '2px' }}>
+            <p style={{ fontSize: '0.82rem', color: '#64748B', marginTop: '3px' }}>
               {getMethodDescription()}
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             <button 
               type="button" 
-              className="btn btn-secondary"
+              className="btn btn-secondary btn-sm"
               onClick={onBackToEdit}
+              style={{ padding: '8px 14px', fontSize: '0.82rem', fontWeight: 600 }}
             >
-              <ArrowLeft size={16} />
-              <span>Back to Edit</span>
+              <ArrowLeft size={15} />
+              <span>Back to Station</span>
             </button>
 
             <button
               type="button"
-              className="btn btn-secondary"
+              className="btn btn-secondary btn-sm"
               onClick={() => onSave('DRAFT')}
               title="Save as draft for shift supervisor review"
+              style={{ padding: '8px 14px', fontSize: '0.82rem', fontWeight: 600 }}
             >
-              <Clock size={16} />
-              <span>Save as Draft</span>
+              <Clock size={15} />
+              <span>Save Draft</span>
             </button>
 
             <button
               type="button"
-              className="btn btn-primary btn-lg"
+              className="btn btn-primary"
               onClick={() => onSave('CONFIRMED')}
+              style={{ padding: '8px 20px', fontSize: '0.85rem', fontWeight: 700 }}
             >
-              <CheckCircle2 size={18} />
-              <span>Confirm & Commit Record</span>
+              <CheckCircle2 size={16} />
+              <span>Confirm & Submit Record</span>
             </button>
           </div>
         </div>
@@ -271,18 +275,18 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
 
         {/* Material Category Fractions Card Grid */}
         <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
-          <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ShieldCheck size={18} color="#059669" />
-            Material Category & Recyclability Breakdown
+          <h4 style={{ fontSize: '0.92rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <ShieldCheck size={17} color="#059669" />
+            Material Category Breakdown
           </h4>
 
-          <div className="grid-cols-4">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
             {/* Paper / Cardboard */}
-            <div style={{ padding: '0.85rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+            <div style={{ padding: '1rem 1.25rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
               <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
                 Paper & Cardboard Mass
               </div>
-              <div className="font-mono font-bold text-lg" style={{ color: '#D97706', marginTop: '2px' }}>
+              <div className="font-mono font-bold text-xl" style={{ color: '#D97706', marginTop: '3px' }}>
                 {ppwrSummary.paperCardboardKg.toFixed(2)} kg
               </div>
               <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: '2px' }}>
@@ -291,58 +295,17 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
             </div>
 
             {/* Plastic Fraction */}
-            <div style={{ padding: '0.85rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+            <div style={{ padding: '1rem 1.25rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
               <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
                 Polymer & Plastic Mass
               </div>
-              <div className="font-mono font-bold text-lg" style={{ color: '#DB2777', marginTop: '2px' }}>
+              <div className="font-mono font-bold text-xl" style={{ color: '#DB2777', marginTop: '3px' }}>
                 {ppwrSummary.plasticKg.toFixed(2)} kg
               </div>
               <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: '2px' }}>
                 <strong>{ppwrSummary.plasticPct}%</strong> of total packaging
               </div>
             </div>
-
-            {/* Recyclability Grade */}
-            <div style={{ padding: '0.85rem', background: grade.bg, borderRadius: '8px', border: `1px solid ${grade.color}33` }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
-                PPWR Recyclability Grade
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                <span style={{ fontSize: '1.8rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: grade.color, lineHeight: 1 }}>
-                  {grade.grade}
-                </span>
-                <div>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: grade.color }}>{ppwrSummary.avgRecyclablePct}% Recyclable</div>
-                  <div style={{ fontSize: '0.66rem', color: '#64748B', maxWidth: '120px' }}>{grade.label.split('—')[0].trim()}</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Carbon Footprint */}
-            <div style={{ padding: '0.85rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
-                Estimated Packaging CO₂e
-              </div>
-              <div className="font-mono font-bold text-lg" style={{ color: '#0284C7', marginTop: '2px' }}>
-                {ppwrSummary.estimatedCo2eKg.toFixed(1)} kg
-              </div>
-              <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '2px' }}>
-                {(ppwrSummary.estimatedCo2eKg / productQuantity).toFixed(3)} kg CO₂e / unit
-              </div>
-            </div>
-          </div>
-
-          {/* Recyclability Grade Banner */}
-          <div style={{ marginTop: '1rem', padding: '10px 14px', background: grade.bg, borderRadius: '8px', border: `1px solid ${grade.color}44`, display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Leaf size={16} color={grade.color} />
-            <div style={{ flex: 1 }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: grade.color }}>EU PPWR Recyclability: Grade {grade.grade} — </span>
-              <span style={{ fontSize: '0.78rem', color: '#475569' }}>{grade.label}</span>
-            </div>
-            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: grade.color, background: 'white', padding: '2px 8px', borderRadius: '4px', border: `1px solid ${grade.color}44`, whiteSpace: 'nowrap' }}>
-              {ppwrSummary.avgRecyclablePct}% Recyclable Content
-            </span>
           </div>
         </div>
 
@@ -359,43 +322,36 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
       </div>
 
       {/* Bottom Action Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FFFFFF', padding: '1rem 1.5rem', borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(0,0,0,0.04)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FFFFFF', padding: '1rem 1.5rem', borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
         <button 
           type="button" 
-          className="btn btn-secondary"
+          className="btn btn-secondary btn-sm"
           onClick={onBackToEdit}
+          style={{ padding: '8px 14px', fontSize: '0.82rem', fontWeight: 600 }}
         >
-          <ArrowLeft size={16} />
-          <span>Back to Edit Materials</span>
+          <ArrowLeft size={15} />
+          <span>Back to Station</span>
         </button>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           <button
             type="button"
-            className="btn btn-secondary"
-            onClick={() => setShowExportModal(true)}
-            style={{ borderColor: '#7C3AED', color: '#7C3AED' }}
-          >
-            <Send size={15} />
-            <span>Export to ESG / PPWR Portal</span>
-          </button>
-
-          <button
-            type="button"
-            className="btn btn-secondary"
+            className="btn btn-secondary btn-sm"
             onClick={() => onSave('DRAFT')}
+            style={{ padding: '8px 14px', fontSize: '0.82rem', fontWeight: 600 }}
           >
-            <Clock size={16} />
-            <span>Save as Draft</span>
+            <Clock size={15} />
+            <span>Save Draft</span>
           </button>
 
           <button
             type="button"
-            className="btn btn-primary btn-lg"
+            className="btn btn-primary"
             onClick={() => onSave('CONFIRMED')}
+            style={{ padding: '8px 20px', fontSize: '0.85rem', fontWeight: 700 }}
           >
-            <CheckCircle2 size={18} />
-            <span>Confirm & Commit Record</span>
+            <CheckCircle2 size={16} />
+            <span>Confirm & Submit Record</span>
           </button>
         </div>
       </div>

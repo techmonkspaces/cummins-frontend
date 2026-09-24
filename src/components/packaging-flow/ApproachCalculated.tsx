@@ -71,7 +71,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '960px', margin: '0 auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem', width: '100%', maxWidth: '1440px', margin: '0 auto' }}>
       
       {/* Minimalist Top Context Header */}
       <div 
@@ -270,9 +270,9 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
           <button 
             onClick={handleConfirm}
             className="btn btn-primary"
-            style={{ padding: '8px 18px', fontSize: '0.85rem' }}
+            style={{ padding: '8px 20px', fontSize: '0.85rem' }}
           >
-            <span>Review & Commit Record</span>
+            <span>Confirm Use of Shown Items</span>
             <ArrowRight size={15} />
           </button>
         </div>

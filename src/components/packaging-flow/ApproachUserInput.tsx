@@ -269,7 +269,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '960px', margin: '0 auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem', width: '100%', maxWidth: '1440px', margin: '0 auto' }}>
       
       {/* Minimalist Top Context Header */}
       <div 

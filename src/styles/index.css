@@ -519,23 +519,23 @@ body {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.82rem;
 }
 
 .custom-table th {
   background: #F8FAFC;
   color: var(--text-secondary);
-  font-weight: 600;
-  font-size: 0.75rem;
+  font-weight: 700;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 0.85rem 1rem;
+  padding: 0.55rem 0.75rem;
   border-bottom: 1px solid var(--border-subtle);
   white-space: nowrap;
 }
 
 .custom-table td {
-  padding: 0.9rem 1rem;
+  padding: 0.55rem 0.75rem;
   border-bottom: 1px solid #F1F5F9;
   color: var(--text-primary);
   vertical-align: middle;
