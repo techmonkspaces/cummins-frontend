@@ -75,8 +75,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '20px',
-          height: '100vh',
+          width: '85px',
+          height: '60px',
           zIndex: 990,
           cursor: 'pointer'
         }}
@@ -89,13 +89,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           style={{
             position: 'fixed',
             top: '12px',
-            left: '12px',
+            left: '16px',
             zIndex: 991,
             background: '#FFFFFF',
-            border: '1px solid #CBD5E1',
+            border: '1px solid #E2E8F0',
             borderRadius: '8px',
-            padding: '6px 9px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+            padding: '6px 10px',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',

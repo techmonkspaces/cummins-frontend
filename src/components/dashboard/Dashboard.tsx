@@ -120,73 +120,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const paperSharePct = Math.round((kpis.paperConsumptionKg / totalPackagingWeight) * 100);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      
-      {/* Enterprise Executive Banner (Clean Light Theme with Left Red Accent) */}
-      <div 
-        style={{
-          background: '#FFFFFF',
-          borderRadius: '12px',
-          padding: '1.5rem 1.75rem',
-          border: '1px solid #E2E8F0',
-          borderLeft: '4px solid #DA291C',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1.25rem'
-        }}
-      >
-        <div style={{ maxWidth: '780px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-            <span 
-              style={{ 
-                background: isSuperAdmin ? '#FEE2E2' : '#F0F9FF', 
-                color: isSuperAdmin ? '#DA291C' : '#0284C7', 
-                fontSize: '0.72rem', 
-                fontWeight: 800, 
-                padding: '2px 8px', 
-                borderRadius: '4px',
-                letterSpacing: '0.04em',
-                border: isSuperAdmin ? '1px solid #FECACA' : '1px solid #BAE6FD'
-              }}
-            >
-              {isSuperAdmin ? 'SUPER ADMIN GLOBAL HUB' : `${activePlant.name.toUpperCase()} HUB`}
-            </span>
-            <span style={{ fontSize: '0.75rem', color: '#CBD5E1' }}>•</span>
-            <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>
-              {isSuperAdmin ? '3 Manufacturing Sites' : `Methodology: Approach ${activePlant.configuredMethod === 'INVENTORY' ? 'A (Inventory)' : activePlant.configuredMethod === 'CALCULATED' ? 'B (Calculated)' : 'C (User Input)'}`}
-            </span>
-          </div>
-
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', margin: 0 }}>
-            {isSuperAdmin ? 'Global Packaging Consumption & Compliance Hub' : `${activePlant.name} Dashboard`}
-          </h1>
-          
-          <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '4px', lineHeight: 1.5 }}>
-            {isSuperAdmin 
-              ? 'Multi-plant enterprise overview monitoring raw packaging mass and EU PPWR compliance across all Cummins manufacturing facilities.'
-              : `Operational dashboard configured for ${activePlant.name}. All packaging actions in this site automatically run through Approach ${activePlant.configuredMethod === 'INVENTORY' ? 'A (Inventory)' : activePlant.configuredMethod === 'CALCULATED' ? 'B (Calculated)' : 'C (User Input)'}.`
-            }
-          </p>
-        </div>
-
-        <button
-          onClick={() => onStartRecord()}
-          className="btn btn-primary btn-lg"
-          style={{ 
-            fontWeight: 700, 
-            padding: '11px 22px', 
-            fontSize: '0.92rem',
-            boxShadow: '0 4px 12px rgba(218, 41, 28, 0.25)' 
-          }}
-        >
-          <Plus size={18} />
-          <span>{isSuperAdmin ? 'Record Packaging' : `Launch Approach ${activePlant.configuredMethod === 'INVENTORY' ? 'A' : activePlant.configuredMethod === 'CALCULATED' ? 'B' : 'C'}`}</span>
-        </button>
-      </div>
-
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       {/* Uniform KPI Metrics Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
         {/* Metric 1 */}

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { 
-  Database, 
-  ArrowRight, 
-  Calculator, 
-  Calendar, 
+import {
+  Database,
+  ArrowRight,
+  Calculator,
+  Calendar,
   PackageCheck,
   CheckCircle2,
   Info,
@@ -74,7 +74,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
     const lineItems: PackagingLineItem[] = factoryPackagingConsumed.map((mat) => {
       const rate = mat.totalUsedKg / totalPlantProductNetKg;
       const skuAllocatedKg = Number((currentSkuRow.totalProductWeightKg * rate).toFixed(2));
-      
+
       return {
         id: `line-${mat.id}-${Date.now()}`,
         materialId: mat.id,
@@ -100,9 +100,9 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem', width: '100%', maxWidth: '1440px', margin: '0 auto' }}>
-      
+
       {/* Minimalist Top Context Header */}
-      <div 
+      <div
         style={{
           background: '#FFFFFF',
           borderRadius: '10px',
@@ -142,7 +142,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
       </div>
 
       {/* Reconciliation Period & Factory Output KPI Bar */}
-      <div 
+      <div
         style={{
           background: '#FFFFFF',
           borderRadius: '10px',
@@ -186,7 +186,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
           <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '3px' }}>
             Total Plant Products Output
           </span>
-          <div 
+          <div
             style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A' }}
             data-tooltip="Auto-fetched from MES Line Output across all plant assembly stations"
           >
@@ -223,7 +223,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
       </div>
 
       {/* Section 1: Factory Level Total Packaging Deductions (ERP MVT-261) */}
-      <div 
+      <div
         style={{
           background: '#FFFFFF',
           borderRadius: '10px',
@@ -239,9 +239,9 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
               1. Total Plant Packaging Consumption (Period Batch Goods Issues)
             </h3>
           </div>
-          <span style={{ fontSize: '0.72rem', color: '#64748B' }}>
+          {/* <span style={{ fontSize: '0.72rem', color: '#64748B' }}>
             SAP S/4HANA Material Movement 261
-          </span>
+          </span> */}
         </div>
 
         <div style={{ padding: '1rem 1.25rem' }}>
@@ -294,7 +294,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
       </div>
 
       {/* Section 2: Proportional Packaging Allocation per SKU */}
-      <div 
+      <div
         style={{
           background: '#FFFFFF',
           borderRadius: '10px',
@@ -347,9 +347,9 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
                 const perUnitAllocGrams = (rowTotalPkgKg / row.units) * 1000;
 
                 return (
-                  <tr 
-                    key={row.sku} 
-                    style={{ 
+                  <tr
+                    key={row.sku}
+                    style={{
                       borderBottom: '1px solid #F1F5F9',
                       background: isCurrent ? '#F0F9FF' : 'transparent',
                       transition: 'background 0.15s ease'
@@ -430,8 +430,8 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
           <button onClick={onBack} className="btn btn-secondary btn-sm">
             Cancel
           </button>
-          
-          <button 
+
+          <button
             onClick={handleProceed}
             className="btn btn-primary"
             style={{ padding: '8px 20px', fontSize: '0.85rem' }}

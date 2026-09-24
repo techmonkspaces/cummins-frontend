@@ -97,49 +97,26 @@ export const Header: React.FC<HeaderProps> = ({
         height: '60px',
         display: 'flex',
         alignItems: 'center',
-        padding: '0 1.75rem 0 4.75rem',
+        padding: '0 2rem 0 6.5rem',
         justifyContent: 'space-between',
         boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
       }}
     >
       {/* Left: Plant & Approach Context */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <div 
-          style={{ 
-            width: '32px', 
-            height: '32px', 
-            borderRadius: '8px', 
-            background: isSuperAdmin ? '#FFF5F5' : '#F8FAFC', 
-            border: isSuperAdmin ? '1px solid #FECACA' : '1px solid #E2E8F0',
-            color: isSuperAdmin ? '#DA291C' : '#0F172A', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            fontWeight: 800
-          }}
-        >
-          {isSuperAdmin ? <Crown size={16} color="#DA291C" /> : <Building2 size={16} color="#0284C7" />}
-        </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.01em' }}>
+          {isSuperAdmin ? 'Global Operations Network' : activePlant.name}
+        </span>
+        <span style={{ color: '#CBD5E1', fontSize: '0.85rem' }}>•</span>
+        <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600 }}>
+          {isSuperAdmin ? 'All 3 Plants' : activePlant.code}
+        </span>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0F172A' }}>
-                {isSuperAdmin ? 'Global Operations Network' : activePlant.name}
-              </span>
-              <span style={{ color: '#CBD5E1' }}>•</span>
-              <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>
-                {isSuperAdmin ? 'All 3 Plants' : activePlant.code}
-              </span>
-            </div>
+        {!isSuperAdmin && (
+          <div style={{ marginLeft: '6px' }}>
+            {getApproachBadge()}
           </div>
-
-          {!isSuperAdmin && (
-            <div style={{ marginLeft: '4px' }}>
-              {getApproachBadge()}
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
       {/* Right: Clean Action Area with Sign Out */}
