@@ -146,55 +146,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <CumminsLogo height={34} showWordmark={true} />
         </div>
 
-        {/* Scope / Plant Identity Card */}
-        <div
-          style={{
-            margin: '0.85rem 1rem 0.5rem',
-            padding: '10px 12px',
-            borderRadius: '10px',
-            background: isSuperAdmin ? '#FFF5F5' : tag.bg,
-            border: isSuperAdmin ? '1px solid #FECACA' : `1px solid ${tag.color}30`,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '3px'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: isSuperAdmin ? '#DA291C' : tag.color, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              {isSuperAdmin ? 'Global Scope' : 'Assigned Plant'}
-            </span>
-            <span
-              style={{
-                fontSize: '0.65rem',
-                fontWeight: 800,
-                padding: '2px 6px',
-                borderRadius: '4px',
-                background: isSuperAdmin ? '#DA291C' : tag.color,
-                color: '#FFFFFF'
-              }}
-            >
-              {isSuperAdmin ? 'ALL SITES' : tag.label}
-            </span>
-          </div>
-
-          <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {isSuperAdmin ? 'All 3 Cummins Sites' : activePlant.name}
-          </div>
-
-          {!isSuperAdmin && (
-            <div style={{ fontSize: '0.7rem', color: '#64748B' }}>
-              {method === 'INVENTORY' && 'ERP Batch Consumption'}
-              {method === 'CALCULATED' && 'Top-Down Rule Engine'}
-              {method === 'USER_INPUT' && 'Floor Station Weighing'}
-            </div>
-          )}
-        </div>
-
         {/* Dynamic Role-Tailored Navigation */}
         <nav
           style={{
             flex: 1,
-            padding: '0.5rem 0.75rem',
+            padding: '0.75rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.2rem',
@@ -272,19 +228,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 style={getNavBtnStyle(activeTab === 'rules')}
               >
                 <Sliders size={17} color={activeTab === 'rules' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Rules & Config</span>
+                <span style={{ flex: 1 }}>Rules & Configuration</span>
                 <span style={{ fontSize: '0.65rem', background: '#FAF5FF', color: '#7C3AED', border: '1px solid #DDD6FE', padding: '1px 5px', borderRadius: '3px', fontWeight: 700 }}>4-Tier</span>
               </button>
-
-              {/* PPWR & ESG Reports */}
-              {/* <button
-                onClick={() => onSelectTab('reports')}
-                className={`sidebar-nav-btn ${activeTab === 'reports' ? 'active' : ''}`}
-                style={getNavBtnStyle(activeTab === 'reports')}
-              >
-                <FileSpreadsheet size={17} color={activeTab === 'reports' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>PPWR & ESG Reports</span>
-              </button> */}
             </>
           )}
 
@@ -294,11 +240,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {isDataEntry && method === 'INVENTORY' && (
             <>
               <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                WMS Entry Station
-              </div>
-              <div style={{ margin: '6px 0 4px', padding: '8px 12px', background: '#F0F9FF', border: '1px solid #BAE6FD', borderRadius: '8px', fontSize: '0.76rem', color: '#0369A1' }}>
-                <span style={{ fontWeight: 700 }}>Pune Factory</span> — Approach A<br />
-                <span style={{ color: '#64748B' }}>Log today's batch deductions</span>
+                Data Entry Station
               </div>
               <button
                 onClick={() => { onSelectTab('packaging'); onStartPackagingFlow(); }}
@@ -317,11 +259,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {isDataEntry && method === 'CALCULATED' && (
             <>
               <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                BOM Entry Station
-              </div>
-              <div style={{ margin: '6px 0 4px', padding: '8px 12px', background: '#FAF5FF', border: '1px solid #DDD6FE', borderRadius: '8px', fontSize: '0.76rem', color: '#7C3AED' }}>
-                <span style={{ fontWeight: 700 }}>Phaltan Factory</span> — Approach B<br />
-                <span style={{ color: '#64748B' }}>Run auto-calculation for a product</span>
+                Data Entry Station
               </div>
               <button
                 onClick={() => { onSelectTab('packaging'); onStartPackagingFlow(); }}
@@ -340,11 +278,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {isDataEntry && method === 'USER_INPUT' && (
             <>
               <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Floor Packing Station
-              </div>
-              <div style={{ margin: '6px 0 4px', padding: '8px 12px', background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: '8px', fontSize: '0.76rem', color: '#059669' }}>
-                <span style={{ fontWeight: 700 }}>Jamshedpur Factory</span> — Approach C<br />
-                <span style={{ color: '#64748B' }}>Log what you packed at this station</span>
+                Data Entry Station
               </div>
               <button
                 onClick={() => { onSelectTab('packaging'); onStartPackagingFlow(); }}
