@@ -20,6 +20,7 @@ import { ApproachCalculated } from './ApproachCalculated';
 import { ApproachUserInput } from './ApproachUserInput';
 import { PackagingSummary } from './PackagingSummary';
 import { recordsService } from '../../services/recordsService';
+import { inventoryService } from '../../services/inventoryService';
 import { MOCK_PRODUCTS, MOCK_PACKAGING_INVENTORY } from '../../data/mockData';
 
 interface PackagingWorkflowProps {
@@ -103,6 +104,12 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
       period: workingPeriod,
       notes: workingNotes
     });
+
+    // Real-time Factory Inventory Deduction
+    inventoryService.deductStock(workingMaterials.map(m => ({
+      materialId: m.materialId,
+      quantity: m.quantity
+    })));
 
     setCreatedRecord(newRecord);
     setCurrentStep('CONFIRMED_SUCCESS');

@@ -47,11 +47,15 @@ const getCompatibleUnitsForMaterial = (materialId: string, masterList: Packaging
   }
 
   switch (master.id) {
+    case 'MAT-CB-S':
+    case 'MAT-CB-M':
+    case 'MAT-CB-L':
+    case 'MAT-CB-XL':
     case 'MAT-001':
       return [
-        { value: 'pcs', label: 'pcs (Cartons)', defaultQty: 1, badgeHint: '450g / box' },
-        { value: 'kg', label: 'kg (Carton Mass)', defaultQty: 0.45 },
-        { value: 'g', label: 'g (Grams)', defaultQty: 450 }
+        { value: 'pcs', label: 'pcs (Cartons)', defaultQty: 1, badgeHint: `${master.dimensions || 'Carton'} (${master.weightPerUnitKg} kg)` },
+        { value: 'kg', label: 'kg (Carton Mass)', defaultQty: master.weightPerUnitKg },
+        { value: 'g', label: 'g (Grams)', defaultQty: Math.round(master.weightPerUnitKg * 1000) }
       ];
     case 'MAT-002':
       return [

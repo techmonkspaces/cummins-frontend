@@ -10,6 +10,7 @@ import {
   Share2
 } from 'lucide-react';
 import { PackagingRecord, RecordingMethod, RecordStatus } from '../../types';
+import { MOCK_PACKAGING_INVENTORY } from '../../data/mockData';
 
 interface RecordDetailModalProps {
   record: PackagingRecord | null;
@@ -39,7 +40,7 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" style={{ maxWidth: '800px' }} onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content" style={{ maxWidth: '1060px', width: '95%', maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="modal-header">
           <div>
@@ -67,7 +68,7 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
         </div>
 
         {/* Body */}
-        <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem', overflowY: 'auto' }}>
           {/* Key Metrics Strip */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', background: '#F8FAFC', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
             <div>
@@ -99,31 +100,95 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
           {/* BOM Table */}
           <div>
             <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.6rem' }}>
-              Recorded Material Bill-of-Materials
+              Recorded Material Bill-of-Materials (PPWR Compliance Spec)
             </h4>
-            <div className="table-wrapper">
-              <table className="custom-table">
+            <div className="table-wrapper" style={{ overflowX: 'visible' }}>
+              <table className="custom-table" style={{ width: '100%', tableLayout: 'auto' }}>
                 <thead>
                   <tr>
-                    <th>Material ID</th>
-                    <th>Material Name</th>
-                    <th>Category</th>
-                    <th>Recorded Qty</th>
-                    <th>Standard Mass</th>
-                    <th>Per Unit</th>
+                    <th style={{ whiteSpace: 'nowrap' }}>Packaging Component</th>
+                    <th style={{ whiteSpace: 'nowrap' }}>Packaging Class</th>
+                    <th style={{ whiteSpace: 'nowrap' }}>Single Use / Reusable</th>
+                    <th style={{ whiteSpace: 'nowrap' }}>Dimensions</th>
+                    <th style={{ whiteSpace: 'nowrap' }}>Weight %</th>
+                    <th style={{ whiteSpace: 'nowrap' }}>Total Mass</th>
+                    <th style={{ whiteSpace: 'nowrap' }}>Per Unit</th>
                   </tr>
                 </thead>
                 <tbody>
                   {record.materials.map((m) => {
                     const perUnit = record.productQuantity > 0 ? m.weightKg / record.productQuantity : 0;
+                    const weightPct = record.totalPackagingWeightKg > 0 
+                      ? ((m.weightKg / record.totalPackagingWeightKg) * 100).toFixed(1) 
+                      : '0.0';
+
+                    // Packaging Class, Use Type & Dimensions from Inventory Master
+                    const master = MOCK_PACKAGING_INVENTORY.find(
+                      inv => inv.id === m.materialId || inv.name.toLowerCase() === m.materialName.toLowerCase()
+                    );
+
+                    let pClass = m.packagingClass || master?.packagingClass;
+                    let isReusable = (m.useType || master?.useType) === 'Reusable';
+                    let dimensions = m.dimensions || master?.dimensions || '-';
+
+                    if (!pClass) {
+                      const matNameLower = m.materialName.toLowerCase();
+                      if (matNameLower.includes('box') || matNameLower.includes('carton') || matNameLower.includes('tray')) {
+                        pClass = 'Primary';
+                        if (dimensions === '-') dimensions = '35 × 25 × 20 cm';
+                      } else if (matNameLower.includes('tape') || matNameLower.includes('film') || matNameLower.includes('bag') || matNameLower.includes('wrap')) {
+                        pClass = 'Secondary';
+                        if (dimensions === '-') dimensions = matNameLower.includes('tape') ? '50 mm × 66 m' : '1000 mm × 50 m';
+                      } else {
+                        pClass = 'Tertiary';
+                        if (dimensions === '-') dimensions = matNameLower.includes('end-cap') ? '15 × 10 × 8 cm' : '70 gsm / 5-ply';
+                      }
+                    }
+
                     return (
                       <tr key={m.id}>
-                        <td><span className="font-mono text-xs font-semibold" style={{ color: '#64748B' }}>{m.materialId}</span></td>
-                        <td><span style={{ fontWeight: 600, color: '#0F172A' }}>{m.materialName}</span></td>
-                        <td><span className="badge badge-neutral" style={{ fontSize: '0.7rem' }}>{m.category}</span></td>
-                        <td><span className="font-mono">{m.quantity} {m.unit}</span></td>
-                        <td><span className="font-mono font-bold" style={{ color: '#DA291C' }}>{m.weightKg.toFixed(3)} kg</span></td>
-                        <td><span className="font-mono text-xs" style={{ color: '#0284C7' }}>{perUnit.toFixed(4)} kg/u</span></td>
+                        <td>
+                          <div>
+                            <span style={{ fontWeight: 600, color: '#0F172A', display: 'block' }}>{m.materialName}</span>
+                            <span className="font-mono text-xs" style={{ color: '#64748B' }}>{m.materialId} • {m.category}</span>
+                          </div>
+                        </td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
+                          <span className={`badge ${pClass === 'Primary' ? 'badge-calculated' : pClass === 'Secondary' ? 'badge-inventory' : 'badge-neutral'}`} style={{ fontSize: '0.72rem', fontWeight: 600 }}>
+                            {pClass}
+                          </span>
+                        </td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
+                          <span className="badge" style={{ 
+                            fontSize: '0.72rem', 
+                            fontWeight: 600,
+                            background: isReusable ? '#ECFDF5' : '#EFF6FF',
+                            color: isReusable ? '#059669' : '#1E40AF',
+                            border: `1px solid ${isReusable ? '#A7F3D0' : '#BFDBFE'}`
+                          }}>
+                            {isReusable ? 'Reusable' : 'Single-Use'}
+                          </span>
+                        </td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
+                          <span className="font-mono text-xs" style={{ color: '#475569' }}>
+                            {dimensions}
+                          </span>
+                        </td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
+                          <span className="font-mono font-semibold" style={{ color: '#0F172A' }}>
+                            {weightPct}%
+                          </span>
+                        </td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
+                          <span className="font-mono font-bold" style={{ color: '#DA291C' }}>
+                            {m.weightKg.toFixed(2)} kg
+                          </span>
+                        </td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
+                          <span className="font-mono text-xs" style={{ color: '#0284C7' }}>
+                            {perUnit.toFixed(4)} kg/u
+                          </span>
+                        </td>
                       </tr>
                     );
                   })}
@@ -134,8 +199,8 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
 
           {/* Material Breakdown Summary */}
           <div style={{ padding: '0.85rem 1rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.6rem', color: '#059669', fontSize: '0.85rem', fontWeight: 700 }}>
-              <ShieldCheck size={16} /> Material Category & Recyclability Breakdown
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.6rem', color: '#0F172A', fontSize: '0.85rem', fontWeight: 700 }}>
+              <ShieldCheck size={16} color="#059669" /> Material Category & Packaging Type Breakdown
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
@@ -152,9 +217,9 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
                 </div>
               </div>
               <div>
-                <span className="text-xs text-muted">Avg Recyclable Content:</span>
-                <div className="font-mono font-semibold" style={{ color: '#059669' }}>
-                  {record.ppwrSummary.avgRecyclablePct}% Recyclable
+                <span className="text-xs text-muted">Packaging Format Type:</span>
+                <div className="font-mono font-semibold" style={{ color: '#1E40AF' }}>
+                  100% Single-Use Packaging
                 </div>
               </div>
             </div>

@@ -23,6 +23,8 @@ export interface PackagingMaterialMaster {
   id: string;
   name: string;
   category: MaterialCategory;
+  packagingClass?: 'Primary' | 'Secondary' | 'Tertiary';
+  useType?: 'Single-Use' | 'Reusable';
   availableStock: number;
   stockUnit: 'pcs' | 'kg' | 'm' | 'rolls';
   weightPerUnitKg: number; // Conversion weight to kg per stockUnit
@@ -40,6 +42,9 @@ export interface PackagingLineItem {
   materialId: string;
   materialName: string;
   category: MaterialCategory;
+  packagingClass?: 'Primary' | 'Secondary' | 'Tertiary';
+  useType?: 'Single-Use' | 'Reusable';
+  dimensions?: string;
   quantity: number;
   unit: string;
   weight: number; // calculated total weight for this line in weightUnit

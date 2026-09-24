@@ -309,8 +309,20 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
           </div>
         </div>
 
+        {/* Live Inventory Auto-Deduction Notice */}
+        <div style={{ marginTop: '1.25rem', padding: '0.65rem 0.95rem', background: '#F0FDF4', borderRadius: '8px', border: '1px solid #BBF7D0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span className="badge" style={{ fontSize: '0.72rem', background: '#DCFCE7', color: '#15803D', border: '1px solid #86EFAC', fontWeight: 700 }}>
+              <Database size={11} /> Live Stock Sync
+            </span>
+            <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 600 }}>
+              Confirming this record will automatically deduct consumed packaging materials from the plant warehouse inventory.
+            </span>
+          </div>
+        </div>
+
         {notes && (
-          <div style={{ marginTop: '1.25rem', padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+          <div style={{ marginTop: '0.75rem', padding: '0.75rem 1rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
             <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase' }}>
               Record Audit Notes:
             </span>

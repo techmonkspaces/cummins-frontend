@@ -20,9 +20,30 @@ export class PackagingCalculationEngine {
     const explanations: string[] = [];
     const items: PackagingLineItem[] = [];
 
-    // 1. Box Selection
-    const boxMaster = MOCK_PACKAGING_INVENTORY.find(m => m.id === 'MAT-001') || MOCK_PACKAGING_INVENTORY[0];
-    const boxWeightPerUnitKg = product.weightKg > 10 ? 0.65 : product.weightKg > 4 ? 0.45 : 0.25;
+    // 1. Box Selection based on Product Dimensions & Volume (Rule-Engine Matching)
+    const { length, width, height } = product.dimensionsCm;
+    let selectedBoxId = 'MAT-CB-M';
+    let boxReason = '';
+
+    if (length <= 25 && width <= 20 && height <= 15) {
+      selectedBoxId = 'MAT-CB-S';
+      boxReason = `Selected Small Box (25×20×15 cm) for compact product (${length}×${width}×${height} cm, ${product.volumeCm3} cm³).`;
+    } else if (length <= 35 && width <= 25 && height <= 20) {
+      selectedBoxId = 'MAT-CB-M';
+      boxReason = `Selected Medium Box (35×25×20 cm) for standard product (${length}×${width}×${height} cm, ${product.volumeCm3} cm³).`;
+    } else if (length <= 45 && width <= 30 && height <= 25) {
+      selectedBoxId = 'MAT-CB-L';
+      boxReason = `Selected Large Heavy-Duty Box (45×30×25 cm) for heavy/high-volume component (${length}×${width}×${height} cm, ${product.volumeCm3} cm³).`;
+    } else {
+      selectedBoxId = 'MAT-CB-XL';
+      boxReason = `Selected Extra-Large Bulk Carton (60×40×35 cm) for oversized powertrain assembly (${length}×${width}×${height} cm).`;
+    }
+
+    const boxMaster = MOCK_PACKAGING_INVENTORY.find(m => m.id === selectedBoxId) 
+      || MOCK_PACKAGING_INVENTORY.find(m => m.id === 'MAT-CB-M') 
+      || MOCK_PACKAGING_INVENTORY[0];
+
+    const boxWeightPerUnitKg = boxMaster.weightPerUnitKg;
     
     items.push({
       id: `calc-mat-box-${Date.now()}-1`,
@@ -35,9 +56,9 @@ export class PackagingCalculationEngine {
       weightUnit: 'kg',
       weightKg: parseFloat((quantity * boxWeightPerUnitKg).toFixed(3)),
       isSystemGenerated: true,
-      notes: `Standard corrugated shipping box calibrated for ${product.weightKg} kg load capacity.`
+      notes: `${boxMaster.dimensions} carton (${boxReason})`
     });
-    explanations.push(`Box Sizing: Selected 1x FEFCO 0201 carton based on outer dimensions (${product.dimensionsCm.length}×${product.dimensionsCm.width}×${product.dimensionsCm.height} cm).`);
+    explanations.push(`Box Dimension Matching: ${boxReason} (Tare mass: ${boxWeightPerUnitKg} kg/box).`);
 
     // 2. Paper Cushioning (Void Fill & Shock Buffer)
     // For GA-102 (8kg) -> 120g (0.12kg) per unit

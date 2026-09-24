@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { 
-  Search, 
-  CheckCircle2, 
-  Clock, 
-  Database, 
-  Calculator, 
-  Edit3, 
-  Trash2, 
-  Eye, 
-  Share2, 
-  RefreshCw, 
-  ShieldCheck, 
-  FileSpreadsheet, 
+import {
+  Search,
+  CheckCircle2,
+  Clock,
+  Database,
+  Calculator,
+  Edit3,
+  Trash2,
+  Eye,
+  Share2,
+  RefreshCw,
+  ShieldCheck,
+  FileSpreadsheet,
   Layers,
   Building2
 } from 'lucide-react';
@@ -54,7 +54,7 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
 
   const filteredRecords = records.filter((r) => {
     const q = searchQuery.toLowerCase();
-    const matchesQuery = !q || 
+    const matchesQuery = !q ||
       r.id.toLowerCase().includes(q) ||
       r.productName.toLowerCase().includes(q) ||
       r.productSku.toLowerCase().includes(q) ||
@@ -194,7 +194,7 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
               onChange={(e) => setStatusFilter(e.target.value)}
               style={{ width: '150px', height: '36px', padding: '0.35rem 0.6rem', fontSize: '0.8rem' }}
             >
-              <option value="ALL">All Statuses</option>
+              <option value="ALL">All Status</option>
               <option value="CONFIRMED">Confirmed</option>
               <option value="DRAFT">Draft Review</option>
             </select>
