@@ -1,7 +1,7 @@
 import React from 'react';
-import { 
-  Building2, 
-  Crown, 
+import {
+  Building2,
+  Crown,
   LogOut,
   ChevronDown,
   Sparkles,
@@ -39,15 +39,15 @@ export const Header: React.FC<HeaderProps> = ({
     switch (activePlant.configuredMethod) {
       case 'INVENTORY':
         return (
-          <span 
-            style={{ 
-              background: '#F0F9FF', 
-              color: '#0284C7', 
-              border: '1px solid #BAE6FD', 
-              padding: '3px 8px', 
-              borderRadius: '6px', 
-              fontSize: '0.72rem', 
-              fontWeight: 700 
+          <span
+            style={{
+              background: '#F0F9FF',
+              color: '#0284C7',
+              border: '1px solid #BAE6FD',
+              padding: '3px 8px',
+              borderRadius: '6px',
+              fontSize: '0.72rem',
+              fontWeight: 700
             }}
           >
             Approach A (Inventory)
@@ -55,15 +55,15 @@ export const Header: React.FC<HeaderProps> = ({
         );
       case 'CALCULATED':
         return (
-          <span 
-            style={{ 
-              background: '#FAF5FF', 
-              color: '#7C3AED', 
-              border: '1px solid #DDD6FE', 
-              padding: '3px 8px', 
-              borderRadius: '6px', 
-              fontSize: '0.72rem', 
-              fontWeight: 700 
+          <span
+            style={{
+              background: '#FAF5FF',
+              color: '#7C3AED',
+              border: '1px solid #DDD6FE',
+              padding: '3px 8px',
+              borderRadius: '6px',
+              fontSize: '0.72rem',
+              fontWeight: 700
             }}
           >
             Approach B (Calculated)
@@ -71,15 +71,15 @@ export const Header: React.FC<HeaderProps> = ({
         );
       case 'USER_INPUT':
         return (
-          <span 
-            style={{ 
-              background: '#ECFDF5', 
-              color: '#059669', 
-              border: '1px solid #A7F3D0', 
-              padding: '3px 8px', 
-              borderRadius: '6px', 
-              fontSize: '0.72rem', 
-              fontWeight: 700 
+          <span
+            style={{
+              background: '#ECFDF5',
+              color: '#059669',
+              border: '1px solid #A7F3D0',
+              padding: '3px 8px',
+              borderRadius: '6px',
+              fontSize: '0.72rem',
+              fontWeight: 700
             }}
           >
             Approach C (User Input)
@@ -89,12 +89,12 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header 
-      style={{ 
-        background: '#FFFFFF', 
-        borderBottom: '1px solid #E2E8F0', 
-        position: 'sticky', 
-        top: 0, 
+    <header
+      style={{
+        background: '#FFFFFF',
+        borderBottom: '1px solid #E2E8F0',
+        position: 'sticky',
+        top: 0,
         zIndex: 80,
         height: '60px',
         display: 'flex',
@@ -123,17 +123,17 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Right: Quick Demo Persona Switcher & Sign Out */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-        
+
         {/* Quick Demo Switcher - Only visible if logged in as Super Admin */}
         {canSwitchRoles && (
-          <div 
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '6px', 
-              background: '#F8FAFC', 
-              padding: '5px 10px', 
-              borderRadius: '8px', 
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: '#F8FAFC',
+              padding: '5px 10px',
+              borderRadius: '8px',
               border: '1px solid #E2E8F0',
               boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
             }}
@@ -156,16 +156,16 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <option value="PERSONA-ADMIN">Super Admin</option>
               <optgroup label="Pune Factory - Approach A">
-                <option value="PERSONA-PUNE-MGR">Pune Factory Approach A - Manager</option>
-                <option value="PERSONA-PUNE-OPR">Pune Factory Approach A - Data Entry</option>
+                <option value="PERSONA-PUNE-MGR"> Manager</option>
+                <option value="PERSONA-PUNE-OPR"> Data Entry</option>
               </optgroup>
               <optgroup label="Phaltan Factory - Approach B">
-                <option value="PERSONA-PHALTAN-MGR">Phaltan Factory Approach B - Manager</option>
-                <option value="PERSONA-PHALTAN-OPR">Phaltan Factory Approach B - Data Entry</option>
+                <option value="PERSONA-PHALTAN-MGR"> Manager</option>
+                <option value="PERSONA-PHALTAN-OPR"> Data Entry</option>
               </optgroup>
               <optgroup label="Jamshedpur Factory - Approach C">
-                <option value="PERSONA-JAMSHEDPUR-MGR">Jamshedpur Factory Approach C - Manager</option>
-                <option value="PERSONA-JAMSHEDPUR-OPR">Jamshedpur Factory Approach C - Data Entry</option>
+                <option value="PERSONA-JAMSHEDPUR-MGR"> Manager</option>
+                <option value="PERSONA-JAMSHEDPUR-OPR"> Data Entry</option>
               </optgroup>
             </select>
           </div>
