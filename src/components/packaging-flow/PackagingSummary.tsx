@@ -196,8 +196,8 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
                 <th style={{ width: '200px' }}>Material Description</th>
                 <th style={{ width: '130px' }}>PPWR Category</th>
                 <th style={{ width: '110px' }}>Quantity / Unit</th>
-                <th style={{ width: '110px' }}>Total Mass</th>
-                <th style={{ width: '110px' }}>Per Unit Mass</th>
+                <th style={{ width: '110px' }}>Total Pkg Mass</th>
+                <th style={{ width: '110px' }}>Pkg Mass / Unit</th>
                 <th style={{ width: '90px' }}>% Share</th>
                 <th style={{ minWidth: '160px' }}>Line Notes</th>
               </tr>

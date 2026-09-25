@@ -111,8 +111,8 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
                     {/* <th style={{ whiteSpace: 'nowrap' }}>Single Use / Reusable</th> */}
                     <th style={{ whiteSpace: 'nowrap' }}>Dimensions</th>
                     <th style={{ whiteSpace: 'nowrap' }}>Weight %</th>
-                    <th style={{ whiteSpace: 'nowrap' }}>Total Mass</th>
-                    <th style={{ whiteSpace: 'nowrap' }}>Per Unit</th>
+                    <th style={{ whiteSpace: 'nowrap' }}>Total Pkg Mass</th>
+                    <th style={{ whiteSpace: 'nowrap' }}>Pkg Mass / Unit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -216,12 +216,12 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
                   {record.ppwrSummary.plasticKg.toFixed(2)} kg ({record.ppwrSummary.plasticPct}%)
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <span className="text-xs text-muted">Packaging Format Type:</span>
                 <div className="font-mono font-semibold" style={{ color: '#1E40AF' }}>
                   100% Single-Use Packaging
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
