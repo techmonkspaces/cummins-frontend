@@ -150,26 +150,21 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
 
           <div>
             <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
-              Batch Quantity (Units)
+              Batch Quantity
             </label>
-            <input
-              type="number"
-              min="1"
-              value={productQuantity}
-              onChange={(e) => setProductQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+            <div
               style={{
-                width: '100%',
                 height: '38px',
-                padding: '0 10px',
-                background: '#FFFFFF',
-                border: '1px solid #CBD5E1',
-                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
                 fontWeight: 700,
-                fontSize: '0.84rem',
+                fontSize: '0.9rem',
                 color: '#0F172A',
                 fontFamily: 'var(--font-mono)'
               }}
-            />
+            >
+              100 Units
+            </div>
           </div>
         </div>
       </div>
