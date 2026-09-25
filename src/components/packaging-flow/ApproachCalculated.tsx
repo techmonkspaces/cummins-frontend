@@ -219,18 +219,13 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
                       <div style={{ fontWeight: 700, color: '#0F172A', fontSize: '0.84rem' }}>
                         {item.materialName}
                       </div>
-                      <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                        {displayDimensions && (
-                          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: '#475569', background: '#F1F5F9', padding: '1px 6px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
+                      {displayDimensions && (
+                        <div style={{ marginTop: '3px' }}>
+                          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', fontWeight: 600, color: '#475569', background: '#F1F5F9', padding: '1px 6px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
                             {displayDimensions}
                           </span>
-                        )}
-                        {master?.ppwrMaterialCode && (
-                          <span style={{ fontSize: '0.68rem', color: '#7C3AED', background: '#FAF5FF', padding: '1px 6px', borderRadius: '4px', border: '1px solid #DDD6FE', fontWeight: 700 }}>
-                            {master.ppwrMaterialCode}
-                          </span>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </td>
                     <td style={{ padding: '10px 12px', fontSize: '0.78rem', color: '#64748B' }}>
                       {item.category}

@@ -1,12 +1,12 @@
 import React from 'react';
-import { 
-  X, 
-  CheckCircle2, 
-  Clock, 
-  Database, 
-  Calculator, 
-  Edit3, 
-  ShieldCheck, 
+import {
+  X,
+  CheckCircle2,
+  Clock,
+  Database,
+  Calculator,
+  Edit3,
+  ShieldCheck,
   Share2
 } from 'lucide-react';
 import { PackagingRecord, RecordingMethod, RecordStatus } from '../../types';
@@ -100,15 +100,15 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
           {/* BOM Table */}
           <div>
             <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.6rem' }}>
-              Recorded Material Bill-of-Materials (PPWR Compliance Spec)
+              Recorded Bill of Materials (PPWR Compliance Spec)
             </h4>
             <div className="table-wrapper" style={{ overflowX: 'visible' }}>
               <table className="custom-table" style={{ width: '100%', tableLayout: 'auto' }}>
                 <thead>
                   <tr>
                     <th style={{ whiteSpace: 'nowrap' }}>Packaging Component</th>
-                    <th style={{ whiteSpace: 'nowrap' }}>Packaging Class</th>
-                    <th style={{ whiteSpace: 'nowrap' }}>Single Use / Reusable</th>
+                    {/* <th style={{ whiteSpace: 'nowrap' }}>Packaging Class</th> */}
+                    {/* <th style={{ whiteSpace: 'nowrap' }}>Single Use / Reusable</th> */}
                     <th style={{ whiteSpace: 'nowrap' }}>Dimensions</th>
                     <th style={{ whiteSpace: 'nowrap' }}>Weight %</th>
                     <th style={{ whiteSpace: 'nowrap' }}>Total Mass</th>
@@ -118,8 +118,8 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
                 <tbody>
                   {record.materials.map((m) => {
                     const perUnit = record.productQuantity > 0 ? m.weightKg / record.productQuantity : 0;
-                    const weightPct = record.totalPackagingWeightKg > 0 
-                      ? ((m.weightKg / record.totalPackagingWeightKg) * 100).toFixed(1) 
+                    const weightPct = record.totalPackagingWeightKg > 0
+                      ? ((m.weightKg / record.totalPackagingWeightKg) * 100).toFixed(1)
                       : '0.0';
 
                     // Packaging Class, Use Type & Dimensions from Inventory Master
@@ -153,7 +153,7 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
                             <span className="font-mono text-xs" style={{ color: '#64748B' }}>{m.materialId} • {m.category}</span>
                           </div>
                         </td>
-                        <td style={{ whiteSpace: 'nowrap' }}>
+                        {/* <td style={{ whiteSpace: 'nowrap' }}>
                           <span className={`badge ${pClass === 'Primary' ? 'badge-calculated' : pClass === 'Secondary' ? 'badge-inventory' : 'badge-neutral'}`} style={{ fontSize: '0.72rem', fontWeight: 600 }}>
                             {pClass}
                           </span>
@@ -168,7 +168,7 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
                           }}>
                             {isReusable ? 'Reusable' : 'Single-Use'}
                           </span>
-                        </td>
+                        </td> */}
                         <td style={{ whiteSpace: 'nowrap' }}>
                           <span className="font-mono text-xs" style={{ color: '#475569' }}>
                             {dimensions}
