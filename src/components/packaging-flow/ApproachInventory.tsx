@@ -393,7 +393,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
             <tfoot>
               <tr style={{ background: '#F8FAFC', borderTop: '2px solid #CBD5E1' }}>
                 <td colSpan={2} style={{ padding: '9px 10px', fontWeight: 800, color: '#0F172A', fontSize: '0.82rem' }}>
-                  Total Factory Sum / Avg Rate
+                  Total Factory Sum
                 </td>
                 <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 900, color: '#0F172A', fontSize: '0.86rem' }}>
                   {totalPlantUnits.toLocaleString()}
@@ -403,27 +403,18 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
                   {totalPlantProductNetKg.toLocaleString()} kg
                 </td>
                 {factoryPackagingConsumed.map(mat => (
-                  <td key={mat.id} style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 900, color: mat.color, fontSize: '0.86rem', fontFamily: 'var(--font-mono)' }}>
-                    {((mat.totalUsedKg / totalPlantProductNetKg) * 1000).toFixed(1)} g/kg
-                  </td>
+                  <td key={mat.id}></td>
                 ))}
-                <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 900, color: '#DA291C', fontSize: '0.86rem', fontFamily: 'var(--font-mono)' }}>
-                  {(totalRatePerKg * 1000).toFixed(1)} g/kg Total
-                </td>
+                <td></td>
               </tr>
             </tfoot>
           </table>
 
           {/* Reconciliation Formula Footer */}
-          <div style={{ marginTop: '0.85rem', background: '#F8FAFC', borderRadius: '6px', padding: '8px 12px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Calculator size={13} color="#0284C7" />
-              <span style={{ fontSize: '0.74rem', color: '#475569' }}>
-                Reconciliation Formula: <strong>Allocated Material per Unit (g) = Unit Net Weight (kg) × (Period Material Consumption ÷ Total Plant Product Net Mass) × 1000</strong>
-              </span>
-            </div>
-            <span style={{ fontSize: '0.7rem', color: '#059669', fontWeight: 700 }}>
-              ✓ Direct Per-Unit Mass (/unit)
+          <div style={{ marginTop: '0.85rem', background: '#F8FAFC', borderRadius: '6px', padding: '8px 12px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Calculator size={13} color="#0284C7" />
+            <span style={{ fontSize: '0.74rem', color: '#475569' }}>
+              Reconciliation Formula: <strong>Allocated Material per Unit (g) = Unit Net Weight (kg) × (Period Material Consumption ÷ Total Plant Product Net Mass) × 1000</strong>
             </span>
           </div>
         </div>
