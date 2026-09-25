@@ -6,15 +6,17 @@ import {
   Plus, 
   X 
 } from 'lucide-react';
-import { PackagingMaterialMaster, MaterialCategory } from '../../types';
+import { PackagingMaterialMaster, MaterialCategory, Plant } from '../../types';
 
 interface PackagingInventoryViewProps {
   materials: PackagingMaterialMaster[];
+  activePlant?: Plant;
   onAddNewMaterial?: (material: PackagingMaterialMaster) => void;
 }
 
 export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
   materials,
+  activePlant,
   onAddNewMaterial,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -87,14 +89,14 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
               <span className="badge badge-inventory">
-                <Database size={12} /> Packaging Master Data
+                <Database size={12} /> {activePlant && activePlant.id !== 'ALL_PLANTS' ? `${activePlant.name} WMS Stock` : 'Packaging Master Data'}
               </span>
               <span className="text-xs text-muted">
-                {materials.length} standard packaging commodities
+                {activePlant && activePlant.id !== 'ALL_PLANTS' ? `${activePlant.code} • ${activePlant.primaryErpSystem}` : `${materials.length} standard packaging commodities`}
               </span>
             </div>
             <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0F172A' }}>
-              Packaging Material Inventory & Spec Master
+              {activePlant && activePlant.id !== 'ALL_PLANTS' ? `${activePlant.name} Packaging Inventory` : 'Packaging Material Inventory & Spec Master'}
             </h2>
           </div>
 

@@ -292,24 +292,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           {/* ======================================================== */}
+          {/* ======================================================== */}
           {/* SCENARIO 2: PUNE FACTORY MANAGER (APPROACH A — INVENTORY) */}
           {/* ======================================================== */}
           {isFactoryManager && method === 'INVENTORY' && (
             <>
               <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Pune Operations
+                Pune Factory
               </div>
 
-              {/* Pune Dashboard */}
+              {/* Plant Dashboard */}
               <button
                 onClick={() => onSelectTab('dashboard')}
+                className={`sidebar-nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'dashboard')}
               >
                 <LayoutDashboard size={17} color={activeTab === 'dashboard' ? '#DA291C' : '#64748B'} />
                 <span style={{ flex: 1 }}>Plant Dashboard</span>
               </button>
 
-              {/* Primary Action: Approach A Batch Reconciliation */}
+              {/* Approach Action: Batch Reconciliation */}
               <button
                 onClick={() => {
                   onSelectTab('packaging');
@@ -339,22 +341,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </span>
               </button>
 
-              {/* Pune Packaging Records */}
-              <button
-                onClick={() => onSelectTab('records')}
-                style={getNavBtnStyle(activeTab === 'records')}
-              >
-                <FileText size={17} color={activeTab === 'records' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Batch Audit Records</span>
-              </button>
-
-              {/* Material Consumption / WMS Stock */}
+              {/* Packaging Inventory */}
               <button
                 onClick={() => onSelectTab('inventory')}
+                className={`sidebar-nav-btn ${activeTab === 'inventory' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'inventory')}
               >
                 <Layers size={17} color={activeTab === 'inventory' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Packaging Stock & Issues</span>
+                <span style={{ flex: 1 }}>Packaging Inventory</span>
+              </button>
+
+              {/* Packaging Records */}
+              <button
+                onClick={() => onSelectTab('records')}
+                className={`sidebar-nav-btn ${activeTab === 'records' ? 'active' : ''}`}
+                style={getNavBtnStyle(activeTab === 'records')}
+              >
+                <FileText size={17} color={activeTab === 'records' ? '#DA291C' : '#64748B'} />
+                <span style={{ flex: 1 }}>Packaging Records</span>
               </button>
             </>
           )}
@@ -365,19 +369,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {isFactoryManager && method === 'CALCULATED' && (
             <>
               <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Phaltan Engineering
+                Phaltan Factory
               </div>
 
-              {/* Phaltan Dashboard */}
+              {/* Plant Dashboard */}
               <button
                 onClick={() => onSelectTab('dashboard')}
+                className={`sidebar-nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'dashboard')}
               >
                 <LayoutDashboard size={17} color={activeTab === 'dashboard' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Engineering Dashboard</span>
+                <span style={{ flex: 1 }}>Plant Dashboard</span>
               </button>
 
-              {/* Primary Action: Approach B Box Calculator */}
+              {/* Approach Action: Auto-Box Calculator */}
               <button
                 onClick={() => {
                   onSelectTab('packaging');
@@ -407,31 +412,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </span>
               </button>
 
-              {/* Assembly Products Catalog */}
-              <button
-                onClick={() => onSelectTab('products')}
-                style={getNavBtnStyle(activeTab === 'products')}
-              >
-                <Boxes size={17} color={activeTab === 'products' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Assembly Parts & CAD</span>
-              </button>
-
-              {/* Phaltan Confirmed Records */}
-              <button
-                onClick={() => onSelectTab('records')}
-                style={getNavBtnStyle(activeTab === 'records')}
-              >
-                <FileText size={17} color={activeTab === 'records' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Calculated Records</span>
-              </button>
-
-              {/* Available Packaging Stock */}
+              {/* Packaging Inventory */}
               <button
                 onClick={() => onSelectTab('inventory')}
+                className={`sidebar-nav-btn ${activeTab === 'inventory' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'inventory')}
               >
                 <Layers size={17} color={activeTab === 'inventory' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Standard Packaging BOM</span>
+                <span style={{ flex: 1 }}>Packaging Inventory</span>
+              </button>
+
+              {/* Packaging Records */}
+              <button
+                onClick={() => onSelectTab('records')}
+                className={`sidebar-nav-btn ${activeTab === 'records' ? 'active' : ''}`}
+                style={getNavBtnStyle(activeTab === 'records')}
+              >
+                <FileText size={17} color={activeTab === 'records' ? '#DA291C' : '#64748B'} />
+                <span style={{ flex: 1 }}>Packaging Records</span>
               </button>
             </>
           )}
@@ -442,19 +440,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {isFactoryManager && method === 'USER_INPUT' && (
             <>
               <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Floor Packing Station
+                Jamshedpur Factory
               </div>
 
-              {/* Jamshedpur Dashboard */}
+              {/* Plant Dashboard */}
               <button
                 onClick={() => onSelectTab('dashboard')}
+                className={`sidebar-nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'dashboard')}
               >
                 <LayoutDashboard size={17} color={activeTab === 'dashboard' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Station Dashboard</span>
+                <span style={{ flex: 1 }}>Plant Dashboard</span>
               </button>
 
-              {/* Primary Action: Approach C Floor Station Logger */}
+              {/* Approach Action: Packing Station Logger */}
               <button
                 onClick={() => {
                   onSelectTab('packaging');
@@ -484,22 +483,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </span>
               </button>
 
-              {/* Jamshedpur Packaging Records */}
-              <button
-                onClick={() => onSelectTab('records')}
-                style={getNavBtnStyle(activeTab === 'records')}
-              >
-                <FileText size={17} color={activeTab === 'records' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Shift Packing Logs</span>
-              </button>
-
-              {/* Station Packaging Materials Stock */}
+              {/* Packaging Inventory */}
               <button
                 onClick={() => onSelectTab('inventory')}
+                className={`sidebar-nav-btn ${activeTab === 'inventory' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'inventory')}
               >
                 <Layers size={17} color={activeTab === 'inventory' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Bench Materials Stock</span>
+                <span style={{ flex: 1 }}>Packaging Inventory</span>
+              </button>
+
+              {/* Packaging Records */}
+              <button
+                onClick={() => onSelectTab('records')}
+                className={`sidebar-nav-btn ${activeTab === 'records' ? 'active' : ''}`}
+                style={getNavBtnStyle(activeTab === 'records')}
+              >
+                <FileText size={17} color={activeTab === 'records' ? '#DA291C' : '#64748B'} />
+                <span style={{ flex: 1 }}>Packaging Records</span>
               </button>
             </>
           )}

@@ -154,7 +154,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
 }) => {
   const defaultProd = initialProduct || MOCK_PRODUCTS[0];
   const [selectedProduct, setSelectedProduct] = useState<Product>(defaultProd);
-  const [productQuantity, setProductQuantity] = useState<number>(50);
+  const [productQuantity, setProductQuantity] = useState<number>(1);
   const [items, setItems] = useState<UserInputItemEntry[]>(
     getDefaultMaterialsForProduct(defaultProd.sku)
   );
@@ -546,10 +546,10 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
             <tfoot>
               <tr style={{ background: '#ECFDF5', borderTop: '2px solid #A7F3D0' }}>
                 <td colSpan={2} style={{ padding: '10px 12px', fontWeight: 800, color: '#065F46', fontSize: '0.84rem' }}>
-                  Total Unit Mass
+                  Total Packaging Mass {productQuantity > 1 ? `(Per Unit & Batch of ${productQuantity})` : '(Per Unit)'}
                 </td>
                 <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#059669', fontSize: '0.94rem', fontFamily: 'var(--font-mono)' }}>
-                  {totalPerUnitGrams.toFixed(0)} g / unit ({totalPerUnitKg.toFixed(3)} kg)
+                  {totalPerUnitGrams.toFixed(0)} g / unit {productQuantity > 1 ? `• Total Batch: ${(totalPerUnitKg * productQuantity).toFixed(2)} kg` : `(${totalPerUnitKg.toFixed(3)} kg)`}
                 </td>
                 <td></td>
               </tr>

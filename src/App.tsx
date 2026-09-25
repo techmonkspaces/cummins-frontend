@@ -298,6 +298,7 @@ export const App: React.FC = () => {
               {activeTab === 'inventory' && (
                 <PackagingInventoryView
                   materials={materials}
+                  activePlant={activePlant}
                 />
               )}
 

@@ -210,11 +210,27 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
             <tbody>
               {calculatedItems.map((item) => {
                 const perUnitWeightGrams = productQuantity > 0 ? (item.weightKg / productQuantity) * 1000 : 0;
+                const master = availableMaterials.find(m => m.id === item.materialId || m.name === item.materialName);
+                const displayDimensions = item.dimensions || master?.dimensions;
 
                 return (
                   <tr key={item.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                    <td style={{ padding: '10px 12px', fontWeight: 700, color: '#0F172A', fontSize: '0.84rem' }}>
-                      {item.materialName}
+                    <td style={{ padding: '10px 12px' }}>
+                      <div style={{ fontWeight: 700, color: '#0F172A', fontSize: '0.84rem' }}>
+                        {item.materialName}
+                      </div>
+                      <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                        {displayDimensions && (
+                          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: '#475569', background: '#F1F5F9', padding: '1px 6px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
+                            {displayDimensions}
+                          </span>
+                        )}
+                        {master?.ppwrMaterialCode && (
+                          <span style={{ fontSize: '0.68rem', color: '#7C3AED', background: '#FAF5FF', padding: '1px 6px', borderRadius: '4px', border: '1px solid #DDD6FE', fontWeight: 700 }}>
+                            {master.ppwrMaterialCode}
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td style={{ padding: '10px 12px', fontSize: '0.78rem', color: '#64748B' }}>
                       {item.category}
