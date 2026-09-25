@@ -208,7 +208,7 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
                   </td>
                   <td>
                     <span className="font-mono font-bold" style={{ color: '#0F172A' }}>
-                      {mat.availableStock.toLocaleString()} {mat.stockUnit}
+                      {(mat.stockUnit === 'pcs' || mat.stockUnit === 'rolls' ? Math.round(mat.availableStock) : Number(mat.availableStock.toFixed(1))).toLocaleString()} {mat.stockUnit}
                     </span>
                   </td>
                   <td>

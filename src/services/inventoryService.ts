@@ -1,7 +1,7 @@
 import { PackagingMaterialMaster, MaterialCategory } from '../types';
 import { MOCK_PACKAGING_INVENTORY } from '../data/mockData';
 
-const INVENTORY_STORAGE_KEY = 'cummins_ppwr_inventory_stock_v2';
+const INVENTORY_STORAGE_KEY = 'cummins_ppwr_inventory_stock_v3';
 
 export interface StockDeductionResult {
   materialId: string;
@@ -31,8 +31,11 @@ class InventoryService {
         // Ensure any new catalog items from MOCK_PACKAGING_INVENTORY exist
         const merged = [...loaded];
         MOCK_PACKAGING_INVENTORY.forEach(m => {
-          if (!merged.some(item => item.id === m.id)) {
+          const existing = merged.find(item => item.id === m.id);
+          if (!existing) {
             merged.push(m);
+          } else if (existing.availableStock <= 0) {
+            existing.availableStock = m.availableStock;
           }
         });
         this.materials = merged;

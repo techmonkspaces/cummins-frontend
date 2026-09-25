@@ -119,7 +119,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const plasticSharePct = Math.round((kpis.plasticConsumptionKg / totalPackagingWeight) * 100);
   const paperSharePct = Math.round((kpis.paperConsumptionKg / totalPackagingWeight) * 100);
 
-  const isConsolidated = isSuperAdmin && (activePlant.id === 'ALL_PLANTS' || !activePlant.id);
+  const isConsolidated = isSuperAdmin;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -166,10 +166,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
-            {isConsolidated ? '13,351' : activePlant.id === 'PLANT-PHALTAN' ? '13,351' : activePlant.id === 'PLANT-PUNE' ? '4,520' : (kpis.totalProductsPacked > 0 ? kpis.totalProductsPacked.toLocaleString() : '1,150')}
+            {isConsolidated ? '18,940' : activePlant.id === 'PLANT-PHALTAN' ? '13,351' : activePlant.id === 'PLANT-PUNE' ? '4,520' : (kpis.totalProductsPacked > 0 ? kpis.totalProductsPacked.toLocaleString() : '1,150')}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
-            Units Processed
+            {isConsolidated ? 'All Factories' : 'Units Processed'}
           </div>
         </div>
 
@@ -198,10 +198,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#DA291C', marginTop: '6px' }}>
-            {isConsolidated ? '8,973 kg' : activePlant.id === 'PLANT-PHALTAN' ? '8,973 kg' : activePlant.id === 'PLANT-PUNE' ? '4,210 kg' : `${Math.round(totalPackagingWeight).toLocaleString()} kg`}
+            {isConsolidated ? '17,450 kg' : activePlant.id === 'PLANT-PHALTAN' ? '8,973 kg' : activePlant.id === 'PLANT-PUNE' ? '4,210 kg' : `${Math.round(totalPackagingWeight).toLocaleString()} kg`}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
-            Standardized SI Mass
+            {isConsolidated ? 'Enterprise Total' : 'Standardized SI Mass'}
           </div>
         </div>
       </div>
@@ -350,7 +350,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Material Mass Distribution - Commented out
+        {/* Material Mass Distribution - Commented out */}
         <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.25rem' }}>
             Material Mass Distribution (PPWR Split)
@@ -381,17 +381,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
 
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 700, marginBottom: '4px' }}>
-                <span style={{ color: '#059669' }}>Avg Recyclability Score</span>
-                <span>94.2%</span>
-              </div>
-              <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
-                <div style={{ width: '94.2%', height: '100%', background: '#059669', borderRadius: '999px' }} />
-              </div>
             </div>
           </div>
         </div>
-        */}
+
 
       </div>
     </div>
