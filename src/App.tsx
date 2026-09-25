@@ -35,6 +35,7 @@ export const App: React.FC = () => {
   const initialUser = authService.getCurrentUser() || plantService.getActivePersona();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
   const [currentUser, setCurrentUser] = useState<UserPersona>(initialUser);
+  const [isSuperAdminSession, setIsSuperAdminSession] = useState<boolean>(initialUser?.role === 'SUPER_ADMIN');
 
   // Navigation State - Data entry users go directly to their logging station
   const [activeTab, setActiveTab] = useState<NavTab>(initialUser?.role === 'DATA_ENTRY' ? 'packaging' : 'dashboard');
@@ -92,6 +93,7 @@ export const App: React.FC = () => {
     authService.loginWithPersona(persona.id);
     setCurrentUser(persona);
     setIsAuthenticated(true);
+    setIsSuperAdminSession(persona.role === 'SUPER_ADMIN');
     if (persona.plantId && persona.plantId !== 'ALL_PLANTS') {
       const p = plantService.setActivePlant(persona.plantId);
       setActivePlant(p);
@@ -103,12 +105,13 @@ export const App: React.FC = () => {
       setActiveTab('dashboard');
       setInRecordingFlow(false);
     }
-    showToast('Signed In Successfully', `Welcome ${persona.name} (${persona.roleTitle.split('•')[0]}).`, 'success');
+    showToast('Signed In Successfully', `Welcome ${persona.name}.`, 'success');
   };
 
   const handleLogout = () => {
     authService.logout();
     setIsAuthenticated(false);
+    setIsSuperAdminSession(false);
     showToast('Signed Out', 'You have been signed out from Cummins Packaging Hub.', 'info');
   };
 
@@ -147,7 +150,7 @@ export const App: React.FC = () => {
         setActiveTab('dashboard');
         setInRecordingFlow(false);
       }
-      showToast('Role Switched', `Active role: ${updated.name} (${updated.roleTitle.split('•')[0]}).`, 'info');
+      showToast('Role Switched', `Active view: ${updated.role === 'SUPER_ADMIN' ? 'Super Admin' : updated.roleTitle.split('•')[0].trim()}.`, 'info');
     }
   };
 
@@ -215,6 +218,7 @@ export const App: React.FC = () => {
           activePlant={activePlant}
           plants={plants}
           personas={personas}
+          canSwitchRoles={isSuperAdminSession}
           onSelectPlant={handleSelectPlant}
           onSelectPersona={handleSelectPersona}
           onLogout={handleLogout}

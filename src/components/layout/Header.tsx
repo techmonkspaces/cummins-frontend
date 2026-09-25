@@ -15,6 +15,7 @@ interface HeaderProps {
   activePlant: Plant;
   plants: Plant[];
   personas: UserPersona[];
+  canSwitchRoles?: boolean;
   onSelectPlant: (plantId: string) => void;
   onSelectPersona: (personaId: string) => void;
   onLogout: () => void;
@@ -26,6 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
   activePlant,
   plants,
   personas,
+  canSwitchRoles = false,
   onSelectPlant,
   onSelectPersona,
   onLogout,
@@ -119,16 +121,29 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </div>
 
-      {/* Right: Clean Action Area with Sign Out */}
+      {/* Right: Quick Demo Persona Switcher & Sign Out */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
         
-        {/* Super Admin Plant Switcher (Only visible to Super Admin) */}
-        {isSuperAdmin && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#F8FAFC', padding: '4px 10px', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-            <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>Scope:</span>
+        {/* Quick Demo Switcher - Only visible if logged in as Super Admin */}
+        {canSwitchRoles && (
+          <div 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px', 
+              background: '#F8FAFC', 
+              padding: '5px 10px', 
+              borderRadius: '8px', 
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
+            }}
+          >
+            <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Demo Role:
+            </span>
             <select
-              value={activePlant.id}
-              onChange={(e) => onSelectPlant(e.target.value)}
+              value={currentUser.id}
+              onChange={(e) => onSelectPersona(e.target.value)}
               style={{
                 background: 'transparent',
                 border: 'none',
@@ -139,10 +154,19 @@ export const Header: React.FC<HeaderProps> = ({
                 outline: 'none'
               }}
             >
-              <option value="ALL_PLANTS">All Factories (Consolidated)</option>
-              {plants.map(p => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
+              <option value="PERSONA-ADMIN">Super Admin</option>
+              <optgroup label="Pune Factory - Approach A">
+                <option value="PERSONA-PUNE-MGR">Pune Factory Approach A - Manager</option>
+                <option value="PERSONA-PUNE-OPR">Pune Factory Approach A - Data Entry</option>
+              </optgroup>
+              <optgroup label="Phaltan Factory - Approach B">
+                <option value="PERSONA-PHALTAN-MGR">Phaltan Factory Approach B - Manager</option>
+                <option value="PERSONA-PHALTAN-OPR">Phaltan Factory Approach B - Data Entry</option>
+              </optgroup>
+              <optgroup label="Jamshedpur Factory - Approach C">
+                <option value="PERSONA-JAMSHEDPUR-MGR">Jamshedpur Factory Approach C - Manager</option>
+                <option value="PERSONA-JAMSHEDPUR-OPR">Jamshedpur Factory Approach C - Data Entry</option>
+              </optgroup>
             </select>
           </div>
         )}

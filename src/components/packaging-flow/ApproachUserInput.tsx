@@ -13,6 +13,7 @@ import {
 import { Product, PackagingLineItem, PackagingMaterialMaster } from '../../types';
 import { MOCK_PRODUCTS } from '../../data/mockData';
 import { ProductSearchCombobox } from './ProductSearchCombobox';
+import { MaterialSearchCombobox } from './MaterialSearchCombobox';
 
 interface ApproachUserInputProps {
   product: Product;
@@ -392,18 +393,12 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1.2fr auto', gap: '0.65rem', alignItems: 'flex-end' }}>
           <div>
             <label style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Add Material</label>
-            <select
-              className="form-select"
-              value={newMaterialId}
-              onChange={(e) => handleMaterialSelect(e.target.value)}
-              style={{ height: '36px', fontSize: '0.82rem', fontWeight: 600 }}
-            >
-              {availableMaterials.map(m => (
-                <option key={m.id} value={m.id}>
-                  {m.name} ({m.category})
-                </option>
-              ))}
-            </select>
+            <MaterialSearchCombobox
+              materials={availableMaterials}
+              selectedMaterialId={newMaterialId}
+              onSelectMaterial={(m) => handleMaterialSelect(m.id)}
+              accentColor="#059669"
+            />
           </div>
 
           <div>
