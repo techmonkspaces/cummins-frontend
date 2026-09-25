@@ -155,15 +155,15 @@ export const Header: React.FC<HeaderProps> = ({
               }}
             >
               <option value="PERSONA-ADMIN">Super Admin</option>
-              <optgroup label="Pune Factory - Approach A">
+              <optgroup label="Pune - Approach A">
                 <option value="PERSONA-PUNE-MGR"> Manager</option>
                 <option value="PERSONA-PUNE-OPR"> Data Entry</option>
               </optgroup>
-              <optgroup label="Phaltan Factory - Approach B">
+              <optgroup label="Phaltan - Approach B">
                 <option value="PERSONA-PHALTAN-MGR"> Manager</option>
                 <option value="PERSONA-PHALTAN-OPR"> Data Entry</option>
               </optgroup>
-              <optgroup label="Jamshedpur Factory - Approach C">
+              <optgroup label="Jamshedpur - Approach C">
                 <option value="PERSONA-JAMSHEDPUR-MGR"> Manager</option>
                 <option value="PERSONA-JAMSHEDPUR-OPR"> Data Entry</option>
               </optgroup>
