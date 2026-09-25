@@ -1,23 +1,23 @@
 import React from 'react';
-import { 
-  Package, 
-  Layers, 
-  Clock, 
-  AlertCircle, 
-  ArrowUpRight, 
-  CheckCircle2, 
-  Calculator, 
-  Edit3, 
-  Database, 
-  BarChart3, 
-  Plus, 
-  Building2, 
-  MapPin, 
-  ChevronRight, 
-  Crown, 
-  Users, 
-  FileText, 
-  ArrowRight, 
+import {
+  Package,
+  Layers,
+  Clock,
+  AlertCircle,
+  ArrowUpRight,
+  CheckCircle2,
+  Calculator,
+  Edit3,
+  Database,
+  BarChart3,
+  Plus,
+  Building2,
+  MapPin,
+  ChevronRight,
+  Crown,
+  Users,
+  FileText,
+  ArrowRight,
   Scale,
   Sparkles
 } from 'lucide-react';
@@ -56,7 +56,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     switch (method) {
       case 'INVENTORY':
         return (
-          <span 
+          <span
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -75,7 +75,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         );
       case 'CALCULATED':
         return (
-          <span 
+          <span
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -94,7 +94,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         );
       case 'USER_INPUT':
         return (
-          <span 
+          <span
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -119,6 +119,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const plasticSharePct = Math.round((kpis.plasticConsumptionKg / totalPackagingWeight) * 100);
   const paperSharePct = Math.round((kpis.paperConsumptionKg / totalPackagingWeight) * 100);
 
+  const isConsolidated = isSuperAdmin && (activePlant.id === 'ALL_PLANTS' || !activePlant.id);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       {/* Uniform KPI Metrics Grid */}
@@ -126,16 +128,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
         {/* Metric 1 */}
         <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-            <span>{isSuperAdmin ? 'Total Factories' : 'Site Status'}</span>
+            <span>{isConsolidated ? 'Total Factories' : 'Site Status'}</span>
             <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F0F9FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Building2 size={15} color="#0284C7" />
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
-            {isSuperAdmin ? '3' : 'Active'}
+            {isConsolidated ? '3' : 'Active'}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 600, marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-            <CheckCircle2 size={11} /> {isSuperAdmin ? 'Pune, Phaltan, JSR' : '100% Operational'}
+            <CheckCircle2 size={11} /> {isConsolidated ? 'Pune, Phaltan, JSR' : '100% Operational'}
           </div>
         </div>
 
@@ -148,10 +150,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
-            {isSuperAdmin ? '54' : activePlant.id === 'PLANT-PUNE' ? '24' : activePlant.id === 'PLANT-PHALTAN' ? '18' : '12'}
+            {isConsolidated ? '54' : activePlant.id === 'PLANT-PUNE' ? '24' : activePlant.id === 'PLANT-PHALTAN' ? '18' : '12'}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
-            {isSuperAdmin ? 'All 3 Plants' : 'Assigned to this plant'}
+            {isConsolidated ? 'All 3 Plants' : 'Assigned to this plant'}
           </div>
         </div>
 
@@ -164,7 +166,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
-            {kpis.totalProductsPacked > 0 ? kpis.totalProductsPacked.toLocaleString() : '1,150'}
+            {isConsolidated ? '13,351' : activePlant.id === 'PLANT-PHALTAN' ? '13,351' : activePlant.id === 'PLANT-PUNE' ? '4,520' : (kpis.totalProductsPacked > 0 ? kpis.totalProductsPacked.toLocaleString() : '1,150')}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
             Units Processed
@@ -180,7 +182,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
-            {isSuperAdmin ? '2,536' : (activePlant.recordsCount || 1248).toLocaleString()}
+            {isConsolidated ? '2,536' : (activePlant.recordsCount || 1248).toLocaleString()}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 600, marginTop: '2px' }}>
             100% Confirmed
@@ -196,7 +198,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#DA291C', marginTop: '6px' }}>
-            {isSuperAdmin ? '1,480 kg' : `${Math.round(totalPackagingWeight).toLocaleString()} kg`}
+            {isConsolidated ? '8,973 kg' : activePlant.id === 'PLANT-PHALTAN' ? '8,973 kg' : activePlant.id === 'PLANT-PUNE' ? '4,210 kg' : `${Math.round(totalPackagingWeight).toLocaleString()} kg`}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
             Standardized SI Mass
@@ -205,8 +207,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* Super Admin: Factory Overview Table */}
-      {isSuperAdmin && (
-        <div 
+      {isConsolidated && (
+        <div
           style={{
             background: '#FFFFFF',
             borderRadius: '12px',
@@ -243,7 +245,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </thead>
             <tbody>
               {plants.map((plant) => (
-                <tr 
+                <tr
                   key={plant.id}
                   style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.15s ease' }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = '#F8FAFC')}
@@ -286,7 +288,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Material Breakdown & Recent Records Split */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem' }}>
-        
+
         {/* Recent Packaging Records */}
         <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
@@ -301,7 +303,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
             {recentRecords.slice(0, 4).map((rec) => (
-              <div 
+              <div
                 key={rec.id}
                 onClick={() => onViewRecord(rec)}
                 style={{
@@ -348,7 +350,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Material Mass Distribution */}
+        {/* Material Mass Distribution - Commented out
         <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.25rem' }}>
             Material Mass Distribution (PPWR Split)
@@ -389,6 +391,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
         </div>
+        */}
 
       </div>
     </div>

@@ -5,6 +5,24 @@ const STORAGE_KEY_PLANTS = 'cummins_ppwr_plants_v4';
 const STORAGE_KEY_ACTIVE_PLANT = 'cummins_ppwr_active_plant_id_v4';
 const STORAGE_KEY_ACTIVE_PERSONA = 'cummins_ppwr_active_persona_id_v4';
 
+export const ALL_PLANTS_OBJECT: Plant = {
+  id: 'ALL_PLANTS',
+  name: 'All Factories (Consolidated)',
+  shortName: 'All Factories',
+  code: 'ALL-GLB',
+  location: 'Global Operations Network',
+  country: 'Global',
+  configuredMethod: 'CALCULATED',
+  primaryErpSystem: 'SAP S/4HANA (PP/MM)',
+  description: 'Consolidated overview across Pune, Phaltan, and Jamshedpur manufacturing facilities.',
+  activeSkus: ['GA-102', 'BP-201', 'IN-108', 'VL-310', 'TC-550', 'SP-415'],
+  managerName: 'Admin User',
+  roleTitle: 'Super Admin • Global Sustainability Director',
+  usersCount: 54,
+  recordsCount: 2536,
+  status: 'Active'
+};
+
 class PlantService {
   private plants: Plant[] = [];
   private activePlantId: string = 'PLANT-PUNE';
@@ -64,6 +82,9 @@ class PlantService {
   }
 
   public getActivePlant(): Plant {
+    if (this.activePlantId === 'ALL_PLANTS') {
+      return ALL_PLANTS_OBJECT;
+    }
     const found = this.plants.find(p => p.id === this.activePlantId);
     return found || this.plants[0];
   }

@@ -116,6 +116,13 @@ export const App: React.FC = () => {
   const handleSelectPlant = (plantId: string) => {
     const updated = plantService.setActivePlant(plantId);
     setActivePlant(updated);
+
+    // If logged in as Super Admin, preserve Super Admin privileges so Scope dropdown and full controls remain accessible during demo
+    if (currentUser.role === 'SUPER_ADMIN') {
+      showToast('Scope Switched', `Active factory scope: ${updated.name}.`, 'info');
+      return;
+    }
+
     const matchedPersona = personas.find(p => p.plantId === plantId);
     if (matchedPersona) {
       setCurrentUser(matchedPersona);

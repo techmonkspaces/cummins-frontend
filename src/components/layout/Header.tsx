@@ -105,14 +105,14 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Left: Plant & Approach Context */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.01em' }}>
-          {isSuperAdmin ? 'Global Operations Network' : activePlant.name}
+          {activePlant.id === 'ALL_PLANTS' ? 'Global Operations Network' : activePlant.name}
         </span>
         <span style={{ color: '#CBD5E1', fontSize: '0.85rem' }}>•</span>
         <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600 }}>
-          {isSuperAdmin ? 'All 3 Plants' : activePlant.code}
+          {activePlant.id === 'ALL_PLANTS' ? 'All 3 Plants' : activePlant.code}
         </span>
 
-        {!isSuperAdmin && (
+        {activePlant.id !== 'ALL_PLANTS' && (
           <div style={{ marginLeft: '6px' }}>
             {getApproachBadge()}
           </div>
