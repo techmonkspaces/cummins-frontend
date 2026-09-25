@@ -74,26 +74,28 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
 
   const handleProceed = () => {
     const lineItems: PackagingLineItem[] = factoryPackagingConsumed.map((mat) => {
+      // Packaging Consumed per KG of Product
       const rate = mat.totalUsedKg / totalPlantProductNetKg;
-      const skuAllocatedKg = Number((currentSkuRow.totalProductWeightKg * rate).toFixed(2));
+      // Direct Per Unit Material Mass in kg (without batch units multiplier)
+      const perUnitKg = Number((currentSkuRow.unitWeightKg * rate).toFixed(4));
 
       return {
         id: `line-${mat.id}-${Date.now()}`,
         materialId: mat.id,
         materialName: mat.name,
         category: mat.category as any,
-        quantity: skuAllocatedKg,
+        quantity: perUnitKg,
         unit: 'kg',
-        weight: skuAllocatedKg,
+        weight: perUnitKg,
         weightUnit: 'kg',
-        weightKg: skuAllocatedKg,
+        weightKg: perUnitKg,
         isSystemGenerated: true,
-        notes: `Inventory Proportional Allocation (${period})`
+        notes: `Inventory Proportional Allocation Per Unit (${period})`
       };
     });
 
     onComplete({
-      productQuantity: currentSkuRow.units,
+      productQuantity: 1,
       period,
       materials: lineItems,
       notes
@@ -328,7 +330,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
                 <th style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>Total Net Mass (kg)</th>
                 {factoryPackagingConsumed.map(mat => (
                   <th key={mat.id} style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: 700, color: mat.color, textTransform: 'uppercase', textAlign: 'right' }}>
-                    {mat.name} (kg)
+                    {mat.name} (g/unit)
                   </th>
                 ))}
                 <th style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: 700, color: '#DA291C', textTransform: 'uppercase', textAlign: 'right' }}>Allocated Packaging (g/unit)</th>
@@ -337,16 +339,15 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
             <tbody>
               {FACTORY_SKU_PRODUCTION.map((row) => {
                 const isCurrent = row.sku === product.sku;
-                let rowTotalPkgKg = 0;
+                let rowTotalPkgGrams = 0;
 
                 const materialAllocations = factoryPackagingConsumed.map(mat => {
                   const rate = mat.totalUsedKg / totalPlantProductNetKg;
-                  const allocKg = row.totalProductWeightKg * rate;
-                  rowTotalPkgKg += allocKg;
-                  return { id: mat.id, allocKg, color: mat.color };
+                  // Direct per-unit mass in grams (Rate * Unit Weight * 1000)
+                  const perUnitGrams = row.unitWeightKg * rate * 1000;
+                  rowTotalPkgGrams += perUnitGrams;
+                  return { id: mat.id, perUnitGrams, color: mat.color };
                 });
-
-                const perUnitAllocGrams = (rowTotalPkgKg / row.units) * 1000;
 
                 return (
                   <tr
@@ -379,11 +380,11 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
                     </td>
                     {materialAllocations.map(m => (
                       <td key={m.id} style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: m.color, fontSize: '0.82rem', fontFamily: 'var(--font-mono)' }}>
-                        {m.allocKg.toFixed(1)} kg
+                        {m.perUnitGrams.toFixed(1)} g
                       </td>
                     ))}
                     <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#DA291C', fontSize: '0.84rem', fontFamily: 'var(--font-mono)' }}>
-                      {perUnitAllocGrams.toFixed(0)} g/unit
+                      {rowTotalPkgGrams.toFixed(0)} g/unit
                     </td>
                   </tr>
                 );
@@ -392,7 +393,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
             <tfoot>
               <tr style={{ background: '#F8FAFC', borderTop: '2px solid #CBD5E1' }}>
                 <td colSpan={2} style={{ padding: '9px 10px', fontWeight: 800, color: '#0F172A', fontSize: '0.82rem' }}>
-                  Total Factory Sum
+                  Total Factory Sum / Avg Rate
                 </td>
                 <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 900, color: '#0F172A', fontSize: '0.86rem' }}>
                   {totalPlantUnits.toLocaleString()}
@@ -403,11 +404,11 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
                 </td>
                 {factoryPackagingConsumed.map(mat => (
                   <td key={mat.id} style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 900, color: mat.color, fontSize: '0.86rem', fontFamily: 'var(--font-mono)' }}>
-                    {mat.totalUsedKg.toLocaleString()} kg
+                    {((mat.totalUsedKg / totalPlantProductNetKg) * 1000).toFixed(1)} g/kg
                   </td>
                 ))}
                 <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 900, color: '#DA291C', fontSize: '0.86rem', fontFamily: 'var(--font-mono)' }}>
-                  {totalPlantPackagingKg.toLocaleString()} kg Total
+                  {(totalRatePerKg * 1000).toFixed(1)} g/kg Total
                 </td>
               </tr>
             </tfoot>
@@ -418,11 +419,11 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Calculator size={13} color="#0284C7" />
               <span style={{ fontSize: '0.74rem', color: '#475569' }}>
-                Reconciliation Formula: <strong>Allocated Packaging (kg) = (Units Produced × Unit Weight) × (Packaging Consumed in Period ÷ Total Plant Product Net Mass)</strong>
+                Reconciliation Formula: <strong>Allocated Material per Unit (g) = Unit Net Weight (kg) × (Period Material Consumption ÷ Total Plant Product Net Mass) × 1000</strong>
               </span>
             </div>
             <span style={{ fontSize: '0.7rem', color: '#059669', fontWeight: 700 }}>
-              ✓ 100% Mass Conserved
+              ✓ Direct Per-Unit Mass (/unit)
             </span>
           </div>
         </div>
