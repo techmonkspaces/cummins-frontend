@@ -74,6 +74,8 @@ export interface Plant {
   code: string; // e.g. "IN-PUN-01"
   location: string;
   country: string;
+  region?: 'Americas' | 'EMEA' | 'APAC' | 'Global';
+  flag?: string;
   configuredMethod: RecordingMethod;
   primaryErpSystem: 'SAP S/4HANA (PP/MM)' | 'SAP EWM' | 'Oracle WMS';
   description: string;

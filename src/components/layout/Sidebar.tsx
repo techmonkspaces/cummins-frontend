@@ -184,7 +184,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               >
                 <Building2 size={17} color={activeTab === 'plants' ? '#DA291C' : '#64748B'} />
                 <span style={{ flex: 1 }}>Factories</span>
-                <span style={{ fontSize: '0.68rem', background: '#F1F5F9', color: '#475569', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>3</span>
+                <span style={{ fontSize: '0.68rem', background: '#F1F5F9', color: '#475569', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>28</span>
               </button>
 
               {/* Product Master */}

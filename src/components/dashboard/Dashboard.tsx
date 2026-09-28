@@ -55,62 +55,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const getMethodBadge = (method: RecordingMethod) => {
     switch (method) {
       case 'INVENTORY':
-        return (
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px',
-              padding: '3px 8px',
-              borderRadius: '5px',
-              fontSize: '0.72rem',
-              fontWeight: 700,
-              background: '#F0F9FF',
-              color: '#0284C7',
-              border: '1px solid #BAE6FD'
-            }}
-          >
-            <Database size={11} /> Approach A (Inventory)
-          </span>
-        );
+        return <span className="clean-pill pill-neutral">Approach A · Inventory</span>;
       case 'CALCULATED':
-        return (
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px',
-              padding: '3px 8px',
-              borderRadius: '5px',
-              fontSize: '0.72rem',
-              fontWeight: 700,
-              background: '#FAF5FF',
-              color: '#7C3AED',
-              border: '1px solid #DDD6FE'
-            }}
-          >
-            <Calculator size={11} /> Approach B (Calculated)
-          </span>
-        );
+        return <span className="clean-pill pill-neutral">Approach B · Calculated</span>;
       case 'USER_INPUT':
-        return (
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px',
-              padding: '3px 8px',
-              borderRadius: '5px',
-              fontSize: '0.72rem',
-              fontWeight: 700,
-              background: '#ECFDF5',
-              color: '#059669',
-              border: '1px solid #A7F3D0'
-            }}
-          >
-            <Edit3 size={11} /> Approach C (User Input)
-          </span>
-        );
+        return <span className="clean-pill pill-neutral">Approach C · User Input</span>;
     }
   };
 
@@ -206,85 +155,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
-      {/* Super Admin: Factory Overview Table */}
-      {isConsolidated && (
-        <div
-          style={{
-            background: '#FFFFFF',
-            borderRadius: '12px',
-            border: '1px solid #E2E8F0',
-            overflow: 'hidden',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
-          }}
-        >
-          <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div>
-              <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
-                Factory Overview & Configured Methodologies
-              </h3>
-              <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
-                Pre-configured approach per factory ensures zero ambiguity during shop-floor packaging capture
-              </span>
-            </div>
-            <button onClick={onViewPlants} className="btn btn-outline btn-sm" style={{ fontSize: '0.78rem' }}>
-              <span>Manage Factories</span>
-              <ChevronRight size={13} />
-            </button>
-          </div>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-            <thead>
-              <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
-                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Factory</th>
-                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Configured Approach</th>
-                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Status</th>
-                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Users</th>
-                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Records</th>
-                <th style={{ padding: '12px 18px', fontSize: '0.72rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {plants.map((plant) => (
-                <tr
-                  key={plant.id}
-                  style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.15s ease' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = '#F8FAFC')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <td style={{ padding: '14px 18px' }}>
-                    <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '0.88rem' }}>{plant.name}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>{plant.location}</div>
-                  </td>
-                  <td style={{ padding: '14px 18px' }}>
-                    {getMethodBadge(plant.configuredMethod)}
-                  </td>
-                  <td style={{ padding: '14px 18px' }}>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#059669', background: '#ECFDF5', padding: '2px 8px', borderRadius: '999px' }}>
-                      ● Active
-                    </span>
-                  </td>
-                  <td style={{ padding: '14px 18px', fontWeight: 700, color: '#0F172A', fontSize: '0.85rem' }}>
-                    {plant.usersCount || (plant.id === 'PLANT-PUNE' ? 24 : plant.id === 'PLANT-PHALTAN' ? 18 : 12)}
-                  </td>
-                  <td style={{ padding: '14px 18px', fontWeight: 700, color: '#0F172A', fontSize: '0.85rem' }}>
-                    {(plant.recordsCount || (plant.id === 'PLANT-PUNE' ? 1248 : plant.id === 'PLANT-PHALTAN' ? 856 : 432)).toLocaleString()}
-                  </td>
-                  <td style={{ padding: '14px 18px', textAlign: 'right' }}>
-                    <button
-                      onClick={() => onSelectPlant(plant.id)}
-                      className="btn btn-outline btn-sm"
-                      style={{ fontSize: '0.78rem' }}
-                    >
-                      <span>View Factory</span>
-                      <ArrowRight size={13} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
 
       {/* Material Breakdown & Recent Records Split */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem' }}>

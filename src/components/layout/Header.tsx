@@ -38,53 +38,11 @@ export const Header: React.FC<HeaderProps> = ({
   const getApproachBadge = () => {
     switch (activePlant.configuredMethod) {
       case 'INVENTORY':
-        return (
-          <span
-            style={{
-              background: '#F0F9FF',
-              color: '#0284C7',
-              border: '1px solid #BAE6FD',
-              padding: '3px 8px',
-              borderRadius: '6px',
-              fontSize: '0.72rem',
-              fontWeight: 700
-            }}
-          >
-            Approach A (Inventory)
-          </span>
-        );
+        return <span className="clean-pill pill-neutral">Approach A · Inventory</span>;
       case 'CALCULATED':
-        return (
-          <span
-            style={{
-              background: '#FAF5FF',
-              color: '#7C3AED',
-              border: '1px solid #DDD6FE',
-              padding: '3px 8px',
-              borderRadius: '6px',
-              fontSize: '0.72rem',
-              fontWeight: 700
-            }}
-          >
-            Approach B (Calculated)
-          </span>
-        );
+        return <span className="clean-pill pill-neutral">Approach B · Calculated</span>;
       case 'USER_INPUT':
-        return (
-          <span
-            style={{
-              background: '#ECFDF5',
-              color: '#059669',
-              border: '1px solid #A7F3D0',
-              padding: '3px 8px',
-              borderRadius: '6px',
-              fontSize: '0.72rem',
-              fontWeight: 700
-            }}
-          >
-            Approach C (User Input)
-          </span>
-        );
+        return <span className="clean-pill pill-neutral">Approach C · User Input</span>;
     }
   };
 
@@ -111,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
         </span>
         <span style={{ color: '#CBD5E1', fontSize: '0.85rem' }}>•</span>
         <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600 }}>
-          {activePlant.id === 'ALL_PLANTS' ? 'All 3 Plants' : activePlant.code}
+          {activePlant.id === 'ALL_PLANTS' ? `${plants.filter(p => p.id !== 'ALL_PLANTS').length} Plants Worldwide` : activePlant.code}
         </span>
 
         {activePlant.id !== 'ALL_PLANTS' && (

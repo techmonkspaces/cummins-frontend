@@ -1,22 +1,13 @@
-import React, { useState } from 'react';
-import { 
-  Building2, 
-  MapPin, 
-  Cpu, 
-  Database, 
-  Calculator, 
-  Edit3, 
-  Settings2, 
-  CheckCircle2, 
-  ExternalLink,
-  ShieldCheck,
-  Plus,
+import React, { useState, useMemo } from 'react';
+import {
+  Settings2,
+  Search,
+  ChevronLeft,
+  ChevronRight,
   X,
-  Users,
-  FileText,
-  Lock,
   ArrowRight,
-  Info
+  LayoutGrid,
+  List
 } from 'lucide-react';
 import { Plant, RecordingMethod } from '../../types';
 
@@ -35,10 +26,74 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
   onUpdatePlantConfig,
   onNavigateToFactory,
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState<string>('ALL');
+  const [selectedRegion, setSelectedRegion] = useState<string>('ALL');
+  const [selectedApproach, setSelectedApproach] = useState<string>('ALL');
+  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 8;
+
+  // Edit Modal State
   const [editingPlant, setEditingPlant] = useState<Plant | null>(null);
   const [editMethod, setEditMethod] = useState<RecordingMethod>('INVENTORY');
   const [editErp, setEditErp] = useState<'SAP S/4HANA (PP/MM)' | 'SAP EWM' | 'Oracle WMS'>('SAP S/4HANA (PP/MM)');
   const [editDesc, setEditDesc] = useState('');
+
+  // Extract unique countries and regions
+  const availableCountries = useMemo(() => {
+    const set = new Set<string>();
+    plants.forEach(p => { if (p.country && p.country !== 'Global') set.add(p.country); });
+    return Array.from(set).sort();
+  }, [plants]);
+
+  const availableRegions = useMemo(() => {
+    const set = new Set<string>();
+    plants.forEach(p => { if (p.region && p.region !== 'Global') set.add(p.region); });
+    return Array.from(set).sort();
+  }, [plants]);
+
+  // Filtered Plants
+  const filteredPlants = useMemo(() => {
+    return plants.filter(plant => {
+      if (plant.id === 'ALL_PLANTS') return false;
+
+      const query = searchQuery.toLowerCase().trim();
+      const matchSearch = !query ||
+        plant.name.toLowerCase().includes(query) ||
+        plant.code.toLowerCase().includes(query) ||
+        plant.location.toLowerCase().includes(query) ||
+        plant.country.toLowerCase().includes(query) ||
+        plant.managerName.toLowerCase().includes(query);
+
+      const matchCountry = selectedCountry === 'ALL' || plant.country === selectedCountry;
+      const matchRegion = selectedRegion === 'ALL' || plant.region === selectedRegion;
+      const matchApproach = selectedApproach === 'ALL' || plant.configuredMethod === selectedApproach;
+
+      return matchSearch && matchCountry && matchRegion && matchApproach;
+    });
+  }, [plants, searchQuery, selectedCountry, selectedRegion, selectedApproach]);
+
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredPlants.length / itemsPerPage) || 1;
+  const validCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedPlants = useMemo(() => {
+    const start = (validCurrentPage - 1) * itemsPerPage;
+    return filteredPlants.slice(start, start + itemsPerPage);
+  }, [filteredPlants, validCurrentPage, itemsPerPage]);
+
+  // Stats calculation
+  const stats = useMemo(() => {
+    const activeList = plants.filter(p => p.id !== 'ALL_PLANTS');
+    const total = activeList.length;
+    const approachA = activeList.filter(p => p.configuredMethod === 'INVENTORY').length;
+    const approachB = activeList.filter(p => p.configuredMethod === 'CALCULATED').length;
+    const approachC = activeList.filter(p => p.configuredMethod === 'USER_INPUT').length;
+    const countries = new Set(activeList.map(p => p.country)).size;
+    return { total, approachA, approachB, approachC, countries };
+  }, [plants]);
 
   const openConfigModal = (plant: Plant) => {
     setEditingPlant(plant);
@@ -60,388 +115,505 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
     setEditingPlant(null);
   };
 
+  // Clean, subtle, minimalist approach label (no heavy colored boxes, no icons)
   const getMethodBadge = (method: RecordingMethod) => {
     switch (method) {
       case 'INVENTORY':
         return (
-          <span 
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-              padding: '4px 9px',
-              borderRadius: '6px',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              background: '#F0F9FF',
-              color: '#0284C7',
-              border: '1px solid #BAE6FD'
-            }}
-          >
-            <Database size={13} /> Approach A — Inventory Consumption
+          <span className="clean-pill pill-neutral">
+            Approach A · Inventory
           </span>
         );
       case 'CALCULATED':
         return (
-          <span 
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-              padding: '4px 9px',
-              borderRadius: '6px',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              background: '#FAF5FF',
-              color: '#7C3AED',
-              border: '1px solid #DDD6FE'
-            }}
-          >
-            <Calculator size={13} /> Approach B — System Calculated
+          <span className="clean-pill pill-neutral">
+            Approach B · Calculated
           </span>
         );
       case 'USER_INPUT':
         return (
-          <span 
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-              padding: '4px 9px',
-              borderRadius: '6px',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              background: '#ECFDF5',
-              color: '#059669',
-              border: '1px solid #A7F3D0'
-            }}
-          >
-            <Edit3 size={13} /> Approach C — User Input
+          <span className="clean-pill pill-neutral">
+            Approach C · User Input
           </span>
         );
     }
   };
 
+  const handleCountryFilterChange = (val: string) => {
+    setSelectedCountry(val);
+    setCurrentPage(1);
+  };
+
+  const handleRegionFilterChange = (val: string) => {
+    setSelectedRegion(val);
+    setCurrentPage(1);
+  };
+
+  const handleApproachFilterChange = (val: string) => {
+    setSelectedApproach(val);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const clearAllFilters = () => {
+    setSearchQuery('');
+    setSelectedCountry('ALL');
+    setSelectedRegion('ALL');
+    setSelectedApproach('ALL');
+    setCurrentPage(1);
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Page Header */}
-      <div 
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+      {/* Top Header - Minimalist Typography, No Icon Box */}
+      <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'flex-start',
-          borderBottom: '1px solid #E2E8F0',
-          paddingBottom: '1.25rem'
+          borderBottom: '1px solid var(--border-subtle)',
+          paddingBottom: '0.85rem'
         }}
       >
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <div style={{ background: '#FEE2E2', color: '#DA291C', padding: '5px', borderRadius: '6px' }}>
-              <Building2 size={20} />
-            </div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A' }}>
-              Factory Management & Pre-Configured Packaging Approaches
-            </h1>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: '#64748B' }}>
-            Each Cummins factory operates under a pre-configured packaging approach based on plant automation and ERP maturity. Factory users cannot alter this approach.
+          <h1 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.3px' }}>
+            Worldwide Cummins Manufacturing Facilities
+          </h1>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+            Super Admin global directory of {stats.total} manufacturing plants across {stats.countries} countries.
           </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '4px', background: 'var(--bg-card-subtle)', padding: '3px', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+          <button
+            onClick={() => setViewMode('table')}
+            className={`btn btn-sm ${viewMode === 'table' ? 'btn-secondary' : ''}`}
+            style={{ padding: '4px 8px', background: viewMode === 'table' ? '#FFFFFF' : 'transparent', border: 'none' }}
+            title="Table View"
+          >
+            <List size={15} />
+          </button>
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`btn btn-sm ${viewMode === 'grid' ? 'btn-secondary' : ''}`}
+            style={{ padding: '4px 8px', background: viewMode === 'grid' ? '#FFFFFF' : 'transparent', border: 'none' }}
+            title="Grid Cards View"
+          >
+            <LayoutGrid size={15} />
+          </button>
         </div>
       </div>
 
-      {/* Factory Overview Table */}
-      <div 
+      {/* Quick Stats Ribbon - Minimal & Light */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.75rem' }}>
+        <div className="glass-card" style={{ padding: '0.75rem 1rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Plants</div>
+          <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{stats.total}</div>
+          <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>Across {stats.countries} Countries</div>
+        </div>
+        <div className="glass-card" style={{ padding: '0.75rem 1rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Approach A</div>
+          <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{stats.approachA}</div>
+          <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>Inventory Deduction</div>
+        </div>
+        <div className="glass-card" style={{ padding: '0.75rem 1rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Approach B</div>
+          <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{stats.approachB}</div>
+          <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>Calculated CAD Rules</div>
+        </div>
+        <div className="glass-card" style={{ padding: '0.75rem 1rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Approach C</div>
+          <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{stats.approachC}</div>
+          <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>Operator Station Input</div>
+        </div>
+        <div className="glass-card" style={{ padding: '0.75rem 1rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Global Status</div>
+          <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--color-success)', marginTop: '2px' }}>100%</div>
+          <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>Active PPWR Ledger</div>
+        </div>
+      </div>
+
+      {/* Filter & Search Bar */}
+      <div
+        className="glass-card"
         style={{
-          background: '#FFFFFF',
-          borderRadius: '14px',
-          border: '1px solid #E2E8F0',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-          overflow: 'hidden'
+          padding: '0.75rem 1rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '0.65rem'
         }}
       >
-        <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0F172A' }}>
-              Factory Overview Summary
-            </h3>
-            <span style={{ fontSize: '0.78rem', color: '#64748B' }}>
-              3 Active Enterprise Facilities in Demo Scope
-            </span>
-          </div>
-          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#059669', background: '#ECFDF5', padding: '4px 10px', borderRadius: '999px', border: '1px solid #A7F3D0' }}>
-            ● 100% Operational
-          </span>
+        {/* Search Input */}
+        <div style={{ position: 'relative', minWidth: '240px', flex: '1 1 240px' }}>
+          <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <input
+            type="text"
+            className="form-input"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Search plant name, code, city, country..."
+            style={{ paddingLeft: '32px', height: '34px', fontSize: '0.8rem' }}
+          />
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-          <thead>
-            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
-              <th style={{ padding: '12px 18px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Factory</th>
-              <th style={{ padding: '12px 18px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Configured Approach</th>
-              <th style={{ padding: '12px 18px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Status</th>
-              <th style={{ padding: '12px 18px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Users</th>
-              <th style={{ padding: '12px 18px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Records</th>
-              <th style={{ padding: '12px 18px', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {plants.map((plant) => {
+        {/* Dropdown Filters */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+
+          {/* Country Filter */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Country:</span>
+            <select
+              className="form-select"
+              value={selectedCountry}
+              onChange={(e) => handleCountryFilterChange(e.target.value)}
+              style={{ height: '34px', fontSize: '0.78rem', minWidth: '120px', padding: '3px 8px' }}
+            >
+              <option value="ALL">All Countries ({stats.countries})</option>
+              {availableCountries.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Region Filter */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Region:</span>
+            <select
+              className="form-select"
+              value={selectedRegion}
+              onChange={(e) => handleRegionFilterChange(e.target.value)}
+              style={{ height: '34px', fontSize: '0.78rem', minWidth: '100px', padding: '3px 8px' }}
+            >
+              <option value="ALL">All Regions</option>
+              {availableRegions.map(r => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Approach Filter */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Approach:</span>
+            <select
+              className="form-select"
+              value={selectedApproach}
+              onChange={(e) => handleApproachFilterChange(e.target.value)}
+              style={{ height: '34px', fontSize: '0.78rem', minWidth: '130px', padding: '3px 8px' }}
+            >
+              <option value="ALL">All Approaches</option>
+              <option value="INVENTORY">Approach A · Inventory</option>
+              <option value="CALCULATED">Approach B · Calculated</option>
+              <option value="USER_INPUT">Approach C · User Input</option>
+            </select>
+          </div>
+
+          {(searchQuery || selectedCountry !== 'ALL' || selectedRegion !== 'ALL' || selectedApproach !== 'ALL') && (
+            <button
+              onClick={clearAllFilters}
+              className="btn btn-secondary btn-sm"
+              style={{ height: '34px', padding: '0 8px', fontSize: '0.74rem' }}
+              title="Clear Filters"
+            >
+              <X size={12} />
+              <span>Reset</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Main Content Area: Minimal Table */}
+      {viewMode === 'table' ? (
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th>Factory / Location</th>
+                <th>Country / Region</th>
+                <th>Configured Approach</th>
+
+                <th>Users</th>
+                <th>Records</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedPlants.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-muted)' }}>
+                    No manufacturing plants found matching your filter criteria.
+                  </td>
+                </tr>
+              ) : (
+                paginatedPlants.map((plant) => {
+                  const isCurrentActive = activePlantId === plant.id;
+
+                  return (
+                    <tr
+                      key={plant.id}
+                      style={{
+                        background: isCurrentActive ? 'rgba(218, 41, 28, 0.02)' : undefined,
+                      }}
+                    >
+                      {/* Clean Factory & Location (No square black avatar box) */}
+                      <td>
+                        <div>
+                          <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.86rem' }}>
+                            {plant.name}
+                          </div>
+                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                            <span className="font-mono text-xs font-semibold">{plant.code}</span>
+                            <span style={{ margin: '0 5px' }}>·</span>
+                            <span>{plant.location}</span>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Clean Country / Region (No emoji flag prefix) */}
+                      <td>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--text-primary)' }}>
+                            {plant.country}
+                          </span>
+                          <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                            {plant.region || 'APAC'}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Clean Approach (Simple subtle text) */}
+                      <td>
+                        {getMethodBadge(plant.configuredMethod)}
+                      </td>
+
+
+
+                      {/* Users */}
+                      <td style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.82rem' }}>
+                        {plant.usersCount || 12}
+                      </td>
+
+                      {/* Records */}
+                      <td style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.82rem' }}>
+                        {(plant.recordsCount || 400).toLocaleString()}
+                      </td>
+
+                      {/* Actions */}
+                      <td style={{ textAlign: 'right' }}>
+                        <div style={{ display: 'inline-flex', gap: '6px' }}>
+                          <button
+                            onClick={() => {
+                              onSelectPlant(plant.id);
+                              if (onNavigateToFactory) onNavigateToFactory(plant.id);
+                            }}
+                            className={`btn btn-sm ${isCurrentActive ? 'btn-primary' : 'btn-secondary'}`}
+                            style={{ height: '28px', padding: '0 9px', fontSize: '0.72rem' }}
+                          >
+                            <span>{isCurrentActive ? 'Active Scope' : 'Select'}</span>
+                            <ArrowRight size={11} />
+                          </button>
+
+                          <button
+                            onClick={() => openConfigModal(plant)}
+                            className="btn btn-secondary btn-sm"
+                            style={{ height: '28px', padding: '0 7px' }}
+                            title="Configure Factory Approach"
+                          >
+                            <Settings2 size={12} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        /* Grid Mode - Clean & Minimal */
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: '0.85rem' }}>
+          {paginatedPlants.length === 0 ? (
+            <div className="glass-card" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2.5rem', color: 'var(--text-muted)' }}>
+              No manufacturing plants found matching your filter criteria.
+            </div>
+          ) : (
+            paginatedPlants.map((plant) => {
               const isCurrentActive = activePlantId === plant.id;
 
               return (
-                <tr 
+                <div
                   key={plant.id}
-                  style={{ 
-                    borderBottom: '1px solid #F1F5F9',
-                    background: isCurrentActive ? 'rgba(218, 41, 28, 0.03)' : 'transparent',
-                    transition: 'background 0.15s ease'
+                  className="glass-card"
+                  style={{
+                    border: isCurrentActive ? '2px solid var(--cummins-red)' : '1px solid var(--border-subtle)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    gap: '0.65rem',
+                    padding: '1.1rem'
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = isCurrentActive ? 'rgba(218, 41, 28, 0.05)' : '#F8FAFC')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = isCurrentActive ? 'rgba(218, 41, 28, 0.03)' : 'transparent')}
                 >
-                  <td style={{ padding: '16px 18px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div 
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          borderRadius: '8px',
-                          background: '#0F172A',
-                          color: '#FFFFFF',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 800
-                        }}
-                      >
-                        {plant.name.charAt(0)}
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '0.92rem' }}>
-                          {plant.name}
-                        </div>
-                        <div style={{ fontSize: '0.75rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <MapPin size={11} /> {plant.location}
-                        </div>
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                      <span className="font-mono" style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)' }}>
+                        {plant.code}
+                      </span>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                        {plant.primaryErpSystem}
+                      </span>
+                    </div>
+
+                    <h3 style={{ fontSize: '0.98rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '2px' }}>
+                      {plant.name}
+                    </h3>
+
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                      <span>{plant.country}</span>
+                      <span style={{ margin: '0 4px' }}>·</span>
+                      <span>{plant.location}</span>
+                    </div>
+
+                    <div style={{ background: 'var(--bg-card-subtle)', padding: '6px 8px', borderRadius: '6px', border: '1px solid var(--border-subtle)', marginBottom: '6px' }}>
+                      <div style={{ marginBottom: '2px' }}>{getMethodBadge(plant.configuredMethod)}</div>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {plant.description}
                       </div>
                     </div>
-                  </td>
 
-                  <td style={{ padding: '16px 18px' }}>
-                    {getMethodBadge(plant.configuredMethod)}
-                  </td>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)', padding: '3px 0', borderTop: '1px solid var(--border-subtle)' }}>
+                      <span>{plant.usersCount || 12} Users</span>
+                      <span>{(plant.recordsCount || 400).toLocaleString()} Records</span>
+                    </div>
+                  </div>
 
-                  <td style={{ padding: '16px 18px' }}>
-                    <span 
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        color: '#059669',
-                        background: '#ECFDF5',
-                        padding: '2px 8px',
-                        borderRadius: '999px'
+                  <div style={{ display: 'flex', gap: '5px', paddingTop: '6px', borderTop: '1px solid var(--border-subtle)' }}>
+                    <button
+                      onClick={() => {
+                        onSelectPlant(plant.id);
+                        if (onNavigateToFactory) onNavigateToFactory(plant.id);
                       }}
+                      className={`btn btn-sm ${isCurrentActive ? 'btn-primary' : 'btn-secondary'}`}
+                      style={{ flex: 1, justifyContent: 'center', height: '30px', fontSize: '0.72rem' }}
                     >
-                      <CheckCircle2 size={12} /> {plant.status || 'Active'}
-                    </span>
-                  </td>
-
-                  <td style={{ padding: '16px 18px', fontWeight: 700, color: '#0F172A', fontSize: '0.9rem' }}>
-                    {plant.usersCount || (plant.id === 'PLANT-PUNE' ? 24 : plant.id === 'PLANT-PHALTAN' ? 18 : 12)}
-                  </td>
-
-                  <td style={{ padding: '16px 18px', fontWeight: 700, color: '#0F172A', fontSize: '0.9rem' }}>
-                    {(plant.recordsCount || (plant.id === 'PLANT-PUNE' ? 1248 : plant.id === 'PLANT-PHALTAN' ? 856 : 432)).toLocaleString()}
-                  </td>
-
-                  <td style={{ padding: '16px 18px', textAlign: 'right' }}>
-                    <div style={{ display: 'inline-flex', gap: '8px' }}>
-                      <button
-                        onClick={() => {
-                          onSelectPlant(plant.id);
-                          if (onNavigateToFactory) onNavigateToFactory(plant.id);
-                        }}
-                        className={`btn btn-sm ${isCurrentActive ? 'btn-primary' : 'btn-outline'}`}
-                      >
-                        <span>{isCurrentActive ? 'Active Scope' : 'View Factory'}</span>
-                        <ArrowRight size={13} />
-                      </button>
-
-                      <button
-                        onClick={() => openConfigModal(plant)}
-                        className="btn btn-secondary btn-sm"
-                        title="Configure Factory Approach"
-                      >
-                        <Settings2 size={14} />
-                        <span>Edit</span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                      <span>{isCurrentActive ? 'Active Scope' : 'Select'}</span>
+                      <ArrowRight size={11} />
+                    </button>
+                    <button
+                      onClick={() => openConfigModal(plant)}
+                      className="btn btn-secondary btn-sm"
+                      style={{ height: '30px', padding: '0 7px' }}
+                      title="Configure"
+                    >
+                      <Settings2 size={12} />
+                    </button>
+                  </div>
+                </div>
               );
-            })}
-          </tbody>
-        </table>
-      </div>
+            })
+          )}
+        </div>
+      )}
 
-      {/* Detailed Factory Cards Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.25rem' }}>
-        {plants.map((plant) => {
-          const isCurrentActive = activePlantId === plant.id;
+      {/* Pagination Controls */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0.65rem 0.5rem',
+          borderTop: '1px solid var(--border-subtle)',
+          fontSize: '0.78rem',
+          color: 'var(--text-secondary)'
+        }}
+      >
+        <div>
+          Showing <strong>{filteredPlants.length > 0 ? (validCurrentPage - 1) * itemsPerPage + 1 : 0}</strong> - <strong>{Math.min(validCurrentPage * itemsPerPage, filteredPlants.length)}</strong> of <strong>{filteredPlants.length}</strong> factories
+        </div>
 
-          return (
-            <div 
-              key={plant.id}
-              style={{
-                background: '#FFFFFF',
-                borderRadius: '14px',
-                padding: '1.5rem',
-                border: isCurrentActive ? '2px solid #DA291C' : '1px solid #E2E8F0',
-                boxShadow: isCurrentActive ? '0 6px 20px rgba(218, 41, 28, 0.12)' : '0 1px 3px rgba(0,0,0,0.05)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                gap: '1rem'
-              }}
-            >
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#64748B', fontFamily: 'var(--font-mono)' }}>
-                    {plant.code}
-                  </span>
-                  <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#059669', background: '#ECFDF5', padding: '2px 7px', borderRadius: '4px' }}>
-                    {plant.primaryErpSystem}
-                  </span>
-                </div>
-
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0F172A', marginBottom: '4px' }}>
-                  {plant.name}
-                </h3>
-                <div style={{ fontSize: '0.78rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '12px' }}>
-                  <MapPin size={12} /> {plant.location}
-                </div>
-
-                {/* Configured Approach Callout */}
-                <div style={{ background: '#F8FAFC', padding: '10px 12px', borderRadius: '10px', border: '1px solid #E2E8F0', marginBottom: '12px' }}>
-                  <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', marginBottom: '4px' }}>
-                    Packaging Approach
-                  </div>
-                  {getMethodBadge(plant.configuredMethod)}
-                  <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '6px', lineHeight: 1.4 }}>
-                    {plant.description}
-                  </div>
-                </div>
-
-                {/* Stats */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', padding: '8px 0', borderTop: '1px solid #F1F5F9' }}>
-                  <div>
-                    <div style={{ fontSize: '0.68rem', color: '#64748B' }}>Assigned Users</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
-                      {plant.usersCount || (plant.id === 'PLANT-PUNE' ? 24 : plant.id === 'PLANT-PHALTAN' ? 18 : 12)} Users
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.68rem', color: '#64748B' }}>Total Records</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
-                      {(plant.recordsCount || (plant.id === 'PLANT-PUNE' ? 1248 : plant.id === 'PLANT-PHALTAN' ? 856 : 432)).toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', gap: '8px', paddingTop: '10px', borderTop: '1px solid #E2E8F0' }}>
-                <button
-                  onClick={() => onSelectPlant(plant.id)}
-                  className={`btn btn-sm ${isCurrentActive ? 'btn-primary' : 'btn-outline'}`}
-                  style={{ flex: 1, justifyContent: 'center' }}
-                >
-                  <span>{isCurrentActive ? 'Active Scope' : 'Select Factory'}</span>
-                </button>
-                <button
-                  onClick={() => openConfigModal(plant)}
-                  className="btn btn-secondary btn-sm"
-                >
-                  <Settings2 size={14} />
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Edit / Configuration Modal */}
-      {editingPlant && (
-        <div 
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(15, 23, 42, 0.65)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '1rem'
-          }}
-        >
-          <div 
-            style={{
-              background: '#FFFFFF',
-              borderRadius: '16px',
-              maxWidth: '560px',
-              width: '100%',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              overflow: 'hidden',
-              animation: 'modalSlideIn 0.2s ease-out'
-            }}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={validCurrentPage <= 1}
+            className="btn btn-secondary btn-sm"
+            style={{ height: '28px', padding: '0 8px', fontSize: '0.72rem' }}
           >
-            <div style={{ padding: '1.25rem 1.5rem', background: '#0F172A', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <ChevronLeft size={12} />
+            <span>Prev</span>
+          </button>
+
+          <div style={{ display: 'flex', gap: '2px' }}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+              <button
+                key={pageNum}
+                onClick={() => setCurrentPage(pageNum)}
+                className={`btn btn-sm ${pageNum === validCurrentPage ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ minWidth: '28px', height: '28px', padding: '0 5px', fontSize: '0.74rem' }}
+              >
+                {pageNum}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={validCurrentPage >= totalPages}
+            className="btn btn-secondary btn-sm"
+            style={{ height: '28px', padding: '0 8px', fontSize: '0.72rem' }}
+          >
+            <span>Next</span>
+            <ChevronRight size={12} />
+          </button>
+        </div>
+      </div>
+
+      {/* Configuration Modal */}
+      {editingPlant && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '500px' }}>
+            <div className="modal-header" style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border-subtle)' }}>
               <div>
-                <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#DA291C', textTransform: 'uppercase' }}>
-                  Super Admin Factory Governance
-                </span>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginTop: '2px' }}>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                   Configure {editingPlant.name}
                 </h3>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  Set pre-configured compliance approach for this factory
+                </span>
               </div>
               <button
                 onClick={() => setEditingPlant(null)}
-                style={{ background: 'transparent', border: 'none', color: '#94A3B8', cursor: 'pointer' }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
               >
-                <X size={20} />
+                <X size={16} />
               </button>
             </div>
 
-            <form onSubmit={handleSaveConfig} style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              {/* Important Alert Notice */}
-              <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', padding: '10px 12px', borderRadius: '8px', fontSize: '0.78rem', color: '#92400E', display: 'flex', gap: '8px' }}>
-                <Info size={16} color="#D97706" style={{ flexShrink: 0, marginTop: '1px' }} />
-                <div>
-                  <strong>Factory-Level Rule:</strong> When a factory user from this plant logs in, the system automatically presents the selected approach. The user cannot bypass or change this.
-                </div>
-              </div>
+            <form onSubmit={handleSaveConfig} style={{ padding: '1.15rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
 
               <div className="form-group" style={{ margin: 0 }}>
                 <label className="form-label">Pre-Configured Packaging Methodology</label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                   {[
-                    { id: 'INVENTORY', label: 'Approach A — Inventory Consumption (Zero Input)', desc: 'Reconciles WMS batch stock deductions automatically.' },
-                    { id: 'CALCULATED', label: 'Approach B — System Calculated (Smart Rules)', desc: 'Auto-computes box size, void cushioning, and tape based on CAD rules.' },
-                    { id: 'USER_INPUT', label: 'Approach C — Floor Station User Input', desc: 'Shop-floor operator selects materials & logs digital scale weights.' }
+                    { id: 'INVENTORY', label: 'Approach A · Inventory Consumption', desc: 'Reconciles WMS batch stock deductions automatically.' },
+                    { id: 'CALCULATED', label: 'Approach B · System Calculated', desc: 'Computes box size & void cushioning from CAD rules.' },
+                    { id: 'USER_INPUT', label: 'Approach C · Floor Station User Input', desc: 'Shop-floor operator selects materials & logs digital scale.' }
                   ].map((opt) => (
-                    <label 
+                    <label
                       key={opt.id}
                       style={{
                         display: 'flex',
                         alignItems: 'flex-start',
-                        gap: '10px',
-                        padding: '10px 12px',
-                        borderRadius: '8px',
-                        border: editMethod === opt.id ? '2px solid #DA291C' : '1px solid #E2E8F0',
-                        background: editMethod === opt.id ? '#FFF5F5' : '#FFFFFF',
+                        gap: '8px',
+                        padding: '8px 10px',
+                        borderRadius: '6px',
+                        border: editMethod === opt.id ? '2px solid var(--cummins-red)' : '1px solid var(--border-subtle)',
+                        background: editMethod === opt.id ? 'var(--cummins-red-subtle)' : 'var(--bg-surface)',
                         cursor: 'pointer'
                       }}
                     >
@@ -451,11 +623,11 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
                         value={opt.id}
                         checked={editMethod === opt.id}
                         onChange={() => setEditMethod(opt.id as RecordingMethod)}
-                        style={{ marginTop: '3px' }}
+                        style={{ marginTop: '2px' }}
                       />
                       <div>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0F172A' }}>{opt.label}</div>
-                        <div style={{ fontSize: '0.75rem', color: '#64748B' }}>{opt.desc}</div>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>{opt.label}</div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{opt.desc}</div>
                       </div>
                     </label>
                   ))}
@@ -468,7 +640,7 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
                   className="form-select"
                   value={editErp}
                   onChange={(e) => setEditErp(e.target.value as any)}
-                  style={{ height: '40px' }}
+                  style={{ height: '36px' }}
                 >
                   <option value="SAP S/4HANA (PP/MM)">SAP S/4HANA (PP/MM)</option>
                   <option value="SAP EWM">SAP EWM (Extended Warehouse)</option>
@@ -476,25 +648,26 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
                 </select>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', paddingTop: '0.5rem', borderTop: '1px solid #E2E8F0' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-subtle)' }}>
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-secondary btn-sm"
                   onClick={() => setEditingPlant(null)}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary"
+                  className="btn btn-primary btn-sm"
                 >
-                  Save Plant Configuration
+                  Save Configuration
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
     </div>
   );
 };

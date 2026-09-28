@@ -1,32 +1,34 @@
 import { Plant, UserPersona } from '../types';
 import { MOCK_PLANTS, MOCK_PERSONAS } from '../data/mockData';
 
-const STORAGE_KEY_PLANTS = 'cummins_ppwr_plants_v4';
-const STORAGE_KEY_ACTIVE_PLANT = 'cummins_ppwr_active_plant_id_v4';
-const STORAGE_KEY_ACTIVE_PERSONA = 'cummins_ppwr_active_persona_id_v4';
+const STORAGE_KEY_PLANTS = 'cummins_ppwr_plants_v5';
+const STORAGE_KEY_ACTIVE_PLANT = 'cummins_ppwr_active_plant_id_v5';
+const STORAGE_KEY_ACTIVE_PERSONA = 'cummins_ppwr_active_persona_id_v5';
 
 export const ALL_PLANTS_OBJECT: Plant = {
   id: 'ALL_PLANTS',
   name: 'All Factories (Consolidated)',
   shortName: 'All Factories',
   code: 'ALL-GLB',
-  location: 'Global Operations Network',
+  location: 'Global Operations Network (28 Manufacturing Sites)',
   country: 'Global',
+  region: 'Global',
+  flag: '🌐',
   configuredMethod: 'CALCULATED',
   primaryErpSystem: 'SAP S/4HANA (PP/MM)',
-  description: 'Consolidated overview across Pune, Phaltan, and Jamshedpur manufacturing facilities.',
+  description: 'Consolidated worldwide overview across 28 Cummins manufacturing facilities across Americas, EMEA, and APAC.',
   activeSkus: ['GA-102', 'BP-201', 'IN-108', 'VL-310', 'TC-550', 'SP-415'],
   managerName: 'Admin User',
   roleTitle: 'Super Admin • Global Sustainability Director',
-  usersCount: 54,
-  recordsCount: 2536,
+  usersCount: 520,
+  recordsCount: 38450,
   status: 'Active'
 };
 
 class PlantService {
   private plants: Plant[] = [];
   private activePlantId: string = 'PLANT-PUNE';
-  private activePersonaId: string = 'PERSONA-PUNE';
+  private activePersonaId: string = 'PERSONA-ADMIN';
 
   constructor() {
     this.loadFromStorage();
@@ -36,7 +38,14 @@ class PlantService {
     try {
       const savedPlants = localStorage.getItem(STORAGE_KEY_PLANTS);
       if (savedPlants) {
-        this.plants = JSON.parse(savedPlants);
+        const parsed: Plant[] = JSON.parse(savedPlants);
+        if (parsed.length >= MOCK_PLANTS.length) {
+          this.plants = parsed;
+        } else {
+          // Merge or refresh with fresh worldwide plants
+          this.plants = [...MOCK_PLANTS];
+          this.saveToStorage();
+        }
       } else {
         this.plants = [...MOCK_PLANTS];
         this.saveToStorage();

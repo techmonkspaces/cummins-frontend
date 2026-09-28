@@ -518,48 +518,64 @@ body {
 }
 
 /* ==========================================================================
-   BADGES & PILLS
+   BADGES & PILLS (MINIMALIST & SOFT STYLES)
    ========================================================================== */
+.clean-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 3px 8px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.2px;
+}
+
+.pill-neutral {
+  background: var(--bg-card-subtle);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.3rem;
   padding: 2px 7px;
   font-size: var(--font-size-xs);
   font-weight: 600;
-  border-radius: var(--radius-full);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.2px;
 }
 
 .badge-inventory {
-  background: var(--method-inventory-bg);
-  color: var(--method-inventory);
-  border: 1px solid var(--method-inventory-border);
+  background: #F8FAFC;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
 }
 
 .badge-calculated {
-  background: var(--method-calculated-bg);
-  color: var(--method-calculated);
-  border: 1px solid var(--method-calculated-border);
+  background: #F8FAFC;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
 }
 
 .badge-user-input {
-  background: var(--method-user-input-bg);
-  color: var(--method-user-input);
-  border: 1px solid var(--method-user-input-border);
+  background: #F8FAFC;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
 }
 
 .badge-confirmed {
-  background: var(--color-success-bg);
+  background: #F8FAFC;
   color: var(--color-success);
-  border: 1px solid var(--color-success-border);
+  border: 1px solid var(--border-subtle);
 }
 
 .badge-draft {
-  background: var(--color-warning-bg);
+  background: #F8FAFC;
   color: var(--color-warning);
-  border: 1px solid var(--color-warning-border);
+  border: 1px solid var(--border-subtle);
 }
 
 .badge-neutral {

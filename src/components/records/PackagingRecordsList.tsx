@@ -70,11 +70,11 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
   const getMethodBadge = (method: RecordingMethod) => {
     switch (method) {
       case 'INVENTORY':
-        return <span className="badge badge-inventory"><Database size={11} /> Inventory (A)</span>;
+        return <span className="clean-pill pill-neutral">Approach A · Inventory</span>;
       case 'CALCULATED':
-        return <span className="badge badge-calculated"><Calculator size={11} /> Calculated (B)</span>;
+        return <span className="clean-pill pill-neutral">Approach B · Calculated</span>;
       case 'USER_INPUT':
-        return <span className="badge badge-user-input"><Edit3 size={11} /> User Input (C)</span>;
+        return <span className="clean-pill pill-neutral">Approach C · User Input</span>;
     }
   };
 
