@@ -68,15 +68,9 @@ export const Header: React.FC<HeaderProps> = ({
           {activePlant.id === 'ALL_PLANTS' ? 'Global Operations Network' : activePlant.name}
         </span>
         <span style={{ color: '#CBD5E1', fontSize: '0.85rem' }}>•</span>
-        <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600 }}>
-          {activePlant.id === 'ALL_PLANTS' ? `${plants.filter(p => p.id !== 'ALL_PLANTS').length} Plants Worldwide` : activePlant.code}
-        </span>
 
-        {activePlant.id !== 'ALL_PLANTS' && (
-          <div style={{ marginLeft: '6px' }}>
-            {getApproachBadge()}
-          </div>
-        )}
+
+
       </div>
 
       {/* Right: Quick Demo Persona Switcher & Sign Out */}

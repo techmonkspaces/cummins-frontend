@@ -105,10 +105,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
           </button>
         </form>
 
-        {/* Divider */}
-        <div className="login-divider">
-          <span>Demo Preset Selection</span>
-        </div>
 
         {/* Demo Preset Dropdown Section */}
         <div className="demo-preset-box">

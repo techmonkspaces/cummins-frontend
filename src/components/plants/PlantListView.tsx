@@ -283,7 +283,7 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
           </div>
 
           {/* Region Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {/* <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Region:</span>
             <select
               className="form-select"
@@ -296,7 +296,7 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
                 <option key={r} value={r}>{r}</option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           {/* Approach Filter */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -335,7 +335,7 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
             <thead>
               <tr>
                 <th>Factory / Location</th>
-                <th>Country / Region</th>
+                <th>Country </th>
                 <th>Configured Approach</th>
 
                 <th>Users</th>
@@ -381,9 +381,7 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
                           <span style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--text-primary)' }}>
                             {plant.country}
                           </span>
-                          <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                            {plant.region || 'APAC'}
-                          </span>
+
                         </div>
                       </td>
 
