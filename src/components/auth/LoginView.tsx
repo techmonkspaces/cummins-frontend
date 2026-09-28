@@ -125,21 +125,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
               value={selectedPersonaId}
               onChange={handleDropdownChange}
             >
-              <optgroup label="Platform Administration">
-                <option value="PERSONA-ADMIN">Admin User (Super Admin — All Sites)</option>
-              </optgroup>
-              <optgroup label="Pune Plant (Approach A — Inventory)">
-                <option value="PERSONA-PUNE-MGR">Rahul Sharma (Pune Factory Manager)</option>
-                <option value="PERSONA-PUNE-OPR">Priya Desai (Pune Data Entry Operator)</option>
-              </optgroup>
-              <optgroup label="Phaltan Plant (Approach B — Calculated)">
-                <option value="PERSONA-PHALTAN-MGR">Amit Kumar (Phaltan Factory Manager)</option>
-                <option value="PERSONA-PHALTAN-OPR">Sneha Patil (Phaltan Data Entry Operator)</option>
-              </optgroup>
-              <optgroup label="Jamshedpur Plant (Approach C — User Input)">
-                <option value="PERSONA-JAMSHEDPUR-MGR">Vikas Singh (Jamshedpur Factory Manager)</option>
-                <option value="PERSONA-JAMSHEDPUR-OPR">Deepak Verma (Jamshedpur Data Entry Operator)</option>
-              </optgroup>
+              {MOCK_PERSONAS.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.dropdownLabel || p.name}
+                </option>
+              ))}
             </select>
 
 

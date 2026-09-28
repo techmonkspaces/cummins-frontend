@@ -98,14 +98,15 @@ export const App: React.FC = () => {
       const p = plantService.setActivePlant(persona.plantId);
       setActivePlant(p);
     }
-    if (persona.role === 'DATA_ENTRY') {
+    const isPackagingRole = persona.role === 'DATA_ENTRY' || persona.role === 'PACKAGING_MANAGER';
+    if (isPackagingRole) {
       setActiveTab('packaging');
       setInRecordingFlow(true);
     } else {
       setActiveTab('dashboard');
       setInRecordingFlow(false);
     }
-    showToast('Signed In Successfully', `Welcome ${persona.name}.`, 'success');
+    showToast('Signed In Successfully', `Welcome to ${persona.dropdownLabel || persona.name}.`, 'success');
   };
 
   const handleLogout = () => {
@@ -129,7 +130,7 @@ export const App: React.FC = () => {
     const matchedPersona = personas.find(p => p.plantId === plantId);
     if (matchedPersona) {
       setCurrentUser(matchedPersona);
-      if (matchedPersona.role === 'DATA_ENTRY') {
+      if (matchedPersona.role === 'DATA_ENTRY' || matchedPersona.role === 'PACKAGING_MANAGER') {
         setActiveTab('packaging');
         setInRecordingFlow(true);
       }
@@ -143,14 +144,14 @@ export const App: React.FC = () => {
       setCurrentUser(updated);
       plantService.setActivePersona(personaId);
       setActivePlant(plantService.getActivePlant());
-      if (updated.role === 'DATA_ENTRY') {
+      if (updated.role === 'DATA_ENTRY' || updated.role === 'PACKAGING_MANAGER') {
         setActiveTab('packaging');
         setInRecordingFlow(true);
       } else {
         setActiveTab('dashboard');
         setInRecordingFlow(false);
       }
-      showToast('Role Switched', `Active view: ${updated.role === 'SUPER_ADMIN' ? 'Super Admin' : updated.roleTitle.split('•')[0].trim()}.`, 'info');
+      showToast('Role Switched', `Active view: ${updated.dropdownLabel || updated.name}.`, 'info');
     }
   };
 

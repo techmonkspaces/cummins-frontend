@@ -531,10 +531,11 @@ export const MOCK_PERSONAS: UserPersona[] = [
   // ── Super Admin ───────────────────────────────────────────────────────────
   {
     id: 'PERSONA-ADMIN',
-    name: 'Admin User',
+    name: 'Super Admin',
     email: 'admin@cummins.com',
     role: 'SUPER_ADMIN',
-    roleTitle: 'Super Admin • Global Sustainability Director',
+    roleTitle: 'Super Admin • Global Sustainability & Compliance',
+    dropdownLabel: 'Super Admin (All Sites)',
     plantId: 'ALL_PLANTS',
     plantName: 'Global Operations (All Sites)',
     configuredMethod: 'INVENTORY',
@@ -550,15 +551,16 @@ export const MOCK_PERSONAS: UserPersona[] = [
     }
   },
 
-  // ── Pune Factory — Approach A (Inventory) ─────────────────────────────────
+  // ── Pune Factory — Approach A (Inventory) — ONLY 1 User (Factory Admin) ──
   {
     id: 'PERSONA-PUNE-MGR',
-    name: 'Rahul Sharma',
-    email: 'rahul.manager@cummins.com',
-    role: 'FACTORY_MANAGER',
-    roleTitle: 'Factory Manager • Pune Plant (Approach A)',
+    name: 'Factory Admin',
+    email: 'pune.admin@cummins.com',
+    role: 'FACTORY_ADMIN',
+    roleTitle: 'Factory Admin • Pune Plant (Approach A)',
+    dropdownLabel: 'Approach A · Factory Admin',
     plantId: 'PLANT-PUNE',
-    plantName: 'Pune Factory',
+    plantName: 'Pune Kothrud Engine Plant',
     configuredMethod: 'INVENTORY',
     department: 'Plant Logistics & Inventory Accounting',
     isGlobalAdmin: false,
@@ -571,36 +573,17 @@ export const MOCK_PERSONAS: UserPersona[] = [
       canSwitchPlants: false,
     }
   },
-  {
-    id: 'PERSONA-PUNE-OPR',
-    name: 'Priya Desai',
-    email: 'pune.operator@cummins.com',
-    role: 'DATA_ENTRY',
-    roleTitle: 'Data Entry Operator • Pune Plant',
-    plantId: 'PLANT-PUNE',
-    plantName: 'Pune Factory',
-    configuredMethod: 'INVENTORY',
-    department: 'WMS Inventory Station — Shift A',
-    isGlobalAdmin: false,
-    permissions: {
-      canConfigurePlants: false,
-      canManageCatalog: false,
-      canApproveRecords: false,
-      canDeleteRecords: false,
-      canExportPpwr: false,
-      canSwitchPlants: false,
-    }
-  },
 
   // ── Phaltan Factory — Approach B (Calculated) ─────────────────────────────
   {
     id: 'PERSONA-PHALTAN-MGR',
-    name: 'Amit Kumar',
-    email: 'amit.manager@cummins.com',
-    role: 'FACTORY_MANAGER',
-    roleTitle: 'Factory Manager • Phaltan Plant (Approach B)',
+    name: 'Factory Admin',
+    email: 'phaltan.admin@cummins.com',
+    role: 'FACTORY_ADMIN',
+    roleTitle: 'Factory Admin • Phaltan Plant (Approach B)',
+    dropdownLabel: 'Approach B · Factory Admin',
     plantId: 'PLANT-PHALTAN',
-    plantName: 'Phaltan Factory',
+    plantName: 'Phaltan Megasite High Horsepower',
     configuredMethod: 'CALCULATED',
     department: 'Packaging Engineering & PLM Standards',
     isGlobalAdmin: false,
@@ -615,12 +598,13 @@ export const MOCK_PERSONAS: UserPersona[] = [
   },
   {
     id: 'PERSONA-PHALTAN-OPR',
-    name: 'Sneha Patil',
-    email: 'phaltan.operator@cummins.com',
-    role: 'DATA_ENTRY',
-    roleTitle: 'Data Entry Operator • Phaltan Plant',
+    name: 'Packaging Manager',
+    email: 'phaltan.packaging@cummins.com',
+    role: 'PACKAGING_MANAGER',
+    roleTitle: 'Packaging Manager • Phaltan Plant (Approach B)',
+    dropdownLabel: 'Approach B · Packaging Manager',
     plantId: 'PLANT-PHALTAN',
-    plantName: 'Phaltan Factory',
+    plantName: 'Phaltan Megasite High Horsepower',
     configuredMethod: 'CALCULATED',
     department: 'BOM Packing Station — Shift B',
     isGlobalAdmin: false,
@@ -637,12 +621,13 @@ export const MOCK_PERSONAS: UserPersona[] = [
   // ── Jamshedpur Factory — Approach C (User Input) ──────────────────────────
   {
     id: 'PERSONA-JAMSHEDPUR-MGR',
-    name: 'Vikas Singh',
-    email: 'vikas.manager@cummins.com',
-    role: 'FACTORY_MANAGER',
-    roleTitle: 'Factory Manager • Jamshedpur Plant (Approach C)',
+    name: 'Factory Admin',
+    email: 'jamshedpur.admin@cummins.com',
+    role: 'FACTORY_ADMIN',
+    roleTitle: 'Factory Admin • Jamshedpur Plant (Approach C)',
+    dropdownLabel: 'Approach C · Factory Admin',
     plantId: 'PLANT-JAMSHEDPUR',
-    plantName: 'Jamshedpur Factory',
+    plantName: 'Jamshedpur Tata Cummins Plant',
     configuredMethod: 'USER_INPUT',
     department: 'Shop-Floor Packing Operations',
     isGlobalAdmin: false,
@@ -657,12 +642,13 @@ export const MOCK_PERSONAS: UserPersona[] = [
   },
   {
     id: 'PERSONA-JAMSHEDPUR-OPR',
-    name: 'Raju Mehta',
-    email: 'jamshedpur.operator@cummins.com',
-    role: 'DATA_ENTRY',
-    roleTitle: 'Data Entry Operator • Jamshedpur Plant',
+    name: 'Packaging Manager',
+    email: 'jamshedpur.packaging@cummins.com',
+    role: 'PACKAGING_MANAGER',
+    roleTitle: 'Packaging Manager • Jamshedpur Plant (Approach C)',
+    dropdownLabel: 'Approach C · Packaging Manager',
     plantId: 'PLANT-JAMSHEDPUR',
-    plantName: 'Jamshedpur Factory',
+    plantName: 'Jamshedpur Tata Cummins Plant',
     configuredMethod: 'USER_INPUT',
     department: 'Floor Packing Station #4 — Shift C',
     isGlobalAdmin: false,
@@ -680,7 +666,7 @@ export const MOCK_PERSONAS: UserPersona[] = [
 export const MOCK_USERS_LIST = [
   {
     id: 'USR-001',
-    name: 'Admin User',
+    name: 'Super Admin',
     email: 'admin@cummins.com',
     role: 'Super Admin',
     factory: 'All Factories (Global Scope)',
@@ -688,65 +674,55 @@ export const MOCK_USERS_LIST = [
     status: 'Active',
     lastLogin: 'Today, 09:45 AM'
   },
-  // Pune Factory
+  // Pune Factory (Approach A — Single User: Factory Admin)
   {
     id: 'USR-002',
-    name: 'Rahul Sharma',
-    email: 'rahul.manager@cummins.com',
-    role: 'Factory Manager',
-    factory: 'Pune Factory',
+    name: 'Pune Factory Admin',
+    email: 'pune.admin@cummins.com',
+    role: 'Factory Admin',
+    factory: 'Pune Kothrud Engine Plant',
     department: 'Plant Logistics & Inventory',
     status: 'Active',
     lastLogin: 'Today, 10:15 AM'
   },
-  {
-    id: 'USR-005',
-    name: 'Priya Desai',
-    email: 'pune.operator@cummins.com',
-    role: 'Data Entry Operator',
-    factory: 'Pune Factory',
-    department: 'WMS Inventory Station — Shift A',
-    status: 'Active',
-    lastLogin: 'Today, 07:30 AM'
-  },
-  // Phaltan Factory
+  // Phaltan Factory (Approach B)
   {
     id: 'USR-003',
-    name: 'Amit Kumar',
-    email: 'amit.manager@cummins.com',
-    role: 'Factory Manager',
-    factory: 'Phaltan Factory',
+    name: 'Phaltan Factory Admin',
+    email: 'phaltan.admin@cummins.com',
+    role: 'Factory Admin',
+    factory: 'Phaltan Megasite High Horsepower',
     department: 'Packaging Engineering',
     status: 'Active',
     lastLogin: 'Yesterday, 04:30 PM'
   },
   {
-    id: 'USR-006',
-    name: 'Sneha Patil',
-    email: 'phaltan.operator@cummins.com',
-    role: 'Data Entry Operator',
-    factory: 'Phaltan Factory',
+    id: 'USR-004',
+    name: 'Phaltan Packaging Manager',
+    email: 'phaltan.packaging@cummins.com',
+    role: 'Packaging Manager',
+    factory: 'Phaltan Megasite High Horsepower',
     department: 'BOM Packing Station — Shift B',
     status: 'Active',
     lastLogin: 'Today, 06:50 AM'
   },
-  // Jamshedpur Factory
+  // Jamshedpur Factory (Approach C)
   {
-    id: 'USR-004',
-    name: 'Vikas Singh',
-    email: 'vikas.manager@cummins.com',
-    role: 'Factory Manager',
-    factory: 'Jamshedpur Factory',
+    id: 'USR-005',
+    name: 'Jamshedpur Factory Admin',
+    email: 'jamshedpur.admin@cummins.com',
+    role: 'Factory Admin',
+    factory: 'Jamshedpur Tata Cummins Plant',
     department: 'Shop-Floor Packing Operations',
     status: 'Active',
     lastLogin: 'Today, 08:20 AM'
   },
   {
-    id: 'USR-007',
-    name: 'Raju Mehta',
-    email: 'jamshedpur.operator@cummins.com',
-    role: 'Data Entry Operator',
-    factory: 'Jamshedpur Factory',
+    id: 'USR-006',
+    name: 'Jamshedpur Packaging Manager',
+    email: 'jamshedpur.packaging@cummins.com',
+    role: 'Packaging Manager',
+    factory: 'Jamshedpur Tata Cummins Plant',
     department: 'Floor Packing Station #4 — Shift C',
     status: 'Active',
     lastLogin: 'Today, 08:45 AM'

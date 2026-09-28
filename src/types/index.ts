@@ -87,7 +87,7 @@ export interface Plant {
   status?: 'Active' | 'Under Maintenance';
 }
 
-export type UserRoleType = 'SUPER_ADMIN' | 'FACTORY_MANAGER' | 'DATA_ENTRY';
+export type UserRoleType = 'SUPER_ADMIN' | 'FACTORY_ADMIN' | 'PACKAGING_MANAGER' | 'FACTORY_MANAGER' | 'DATA_ENTRY';
 
 export interface UserPersona {
   id: string;
@@ -95,6 +95,7 @@ export interface UserPersona {
   email: string;
   role: UserRoleType;
   roleTitle: string;
+  dropdownLabel?: string;
   plantId: string;
   plantName: string;
   configuredMethod: RecordingMethod;

@@ -112,19 +112,11 @@ export const Header: React.FC<HeaderProps> = ({
                 outline: 'none'
               }}
             >
-              <option value="PERSONA-ADMIN">Super Admin</option>
-              <optgroup label="Pune - Approach A">
-                <option value="PERSONA-PUNE-MGR"> Manager</option>
-                <option value="PERSONA-PUNE-OPR"> Data Entry</option>
-              </optgroup>
-              <optgroup label="Phaltan - Approach B">
-                <option value="PERSONA-PHALTAN-MGR"> Manager</option>
-                <option value="PERSONA-PHALTAN-OPR"> Data Entry</option>
-              </optgroup>
-              <optgroup label="Jamshedpur - Approach C">
-                <option value="PERSONA-JAMSHEDPUR-MGR"> Manager</option>
-                <option value="PERSONA-JAMSHEDPUR-OPR"> Data Entry</option>
-              </optgroup>
+              {personas.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.dropdownLabel || p.name}
+                </option>
+              ))}
             </select>
           </div>
         )}

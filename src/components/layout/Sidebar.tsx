@@ -52,8 +52,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const isSuperAdmin = currentUser.role === 'SUPER_ADMIN';
-  const isDataEntry = currentUser.role === 'DATA_ENTRY';
-  const isFactoryManager = currentUser.role === 'FACTORY_MANAGER';
+  const isDataEntry = currentUser.role === 'DATA_ENTRY' || currentUser.role === 'PACKAGING_MANAGER';
+  const isFactoryManager = currentUser.role === 'FACTORY_MANAGER' || currentUser.role === 'FACTORY_ADMIN';
   const method = activePlant.configuredMethod;
 
   const getApproachTag = () => {
@@ -540,7 +540,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {currentUser.name}
               </div>
               <div style={{ fontSize: '0.7rem', color: '#64748B' }}>
-                {isSuperAdmin ? 'Super Admin' : isDataEntry ? 'Data Entry Operator' : 'Factory Manager'}
+                {isSuperAdmin ? 'Super Admin' : isDataEntry ? 'Packaging Manager' : 'Factory Admin'}
               </div>
             </div>
           </div>
