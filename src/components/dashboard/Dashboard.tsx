@@ -25,6 +25,7 @@ import {
   Globe2
 } from 'lucide-react';
 import { DashboardKPIs, PackagingRecord, RecordingMethod, Plant, UserPersona } from '../../types';
+import { MarketProductMatrix } from './MarketProductMatrix';
 
 interface DashboardProps {
   kpis: DashboardKPIs;
@@ -848,6 +849,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Row 3: Destination Markets & Product Allocation Matrix (Modular Section) */}
+          <MarketProductMatrix records={recentRecords} onViewRecord={onViewRecord} />
         </div>
       ) : (
         /* FACTORY ADMIN SITE-SPECIFIC VIEW (Clean, Highly Focused, No Clutter) */
@@ -1081,6 +1085,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
               })}
             </div>
           </div>
+
+          {/* Row 3: Destination Markets & Product Allocation Matrix (Site Filtered Modular Section) */}
+          <MarketProductMatrix records={recentRecords} onViewRecord={onViewRecord} />
         </div>
       )}
     </div>
