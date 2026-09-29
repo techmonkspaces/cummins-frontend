@@ -68,10 +68,10 @@ export interface PpwrSummaryBreakdown {
 }
 
 export interface Plant {
-  id: string; // e.g. "PLANT-PUNE", "PLANT-PHALTAN", "PLANT-JAMSHEDPUR"
+  id: string; // e.g. "PLANT-COLUMBUS", "PLANT-DARLINGTON", "PLANT-SCORESBY"
   name: string;
   shortName: string;
-  code: string; // e.g. "IN-PUN-01"
+  code: string; // e.g. "US-COL-01"
   location: string;
   country: string;
   region?: 'Americas' | 'EMEA' | 'APAC' | 'Global';

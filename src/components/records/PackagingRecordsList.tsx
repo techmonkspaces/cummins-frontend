@@ -257,7 +257,7 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                     </td>
                     <td style={{ padding: '7px 12px' }}>
                       <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#0F172A', background: '#F8FAFC', padding: '2px 6px', borderRadius: '4px', border: '1px solid #E2E8F0', whiteSpace: 'nowrap' }}>
-                        {record.plantName ? record.plantName.replace('Cummins ', '') : 'Pune Factory'}
+                        {record.plantName ? record.plantName.replace('Cummins ', '') : 'Plant'}
                       </span>
                     </td>
                     <td style={{ padding: '7px 12px', whiteSpace: 'nowrap' }}>

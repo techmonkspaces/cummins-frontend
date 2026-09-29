@@ -1,9 +1,9 @@
 import { Plant, UserPersona } from '../types';
 import { MOCK_PLANTS, MOCK_PERSONAS } from '../data/mockData';
 
-const STORAGE_KEY_PLANTS = 'cummins_ppwr_plants_v5';
-const STORAGE_KEY_ACTIVE_PLANT = 'cummins_ppwr_active_plant_id_v5';
-const STORAGE_KEY_ACTIVE_PERSONA = 'cummins_ppwr_active_persona_id_v5';
+const STORAGE_KEY_PLANTS = 'cummins_ppwr_plants_v6';
+const STORAGE_KEY_ACTIVE_PLANT = 'cummins_ppwr_active_plant_id_v6';
+const STORAGE_KEY_ACTIVE_PERSONA = 'cummins_ppwr_active_persona_id_v6';
 
 export const ALL_PLANTS_OBJECT: Plant = {
   id: 'ALL_PLANTS',
@@ -27,7 +27,7 @@ export const ALL_PLANTS_OBJECT: Plant = {
 
 class PlantService {
   private plants: Plant[] = [];
-  private activePlantId: string = 'PLANT-PUNE';
+  private activePlantId: string = 'PLANT-COLUMBUS';
   private activePersonaId: string = 'PERSONA-ADMIN';
 
   constructor() {
@@ -55,20 +55,20 @@ class PlantService {
       if (savedActivePlant && (this.plants.some(p => p.id === savedActivePlant) || savedActivePlant === 'ALL_PLANTS')) {
         this.activePlantId = savedActivePlant;
       } else {
-        this.activePlantId = 'PLANT-PUNE';
+        this.activePlantId = 'PLANT-COLUMBUS';
       }
 
       const savedActivePersona = localStorage.getItem(STORAGE_KEY_ACTIVE_PERSONA);
       if (savedActivePersona && MOCK_PERSONAS.some(p => p.id === savedActivePersona)) {
         this.activePersonaId = savedActivePersona;
       } else {
-        this.activePersonaId = 'PERSONA-PUNE';
+        this.activePersonaId = 'PERSONA-ADMIN';
       }
     } catch (e) {
       console.error('Failed to load plants from storage:', e);
       this.plants = [...MOCK_PLANTS];
-      this.activePlantId = 'PLANT-PUNE';
-      this.activePersonaId = 'PERSONA-PUNE';
+      this.activePlantId = 'PLANT-COLUMBUS';
+      this.activePersonaId = 'PERSONA-ADMIN';
     }
   }
 
@@ -147,8 +147,8 @@ class PlantService {
 
   public resetToDefault() {
     this.plants = [...MOCK_PLANTS];
-    this.activePlantId = 'PLANT-PUNE';
-    this.activePersonaId = 'PERSONA-PUNE';
+    this.activePlantId = 'PLANT-COLUMBUS';
+    this.activePersonaId = 'PERSONA-ADMIN';
     this.saveToStorage();
   }
 }

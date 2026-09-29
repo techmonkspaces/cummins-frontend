@@ -235,7 +235,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* DATA ENTRY: PUNE (APPROACH A) — Minimal Logger Only       */}
+          {/* DATA ENTRY: COLUMBUS (APPROACH A) — Minimal Logger Only    */}
           {/* ======================================================== */}
           {isDataEntry && method === 'INVENTORY' && (
             <>
@@ -254,7 +254,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* DATA ENTRY: PHALTAN (APPROACH B) — Minimal Logger Only    */}
+          {/* DATA ENTRY: DARLINGTON (APPROACH B) — Minimal Logger Only  */}
           {/* ======================================================== */}
           {isDataEntry && method === 'CALCULATED' && (
             <>
@@ -273,7 +273,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* DATA ENTRY: JAMSHEDPUR (APPROACH C) — Minimal Logger Only */}
+          {/* DATA ENTRY: SCORESBY (APPROACH C) — Minimal Logger Only   */}
           {/* ======================================================== */}
           {isDataEntry && method === 'USER_INPUT' && (
             <>
@@ -292,13 +292,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* ======================================================== */}
-          {/* SCENARIO 2: PUNE FACTORY MANAGER (APPROACH A — INVENTORY) */}
+          {/* SCENARIO 2: COLUMBUS FACTORY MANAGER (APPROACH A)         */}
           {/* ======================================================== */}
           {isFactoryManager && method === 'INVENTORY' && (
             <>
               <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Pune Factory
+                {activePlant.shortName || activePlant.name || 'Columbus Plant'}
               </div>
 
               {/* Plant Dashboard */}
@@ -364,12 +363,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* SCENARIO 3: PHALTAN FACTORY MANAGER (APPROACH B — RULES)  */}
+          {/* SCENARIO 3: DARLINGTON FACTORY MANAGER (APPROACH B)       */}
           {/* ======================================================== */}
           {isFactoryManager && method === 'CALCULATED' && (
             <>
               <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Phaltan Factory
+                {activePlant.shortName || activePlant.name || 'Darlington Plant'}
               </div>
 
               {/* Plant Dashboard */}
@@ -435,12 +434,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* SCENARIO 4: JAMSHEDPUR FACTORY MANAGER (APPROACH C — LOG) */}
+          {/* SCENARIO 4: SCORESBY FACTORY MANAGER (APPROACH C)         */}
           {/* ======================================================== */}
           {isFactoryManager && method === 'USER_INPUT' && (
             <>
               <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Jamshedpur Factory
+                {activePlant.shortName || activePlant.name || 'Scoresby Plant'}
               </div>
 
               {/* Plant Dashboard */}

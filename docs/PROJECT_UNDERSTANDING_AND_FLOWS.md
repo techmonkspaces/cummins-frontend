@@ -76,9 +76,9 @@ Every Cummins factory has a pre-decided default approach configured in the syste
 
 | Approach | Name | User Input Required? | Operational Reality / Plant Type | How It Works |
 | :--- | :--- | :--- | :--- | :--- |
-| **Approach A** | **Inventory / Consumption Based** | ❌ **No User Input** | High-volume automated engine lines (e.g., Pune Kothrud Plant, Daventry UK) | Reads batch/weekly stock deductions from SAP MM and total packed parts; automatically divides total packaging mass by batch quantity. |
-| **Approach B** | **System-Calculated (Rule Engine)** | ❌ **Minimal / Review Only** | Advanced assembly campuses with PLM/CAD models (e.g., Phaltan Megasite, Columbus CMEP) | System auto-calculates the optimal packaging recipe (box size, cushioning thickness, thermocol density, tape length) using product physical rules. |
-| **Approach C** | **Floor Operator Manual Log** | ✅ **Direct User Input** | Heavy industrial, custom crates & repair tooling lines (e.g., Jamshedpur Heavy Duty) | Operator physically picks items from packaging inventory, enters quantities/weights at touchscreens or via barcode scan. |
+| **Approach A** | **Inventory / Consumption Based** | ❌ **No User Input** | High-volume automated engine lines (e.g., Columbus CEP - USA) | Reads batch/weekly stock deductions from SAP MM and total packed parts; automatically divides total packaging mass by batch quantity. |
+| **Approach B** | **System-Calculated (Rule Engine)** | ❌ **Minimal / Review Only** | Advanced assembly campuses with PLM/CAD models (e.g., Darlington Campus - UK) | System auto-calculates the optimal packaging recipe (box size, cushioning thickness, thermocol density, tape length) using product physical rules. |
+| **Approach C** | **Floor Operator Manual Log** | ✅ **Direct User Input** | Heavy industrial, custom crates & repair tooling lines (e.g., Scoresby Hub - Australia) | Operator physically picks items from packaging inventory, enters quantities/weights at touchscreens or via barcode scan. |
 
 ---
 

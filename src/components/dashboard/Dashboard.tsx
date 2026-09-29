@@ -86,7 +86,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             {isConsolidated ? '3' : 'Active'}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 600, marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-            <CheckCircle2 size={11} /> {isConsolidated ? 'Pune, Phaltan, JSR' : '100% Operational'}
+            <CheckCircle2 size={11} /> {isConsolidated ? 'Columbus, Darlington, Scoresby' : '100% Operational'}
           </div>
         </div>
 
@@ -99,10 +99,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
-            {isConsolidated ? '54' : activePlant.id === 'PLANT-PUNE' ? '24' : activePlant.id === 'PLANT-PHALTAN' ? '18' : '12'}
+            {isConsolidated ? '82' : (activePlant.usersCount || 24)}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
-            {isConsolidated ? 'All 3 Plants' : 'Assigned to this plant'}
+            {isConsolidated ? 'All 3 Demo Plants' : 'Assigned to this plant'}
           </div>
         </div>
 
@@ -115,7 +115,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
-            {isConsolidated ? '18,940' : activePlant.id === 'PLANT-PHALTAN' ? '13,351' : activePlant.id === 'PLANT-PUNE' ? '4,520' : (kpis.totalProductsPacked > 0 ? kpis.totalProductsPacked.toLocaleString() : '1,150')}
+            {isConsolidated ? '18,940' : activePlant.id === 'PLANT-DARLINGTON' ? '13,351' : activePlant.id === 'PLANT-COLUMBUS' ? '4,520' : (kpis.totalProductsPacked > 0 ? kpis.totalProductsPacked.toLocaleString() : '1,150')}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
             {isConsolidated ? 'All Factories' : 'Units Processed'}
@@ -147,7 +147,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#DA291C', marginTop: '6px' }}>
-            {isConsolidated ? '17,450 kg' : activePlant.id === 'PLANT-PHALTAN' ? '8,973 kg' : activePlant.id === 'PLANT-PUNE' ? '4,210 kg' : `${Math.round(totalPackagingWeight).toLocaleString()} kg`}
+            {isConsolidated ? '17,450 kg' : activePlant.id === 'PLANT-DARLINGTON' ? '8,973 kg' : activePlant.id === 'PLANT-COLUMBUS' ? '4,210 kg' : `${Math.round(totalPackagingWeight).toLocaleString()} kg`}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
             {isConsolidated ? 'Enterprise Total' : 'Standardized SI Mass'}
