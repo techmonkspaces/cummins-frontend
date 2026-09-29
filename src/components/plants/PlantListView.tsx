@@ -121,19 +121,19 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
       case 'INVENTORY':
         return (
           <span className="clean-pill pill-neutral">
-            Approach A · Inventory
+            Approach A
           </span>
         );
       case 'CALCULATED':
         return (
           <span className="clean-pill pill-neutral">
-            Approach B · Calculated
+            Approach B
           </span>
         );
       case 'USER_INPUT':
         return (
           <span className="clean-pill pill-neutral">
-            Approach C · User Input
+            Approach C
           </span>
         );
     }

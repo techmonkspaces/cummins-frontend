@@ -262,18 +262,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
                       </div>
                     </td>
                     <td style={{ maxWidth: '240px' }}>
-                      <span 
-                        style={{ 
-                          fontSize: '0.72rem', 
-                          color: '#475569', 
-                          background: '#F8FAFC', 
-                          padding: '3px 8px', 
-                          borderRadius: '4px', 
-                          border: '1px solid #E2E8F0',
-                          display: 'inline-block',
-                          lineHeight: '1.3'
-                        }}
-                      >
+                      <span style={{ fontSize: '0.75rem', color: '#64748B', lineHeight: '1.3' }}>
                         {mat.notes || 'Standard packaging allocation'}
                       </span>
                     </td>

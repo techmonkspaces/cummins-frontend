@@ -30,11 +30,11 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
   const getMethodBadge = (method: RecordingMethod) => {
     switch (method) {
       case 'INVENTORY':
-        return <span className="badge badge-inventory"><Database size={11} /> Approach A — Inventory / Consumption</span>;
+        return <span className="badge badge-inventory"><Database size={11} /> Approach A</span>;
       case 'CALCULATED':
-        return <span className="badge badge-calculated"><Calculator size={11} /> Approach B — System Calculated</span>;
+        return <span className="badge badge-calculated"><Calculator size={11} /> Approach B</span>;
       case 'USER_INPUT':
-        return <span className="badge badge-user-input"><Edit3 size={11} /> Approach C — User Input Log</span>;
+        return <span className="badge badge-user-input"><Edit3 size={11} /> Approach C</span>;
     }
   };
 

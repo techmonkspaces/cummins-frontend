@@ -70,11 +70,11 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
   const getMethodBadge = (method: RecordingMethod) => {
     switch (method) {
       case 'INVENTORY':
-        return <span style={{ fontSize: '0.78rem', color: '#334155', fontWeight: 500 }}>Approach A · Inventory</span>;
+        return <span style={{ fontSize: '0.8rem', color: '#0F172A', fontWeight: 600 }}>Approach A</span>;
       case 'CALCULATED':
-        return <span style={{ fontSize: '0.78rem', color: '#334155', fontWeight: 500 }}>Approach B · Calculated</span>;
+        return <span style={{ fontSize: '0.8rem', color: '#0F172A', fontWeight: 600 }}>Approach B</span>;
       case 'USER_INPUT':
-        return <span style={{ fontSize: '0.78rem', color: '#334155', fontWeight: 500 }}>Approach C · User Input</span>;
+        return <span style={{ fontSize: '0.8rem', color: '#0F172A', fontWeight: 600 }}>Approach C</span>;
     }
   };
 
@@ -167,10 +167,10 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
               onChange={(e) => setMethodFilter(e.target.value)}
               style={{ width: '160px', height: '36px', padding: '0.35rem 0.6rem', fontSize: '0.8rem' }}
             >
-              <option value="ALL">All Methods</option>
-              <option value="INVENTORY">Inventory (A)</option>
-              <option value="CALCULATED">Calculated (B)</option>
-              <option value="USER_INPUT">User Input (C)</option>
+              <option value="ALL">All Approaches</option>
+              <option value="INVENTORY">Approach A</option>
+              <option value="CALCULATED">Approach B</option>
+              <option value="USER_INPUT">Approach C</option>
             </select>
 
             {/* Super Admin: Factory Filter */}

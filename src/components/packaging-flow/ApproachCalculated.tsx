@@ -255,10 +255,8 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
                         {item.materialName}
                       </div>
                       {displayDimensions && (
-                        <div style={{ marginTop: '3px' }}>
-                          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', fontWeight: 600, color: '#475569', background: '#F1F5F9', padding: '1px 6px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
-                            {displayDimensions}
-                          </span>
+                        <div style={{ fontSize: '0.74rem', color: '#64748B', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                          {displayDimensions}
                         </div>
                       )}
                     </td>
