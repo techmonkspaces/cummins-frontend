@@ -106,6 +106,7 @@ class RecordsService {
     method: RecordingMethod;
     plantId?: string;
     plantName?: string;
+    destinationCountry?: string;
     materials: PackagingLineItem[];
     status: RecordStatus;
     period?: string;
@@ -126,6 +127,7 @@ class RecordsService {
       method: params.method,
       plantId: params.plantId,
       plantName: params.plantName,
+      destinationCountry: params.destinationCountry || 'Germany (EU)',
       materials: params.materials,
       totalPackagingWeightKg: ppwrSummary.totalPackagingWeightKg,
       perUnitPackagingWeightKg: ppwrSummary.perUnitPackagingWeightKg,
@@ -252,6 +254,7 @@ class RecordsService {
           quantityPacked: r.productQuantity
         },
         packagingSummary: {
+          destinationCountry: r.destinationCountry || 'Germany (EU)',
           totalWeightKg: r.totalPackagingWeightKg,
           perUnitWeightKg: r.perUnitPackagingWeightKg,
           materialFractions: {
@@ -287,6 +290,7 @@ class RecordsService {
       'Record ID',
       'Status',
       'Method',
+      'Destination Market / Country',
       'Product SKU',
       'Product Name',
       'Qty Packed',
@@ -303,6 +307,7 @@ class RecordsService {
       r.id,
       r.status,
       r.method,
+      `"${r.destinationCountry || 'Germany (EU)'}"`,
       `"${r.productSku}"`,
       `"${r.productName}"`,
       r.productQuantity,

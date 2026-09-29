@@ -68,6 +68,10 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
   const [workingNotes, setWorkingNotes] = useState<string | undefined>('');
   const [createdRecord, setCreatedRecord] = useState<PackagingRecord | null>(null);
 
+  const [workingDestinationCountry, setWorkingDestinationCountry] = useState<string>(
+    activePlant.country === 'Australia' ? 'Australia' : 'Germany (EU)'
+  );
+
   const handleProductSelected = (prod: Product) => {
     setSelectedProduct(prod);
     setWorkingQuantity(prod.defaultBatchSize);
@@ -79,6 +83,7 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
     product?: Product;
     productQuantity: number;
     materials: PackagingLineItem[];
+    destinationCountry?: string;
     period?: string;
     notes?: string;
   }) => {
@@ -87,6 +92,9 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
     }
     setWorkingQuantity(data.productQuantity);
     setWorkingMaterials(data.materials);
+    if (data.destinationCountry) {
+      setWorkingDestinationCountry(data.destinationCountry);
+    }
     setWorkingPeriod(data.period);
     setWorkingNotes(data.notes);
     setCurrentStep('REVIEW_SUMMARY');
@@ -99,6 +107,7 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
       method: selectedMethod,
       plantId: activePlant.id,
       plantName: activePlant.name,
+      destinationCountry: workingDestinationCountry,
       materials: workingMaterials,
       status,
       period: workingPeriod,
@@ -197,6 +206,8 @@ export const PackagingWorkflow: React.FC<PackagingWorkflowProps> = ({
           productQuantity={workingQuantity}
           method={selectedMethod}
           materials={workingMaterials}
+          destinationCountry={workingDestinationCountry}
+          onChangeDestinationCountry={setWorkingDestinationCountry}
           period={workingPeriod}
           notes={workingNotes}
           onSave={handleSaveRecord}

@@ -123,6 +123,18 @@ export interface PackagingRuleDefinition {
   description: string;
 }
 
+export const CUMMINS_DESTINATION_COUNTRIES = [
+  'Germany',
+  'Spain',
+  'Denmark',
+  'UK',
+  'USA',
+  'France',
+  'Italy'
+] as const;
+
+export type DestinationCountry = typeof CUMMINS_DESTINATION_COUNTRIES[number];
+
 export interface PackagingRecord {
   id: string; // e.g., "PR-1001"
   productId: string;
@@ -132,6 +144,7 @@ export interface PackagingRecord {
   method: RecordingMethod;
   plantId?: string;
   plantName?: string;
+  destinationCountry?: string;
   materials: PackagingLineItem[];
   totalPackagingWeightKg: number;
   perUnitPackagingWeightKg: number;

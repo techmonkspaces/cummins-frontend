@@ -70,7 +70,13 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
         {/* Body */}
         <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem', overflowY: 'auto' }}>
           {/* Key Metrics Strip */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', background: '#F8FAFC', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.75rem', background: '#F8FAFC', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+            <div>
+              <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Destination Market</div>
+              <div className="font-mono font-bold text-sm" style={{ color: '#0F172A', marginTop: '3px' }}>
+                {record.destinationCountry || 'Germany (EU)'}
+              </div>
+            </div>
             <div>
               <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Quantity Packed</div>
               <div className="font-mono font-bold text-base" style={{ color: '#0284C7' }}>

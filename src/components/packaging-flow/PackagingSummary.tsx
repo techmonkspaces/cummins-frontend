@@ -17,7 +17,8 @@ import {
   PackagingLineItem, 
   RecordingMethod, 
   PpwrSummaryBreakdown,
-  RecordStatus
+  RecordStatus,
+  CUMMINS_DESTINATION_COUNTRIES
 } from '../../types';
 import { recordsService } from '../../services/recordsService';
 
@@ -26,6 +27,8 @@ interface PackagingSummaryProps {
   productQuantity: number;
   method: RecordingMethod;
   materials: PackagingLineItem[];
+  destinationCountry: string;
+  onChangeDestinationCountry: (country: string) => void;
   period?: string;
   notes?: string;
   onSave: (status: RecordStatus) => void;
@@ -37,6 +40,8 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
   productQuantity,
   method,
   materials,
+  destinationCountry,
+  onChangeDestinationCountry,
   period,
   notes,
   onSave,
@@ -141,12 +146,36 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
         </div>
 
         {/* Product & Scope Specs Bar */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', background: '#F8FAFC', padding: '0.85rem 1.25rem', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.2fr 1fr 1fr 1fr', gap: '1rem', background: '#F8FAFC', padding: '0.85rem 1.25rem', borderRadius: '10px', border: '1px solid #E2E8F0', alignItems: 'center' }}>
           <div>
             <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Product SKU / Name</div>
             <div className="font-mono font-bold text-sm" style={{ color: '#0F172A' }}>
               {product.sku} • {product.name}
             </div>
+          </div>
+
+          <div>
+            <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase', marginBottom: '2px' }}>Destination Market</div>
+            <select
+              value={destinationCountry}
+              onChange={(e) => onChangeDestinationCountry(e.target.value)}
+              className="form-select"
+              style={{
+                height: '30px',
+                padding: '0 8px',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                borderRadius: '6px',
+                border: '1px solid #CBD5E1',
+                background: '#FFFFFF',
+                color: '#0F172A',
+                width: '100%'
+              }}
+            >
+              {CUMMINS_DESTINATION_COUNTRIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
           </div>
 
           <div>

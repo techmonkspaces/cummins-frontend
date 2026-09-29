@@ -9,7 +9,7 @@ import {
   Layers,
   ChevronRight
 } from 'lucide-react';
-import { Product, PackagingLineItem, PackagingMaterialMaster } from '../../types';
+import { Product, PackagingLineItem, PackagingMaterialMaster, CUMMINS_DESTINATION_COUNTRIES } from '../../types';
 import { calculationEngine } from '../../services/calculationEngine';
 import { MOCK_PRODUCTS } from '../../data/mockData';
 import { ProductSearchCombobox } from './ProductSearchCombobox';
@@ -20,6 +20,7 @@ interface ApproachCalculatedProps {
   onComplete: (data: {
     productQuantity: number;
     materials: PackagingLineItem[];
+    destinationCountry?: string;
     notes?: string;
   }) => void;
   onBack: () => void;
@@ -34,6 +35,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
   const defaultProd = initialProduct || MOCK_PRODUCTS[0];
   const [selectedProduct, setSelectedProduct] = useState<Product>(defaultProd);
   const [productQuantity, setProductQuantity] = useState<number>(100);
+  const [destinationCountry, setDestinationCountry] = useState<string>('Germany');
   const [calculatedItems, setCalculatedItems] = useState<PackagingLineItem[]>([]);
   const [ruleExplanations, setRuleExplanations] = useState<string[]>([]);
   const [notes, setNotes] = useState('Top-down algorithmic rule engine calculation.');
@@ -66,6 +68,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
     onComplete({
       productQuantity,
       materials: calculatedItems,
+      destinationCountry,
       notes
     });
   };
@@ -135,7 +138,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
           boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
         }}
       >
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1.2fr', gap: '1.25rem', alignItems: 'flex-start' }}>
           <div>
             <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
               Target Product SKU & Profile
@@ -150,21 +153,58 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
 
           <div>
             <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
-              Batch Quantity
+              Batch Quantity (Units)
             </label>
-            <div
+            <input
+              type="number"
+              min={1}
+              max={100000}
+              value={productQuantity || ''}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                setProductQuantity(isNaN(val) ? 0 : Math.max(1, val));
+              }}
+              className="form-input"
               style={{
                 height: '38px',
-                display: 'flex',
-                alignItems: 'center',
+                padding: '0 10px',
+                fontSize: '0.88rem',
                 fontWeight: 700,
-                fontSize: '0.9rem',
+                fontFamily: 'var(--font-mono)',
                 color: '#0F172A',
-                fontFamily: 'var(--font-mono)'
+                border: '1px solid #CBD5E1',
+                borderRadius: '6px',
+                width: '100%',
+                background: '#FFFFFF'
+              }}
+              placeholder="100"
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
+              Country Sold To
+            </label>
+            <select
+              value={destinationCountry}
+              onChange={(e) => setDestinationCountry(e.target.value)}
+              className="form-select"
+              style={{
+                height: '38px',
+                padding: '0 10px',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                borderRadius: '6px',
+                border: '1px solid #CBD5E1',
+                background: '#FFFFFF',
+                color: '#0F172A',
+                width: '100%'
               }}
             >
-              100 Units
-            </div>
+              {CUMMINS_DESTINATION_COUNTRIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
           </div>
         </div>
       </div>

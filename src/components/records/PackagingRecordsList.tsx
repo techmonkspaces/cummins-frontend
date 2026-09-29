@@ -221,6 +221,7 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                 <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Record ID</th>
                 <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Product & SKU</th>
                 <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Factory Site</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Destination Market</th>
                 <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Methodology</th>
                 <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right', whiteSpace: 'nowrap' }}>Units</th>
                 <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Pkg Mass</th>
@@ -233,7 +234,7 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
             <tbody>
               {filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={10} style={{ textAlign: 'center', padding: '2.5rem', color: '#64748B' }}>
+                  <td colSpan={11} style={{ textAlign: 'center', padding: '2.5rem', color: '#64748B' }}>
                     No packaging records found matching your filters.
                   </td>
                 </tr>
@@ -258,6 +259,11 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                     <td style={{ padding: '7px 12px' }}>
                       <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#0F172A', background: '#F8FAFC', padding: '2px 6px', borderRadius: '4px', border: '1px solid #E2E8F0', whiteSpace: 'nowrap' }}>
                         {record.plantName ? record.plantName.replace('Cummins ', '') : 'Plant'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '7px 12px' }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#334155', background: '#F1F5F9', padding: '2px 6px', borderRadius: '4px', border: '1px solid #CBD5E1', whiteSpace: 'nowrap' }}>
+                        {record.destinationCountry || 'Germany (EU)'}
                       </span>
                     </td>
                     <td style={{ padding: '7px 12px', whiteSpace: 'nowrap' }}>

@@ -212,39 +212,91 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Material Mass Distribution - Commented out */}
-        <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.25rem' }}>
-            Material Mass Distribution (PPWR Split)
-          </h3>
-          <p style={{ fontSize: '0.78rem', color: '#64748B', marginBottom: '1.25rem' }}>
-            EU PPWR Article 6 & 9 Recyclability targets tracking
-          </p>
+        {/* Right Side: Market Shipments & Material Split */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 700, marginBottom: '4px' }}>
-                <span style={{ color: '#0284C7' }}>Cardboard & Paper (Fibre)</span>
-                <span>{cardboardSharePct + paperSharePct}%</span>
-              </div>
-              <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
-                <div style={{ width: `${cardboardSharePct + paperSharePct}%`, height: '100%', background: '#0284C7', borderRadius: '999px' }} />
-              </div>
+          {/* Destination Market Shipments Breakdown */}
+          <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+              <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
+                Destination Market Distribution
+              </h3>
+              <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>
+                {isConsolidated ? 'Global Shipments' : activePlant.name.replace('Cummins ', '')}
+              </span>
             </div>
+            <p style={{ fontSize: '0.74rem', color: '#64748B', marginBottom: '1rem' }}>
+              Packaging mass exported to target regulatory compliance markets
+            </p>
 
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 700, marginBottom: '4px' }}>
-                <span style={{ color: '#7C3AED' }}>Plastics (Polymers / EPS)</span>
-                <span>{plasticSharePct}%</span>
-              </div>
-              <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
-                <div style={{ width: `${plasticSharePct}%`, height: '100%', background: '#7C3AED', borderRadius: '999px' }} />
-              </div>
-            </div>
-
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {(
+                activePlant.country === 'Australia'
+                  ? [
+                      { country: 'USA', weight: 480, pct: 62 },
+                      { country: 'UK', weight: 190, pct: 24 },
+                      { country: 'Germany', weight: 110, pct: 14 }
+                    ]
+                  : activePlant.country === 'United Kingdom'
+                  ? [
+                      { country: 'Germany', weight: 4250, pct: 47 },
+                      { country: 'France', weight: 2680, pct: 30 },
+                      { country: 'Spain', weight: 2043, pct: 23 }
+                    ]
+                  : [
+                      { country: 'Germany', weight: 8120, pct: 47 },
+                      { country: 'USA', weight: 4850, pct: 28 },
+                      { country: 'France', weight: 2680, pct: 15 },
+                      { country: 'Italy', weight: 1800, pct: 10 }
+                    ]
+              ).map((m) => (
+                <div key={m.country}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 700, marginBottom: '3px' }}>
+                    <span style={{ color: '#0F172A' }}>{m.country}</span>
+                    <span style={{ color: '#64748B', fontFamily: 'var(--font-mono)' }}>
+                      {m.weight.toLocaleString()} kg <span style={{ color: '#0F172A', fontWeight: 800 }}>({m.pct}%)</span>
+                    </span>
+                  </div>
+                  <div style={{ height: '6px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
+                    <div style={{ width: `${m.pct}%`, height: '100%', background: '#DA291C', borderRadius: '999px' }} />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
+
+          {/* Material Mass Distribution */}
+          <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.25rem' }}>
+              Material Mass Distribution (PPWR Split)
+            </h3>
+            <p style={{ fontSize: '0.74rem', color: '#64748B', marginBottom: '1rem' }}>
+              EU PPWR Article 6 & 9 Recyclability targets tracking
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 700, marginBottom: '3px' }}>
+                  <span style={{ color: '#0284C7' }}>Cardboard & Paper (Fibre)</span>
+                  <span style={{ fontFamily: 'var(--font-mono)' }}>{cardboardSharePct + paperSharePct}%</span>
+                </div>
+                <div style={{ height: '6px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
+                  <div style={{ width: `${cardboardSharePct + paperSharePct}%`, height: '100%', background: '#0284C7', borderRadius: '999px' }} />
+                </div>
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 700, marginBottom: '3px' }}>
+                  <span style={{ color: '#7C3AED' }}>Plastics (Polymers / EPS)</span>
+                  <span style={{ fontFamily: 'var(--font-mono)' }}>{plasticSharePct}%</span>
+                </div>
+                <div style={{ height: '6px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
+                  <div style={{ width: `${plasticSharePct}%`, height: '100%', background: '#7C3AED', borderRadius: '999px' }} />
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
 

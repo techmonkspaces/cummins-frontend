@@ -54,17 +54,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const isSuperAdmin = currentUser.role === 'SUPER_ADMIN';
   const isDataEntry = currentUser.role === 'DATA_ENTRY' || currentUser.role === 'PACKAGING_MANAGER';
   const isFactoryManager = currentUser.role === 'FACTORY_MANAGER' || currentUser.role === 'FACTORY_ADMIN';
-  const method = activePlant.configuredMethod;
-
-  const getApproachTag = () => {
-    switch (method) {
-      case 'INVENTORY': return { label: 'Approach A', color: '#0284C7', bg: '#F0F9FF' };
-      case 'CALCULATED': return { label: 'Approach B', color: '#7C3AED', bg: '#FAF5FF' };
-      case 'USER_INPUT': return { label: 'Approach C', color: '#059669', bg: '#ECFDF5' };
-    }
-  };
-
-  const tag = getApproachTag();
 
   return (
     <>
@@ -147,6 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Dynamic Role-Tailored Navigation */}
+        {/* Dynamic Role-Tailored Navigation */}
         <nav
           style={{
             flex: 1,
@@ -162,7 +152,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* ======================================================== */}
           {isSuperAdmin && (
             <>
-              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-light)', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 Platform Overview
               </div>
 
@@ -172,7 +162,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`sidebar-nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'dashboard')}
               >
-                <LayoutDashboard size={17} color={activeTab === 'dashboard' ? '#DA291C' : '#64748B'} />
+                <LayoutDashboard size={17} color={activeTab === 'dashboard' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
                 <span style={{ flex: 1 }}>Global Dashboard</span>
               </button>
 
@@ -182,9 +172,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`sidebar-nav-btn ${activeTab === 'plants' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'plants')}
               >
-                <Building2 size={17} color={activeTab === 'plants' ? '#DA291C' : '#64748B'} />
+                <Building2 size={17} color={activeTab === 'plants' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
                 <span style={{ flex: 1 }}>Factories</span>
-                <span style={{ fontSize: '0.68rem', background: '#F1F5F9', color: '#475569', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>28</span>
+                <span style={{ fontSize: '0.68rem', background: 'var(--bg-card-subtle)', color: 'var(--text-secondary)', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>28</span>
               </button>
 
               {/* Product Master */}
@@ -193,7 +183,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`sidebar-nav-btn ${activeTab === 'products' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'products')}
               >
-                <Boxes size={17} color={activeTab === 'products' ? '#DA291C' : '#64748B'} />
+                <Boxes size={17} color={activeTab === 'products' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
                 <span style={{ flex: 1 }}>Product Master</span>
               </button>
 
@@ -203,11 +193,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`sidebar-nav-btn ${activeTab === 'records' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'records')}
               >
-                <FileText size={17} color={activeTab === 'records' ? '#DA291C' : '#64748B'} />
+                <FileText size={17} color={activeTab === 'records' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
                 <span style={{ flex: 1 }}>Packaging Records</span>
               </button>
 
-              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '10px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-light)', padding: '10px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 Governance & Rules
               </div>
 
@@ -217,87 +207,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`sidebar-nav-btn ${activeTab === 'users' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'users')}
               >
-                <Users size={17} color={activeTab === 'users' ? '#DA291C' : '#64748B'} />
+                <Users size={17} color={activeTab === 'users' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
                 <span style={{ flex: 1 }}>Users & Access</span>
               </button>
 
-              {/* 4-Tier Rules & Config */}
+              {/* Rules & Config */}
               <button
                 onClick={() => onSelectTab('rules')}
                 className={`sidebar-nav-btn ${activeTab === 'rules' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'rules')}
               >
-                <Sliders size={17} color={activeTab === 'rules' ? '#DA291C' : '#64748B'} />
+                <Sliders size={17} color={activeTab === 'rules' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
                 <span style={{ flex: 1 }}>Rules & Configuration</span>
-                <span style={{ fontSize: '0.65rem', background: '#FAF5FF', color: '#7C3AED', border: '1px solid #DDD6FE', padding: '1px 5px', borderRadius: '3px', fontWeight: 700 }}>4-Tier</span>
               </button>
             </>
           )}
 
           {/* ======================================================== */}
-          {/* DATA ENTRY: COLUMBUS (APPROACH A) — Minimal Logger Only    */}
+          {/* SCENARIO 2: DATA ENTRY / PACKAGING OPERATOR               */}
           {/* ======================================================== */}
-          {isDataEntry && method === 'INVENTORY' && (
+          {isDataEntry && (
             <>
-              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Data Entry Station
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-light)', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                {activePlant.shortName || activePlant.name || 'Data Entry Station'}
               </div>
               <button
                 onClick={() => { onSelectTab('packaging'); onStartPackagingFlow(); }}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', padding: '10px 12px', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, color: '#0284C7', background: '#F0F9FF', border: '1px solid #BAE6FD', cursor: 'pointer', textAlign: 'left', margin: '3px 0' }}
+                className={`sidebar-nav-btn ${activeTab === 'packaging' ? 'active' : ''}`}
+                style={getNavBtnStyle(activeTab === 'packaging')}
               >
-                <Database size={17} color="#0284C7" />
-                <span style={{ flex: 1 }}>Submit Batch Deduction</span>
-                <span style={{ fontSize: '0.62rem', background: '#0284C7', color: '#FFFFFF', padding: '2px 5px', borderRadius: '4px', fontWeight: 800 }}>APPR. A</span>
+                <PackagePlus size={17} color={activeTab === 'packaging' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
+                <span style={{ flex: 1 }}>Record Packaging</span>
               </button>
             </>
           )}
 
           {/* ======================================================== */}
-          {/* DATA ENTRY: DARLINGTON (APPROACH B) — Minimal Logger Only  */}
+          {/* SCENARIO 3: FACTORY ADMIN / PLANT MANAGER                 */}
           {/* ======================================================== */}
-          {isDataEntry && method === 'CALCULATED' && (
+          {isFactoryManager && (
             <>
-              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Data Entry Station
-              </div>
-              <button
-                onClick={() => { onSelectTab('packaging'); onStartPackagingFlow(); }}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', padding: '10px 12px', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, color: '#7C3AED', background: '#FAF5FF', border: '1px solid #DDD6FE', cursor: 'pointer', textAlign: 'left', margin: '3px 0' }}
-              >
-                <Calculator size={17} color="#7C3AED" />
-                <span style={{ flex: 1 }}>Run BOM Calculation</span>
-                <span style={{ fontSize: '0.62rem', background: '#7C3AED', color: '#FFFFFF', padding: '2px 5px', borderRadius: '4px', fontWeight: 800 }}>APPR. B</span>
-              </button>
-            </>
-          )}
-
-          {/* ======================================================== */}
-          {/* DATA ENTRY: SCORESBY (APPROACH C) — Minimal Logger Only   */}
-          {/* ======================================================== */}
-          {isDataEntry && method === 'USER_INPUT' && (
-            <>
-              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Data Entry Station
-              </div>
-              <button
-                onClick={() => { onSelectTab('packaging'); onStartPackagingFlow(); }}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', padding: '10px 12px', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, color: '#059669', background: '#ECFDF5', border: '1px solid #A7F3D0', cursor: 'pointer', textAlign: 'left', margin: '3px 0' }}
-              >
-                <Scale size={17} color="#059669" />
-                <span style={{ flex: 1 }}>Packing Station Logger</span>
-                <span style={{ fontSize: '0.62rem', background: '#059669', color: '#FFFFFF', padding: '2px 5px', borderRadius: '4px', fontWeight: 800 }}>APPR. C</span>
-              </button>
-            </>
-          )}
-
-          {/* ======================================================== */}
-          {/* SCENARIO 2: COLUMBUS FACTORY MANAGER (APPROACH A)         */}
-          {/* ======================================================== */}
-          {isFactoryManager && method === 'INVENTORY' && (
-            <>
-              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                {activePlant.shortName || activePlant.name || 'Columbus Plant'}
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-light)', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                {activePlant.shortName || activePlant.name || 'Plant View'}
               </div>
 
               {/* Plant Dashboard */}
@@ -306,38 +257,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`sidebar-nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'dashboard')}
               >
-                <LayoutDashboard size={17} color={activeTab === 'dashboard' ? '#DA291C' : '#64748B'} />
+                <LayoutDashboard size={17} color={activeTab === 'dashboard' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
                 <span style={{ flex: 1 }}>Plant Dashboard</span>
               </button>
 
-              {/* Approach Action: Batch Reconciliation */}
+              {/* Uniform Record Packaging Button */}
               <button
                 onClick={() => {
                   onSelectTab('packaging');
                   onStartPackagingFlow();
                 }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  width: '100%',
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  fontSize: '0.85rem',
-                  fontWeight: 700,
-                  color: '#0284C7',
-                  background: activeTab === 'packaging' ? '#E0F2FE' : '#F0F9FF',
-                  border: '1px solid #BAE6FD',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  margin: '3px 0'
-                }}
+                className={`sidebar-nav-btn ${activeTab === 'packaging' ? 'active' : ''}`}
+                style={getNavBtnStyle(activeTab === 'packaging')}
               >
-                <Database size={17} color="#0284C7" />
-                <span style={{ flex: 1 }}>Batch Reconciliation</span>
-                <span style={{ fontSize: '0.62rem', background: '#0284C7', color: '#FFFFFF', padding: '2px 5px', borderRadius: '4px', fontWeight: 800 }}>
-                  APPR. A
-                </span>
+                <PackagePlus size={17} color={activeTab === 'packaging' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
+                <span style={{ flex: 1 }}>Record Packaging</span>
               </button>
 
               {/* Packaging Inventory */}
@@ -346,7 +280,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`sidebar-nav-btn ${activeTab === 'inventory' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'inventory')}
               >
-                <Layers size={17} color={activeTab === 'inventory' ? '#DA291C' : '#64748B'} />
+                <Layers size={17} color={activeTab === 'inventory' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
                 <span style={{ flex: 1 }}>Packaging Inventory</span>
               </button>
 
@@ -356,149 +290,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`sidebar-nav-btn ${activeTab === 'records' ? 'active' : ''}`}
                 style={getNavBtnStyle(activeTab === 'records')}
               >
-                <FileText size={17} color={activeTab === 'records' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Packaging Records</span>
-              </button>
-            </>
-          )}
-
-          {/* ======================================================== */}
-          {/* SCENARIO 3: DARLINGTON FACTORY MANAGER (APPROACH B)       */}
-          {/* ======================================================== */}
-          {isFactoryManager && method === 'CALCULATED' && (
-            <>
-              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                {activePlant.shortName || activePlant.name || 'Darlington Plant'}
-              </div>
-
-              {/* Plant Dashboard */}
-              <button
-                onClick={() => onSelectTab('dashboard')}
-                className={`sidebar-nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
-                style={getNavBtnStyle(activeTab === 'dashboard')}
-              >
-                <LayoutDashboard size={17} color={activeTab === 'dashboard' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Plant Dashboard</span>
-              </button>
-
-              {/* Approach Action: Auto-Box Calculator */}
-              <button
-                onClick={() => {
-                  onSelectTab('packaging');
-                  onStartPackagingFlow();
-                }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  width: '100%',
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  fontSize: '0.85rem',
-                  fontWeight: 700,
-                  color: '#7C3AED',
-                  background: activeTab === 'packaging' ? '#EDE9FE' : '#FAF5FF',
-                  border: '1px solid #DDD6FE',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  margin: '3px 0'
-                }}
-              >
-                <Calculator size={17} color="#7C3AED" />
-                <span style={{ flex: 1 }}>Auto-Box Calculator</span>
-                <span style={{ fontSize: '0.62rem', background: '#7C3AED', color: '#FFFFFF', padding: '2px 5px', borderRadius: '4px', fontWeight: 800 }}>
-                  APPR. B
-                </span>
-              </button>
-
-              {/* Packaging Inventory */}
-              <button
-                onClick={() => onSelectTab('inventory')}
-                className={`sidebar-nav-btn ${activeTab === 'inventory' ? 'active' : ''}`}
-                style={getNavBtnStyle(activeTab === 'inventory')}
-              >
-                <Layers size={17} color={activeTab === 'inventory' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Packaging Inventory</span>
-              </button>
-
-              {/* Packaging Records */}
-              <button
-                onClick={() => onSelectTab('records')}
-                className={`sidebar-nav-btn ${activeTab === 'records' ? 'active' : ''}`}
-                style={getNavBtnStyle(activeTab === 'records')}
-              >
-                <FileText size={17} color={activeTab === 'records' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Packaging Records</span>
-              </button>
-            </>
-          )}
-
-          {/* ======================================================== */}
-          {/* SCENARIO 4: SCORESBY FACTORY MANAGER (APPROACH C)         */}
-          {/* ======================================================== */}
-          {isFactoryManager && method === 'USER_INPUT' && (
-            <>
-              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', padding: '6px 10px 4px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                {activePlant.shortName || activePlant.name || 'Scoresby Plant'}
-              </div>
-
-              {/* Plant Dashboard */}
-              <button
-                onClick={() => onSelectTab('dashboard')}
-                className={`sidebar-nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
-                style={getNavBtnStyle(activeTab === 'dashboard')}
-              >
-                <LayoutDashboard size={17} color={activeTab === 'dashboard' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Plant Dashboard</span>
-              </button>
-
-              {/* Approach Action: Packing Station Logger */}
-              <button
-                onClick={() => {
-                  onSelectTab('packaging');
-                  onStartPackagingFlow();
-                }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  width: '100%',
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  fontSize: '0.85rem',
-                  fontWeight: 700,
-                  color: '#059669',
-                  background: activeTab === 'packaging' ? '#D1FAE5' : '#ECFDF5',
-                  border: '1px solid #A7F3D0',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  margin: '3px 0'
-                }}
-              >
-                <Scale size={17} color="#059669" />
-                <span style={{ flex: 1 }}>Packing Station Logger</span>
-                <span style={{ fontSize: '0.62rem', background: '#059669', color: '#FFFFFF', padding: '2px 5px', borderRadius: '4px', fontWeight: 800 }}>
-                  APPR. C
-                </span>
-              </button>
-
-              {/* Packaging Inventory */}
-              <button
-                onClick={() => onSelectTab('inventory')}
-                className={`sidebar-nav-btn ${activeTab === 'inventory' ? 'active' : ''}`}
-                style={getNavBtnStyle(activeTab === 'inventory')}
-              >
-                <Layers size={17} color={activeTab === 'inventory' ? '#DA291C' : '#64748B'} />
-                <span style={{ flex: 1 }}>Packaging Inventory</span>
-              </button>
-
-              {/* Packaging Records */}
-              <button
-                onClick={() => onSelectTab('records')}
-                className={`sidebar-nav-btn ${activeTab === 'records' ? 'active' : ''}`}
-                style={getNavBtnStyle(activeTab === 'records')}
-              >
-                <FileText size={17} color={activeTab === 'records' ? '#DA291C' : '#64748B'} />
+                <FileText size={17} color={activeTab === 'records' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
                 <span style={{ flex: 1 }}>Packaging Records</span>
               </button>
             </>
@@ -509,8 +301,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div
           style={{
             padding: '0.85rem 1rem',
-            borderTop: '1px solid #F1F5F9',
-            background: '#F8FAFC',
+            borderTop: '1px solid var(--border-subtle)',
+            background: 'var(--bg-main)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
@@ -522,7 +314,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 width: '32px',
                 height: '32px',
                 borderRadius: '8px',
-                background: isSuperAdmin ? '#DA291C' : tag.color,
+                background: 'var(--cummins-red)',
                 color: '#FFFFFF',
                 display: 'flex',
                 alignItems: 'center',
@@ -535,10 +327,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {currentUser.name.charAt(0)}
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {currentUser.name}
               </div>
-              <div style={{ fontSize: '0.7rem', color: '#64748B' }}>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
                 {isSuperAdmin ? 'Super Admin' : isDataEntry ? 'Packaging Manager' : 'Factory Admin'}
               </div>
             </div>
@@ -550,7 +342,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#64748B',
+              color: 'var(--text-muted)',
               cursor: 'pointer',
               padding: '6px',
               borderRadius: '6px',
@@ -560,11 +352,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
               transition: 'all 0.15s ease'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#DC2626';
-              e.currentTarget.style.background = '#FEE2E2';
+              e.currentTarget.style.color = 'var(--cummins-red)';
+              e.currentTarget.style.background = 'var(--cummins-red-light)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#64748B';
+              e.currentTarget.style.color = 'var(--text-muted)';
               e.currentTarget.style.background = 'transparent';
             }}
           >
@@ -586,9 +378,9 @@ function getNavBtnStyle(isActive: boolean): React.CSSProperties {
     borderRadius: '8px',
     fontSize: '0.85rem',
     fontWeight: isActive ? 700 : 600,
-    color: isActive ? '#DA291C' : '#334155',
-    background: isActive ? '#FFF5F5' : 'transparent',
-    border: isActive ? '1px solid #FECACA' : '1px solid transparent',
+    color: isActive ? 'var(--cummins-red)' : 'var(--text-secondary)',
+    background: isActive ? 'var(--cummins-red-subtle)' : 'transparent',
+    border: isActive ? '1px solid var(--cummins-red-border)' : '1px solid transparent',
     cursor: 'pointer',
     textAlign: 'left',
     transition: 'all 0.15s ease'
