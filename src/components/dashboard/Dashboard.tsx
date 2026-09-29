@@ -70,10 +70,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
     const countryMassMap: Record<string, number> = {};
 
     recentRecords.forEach((r) => {
-      const recordMass = r.totalPackagingWeightKg > 0 
-        ? r.totalPackagingWeightKg 
+      const recordMass = r.totalPackagingWeightKg > 0
+        ? r.totalPackagingWeightKg
         : (r.perUnitPackagingWeightKg || 0.5) * (r.productQuantity || 1);
-      
+
       totalMass += recordMass;
       totalQty += (r.productQuantity || 1);
 
@@ -197,8 +197,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
     recentRecords.forEach((r) => {
       const pId = r.plantId || '';
       const pName = r.plantName || '';
-      const recWeight = r.totalPackagingWeightKg > 0 
-        ? r.totalPackagingWeightKg 
+      const recWeight = r.totalPackagingWeightKg > 0
+        ? r.totalPackagingWeightKg
         : (r.perUnitPackagingWeightKg || 0.5) * (r.productQuantity || 1);
 
       let key = 'Other';
@@ -413,7 +413,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {/* Row 1: 3-Column Charts Grid matching exact mockup */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.25rem' }}>
-            
+
             {/* Chart 1: Packaging Mass by Plant (Bar Chart) */}
             <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '300px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
@@ -507,7 +507,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
                   Packaging Material Composition
                 </h3>
-                <div 
+                <div
                   onClick={() => setCompositionFilter(f => f === 'mass' ? 'pct' : 'mass')}
                   style={{ border: '1px solid #E2E8F0', borderRadius: '6px', padding: '3px 8px', fontSize: '0.72rem', color: '#64748B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
                 >
@@ -641,7 +641,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
                   Packaging Records Trend
                 </h3>
-                <div 
+                <div
                   onClick={() => setTrendPeriod(p => p === 'daily' ? 'weekly' : 'daily')}
                   style={{ border: '1px solid #E2E8F0', borderRadius: '6px', padding: '3px 8px', fontSize: '0.72rem', color: '#64748B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
                 >
@@ -673,7 +673,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
                       </linearGradient>
                     </defs>
-                    
+
                     {/* Dynamic Area fill */}
                     <path
                       d={trendData.areaD}
@@ -777,11 +777,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
                 {recentRecords.slice(0, 5).map((rec) => {
-                  const plantColor = rec.plantId === 'PLANT-DARLINGTON' 
-                    ? { bg: '#EFF6FF', text: '#1D4ED8', border: '#DBEAFE' } 
-                    : rec.plantId === 'PLANT-COLUMBUS' 
-                    ? { bg: '#ECFDF5', text: '#047857', border: '#D1FAE5' } 
-                    : { bg: '#FAF5FF', text: '#6D28D9', border: '#EDE9FE' };
+                  const plantColor = rec.plantId === 'PLANT-DARLINGTON'
+                    ? { bg: '#EFF6FF', text: '#1D4ED8', border: '#DBEAFE' }
+                    : rec.plantId === 'PLANT-COLUMBUS'
+                      ? { bg: '#ECFDF5', text: '#047857', border: '#D1FAE5' }
+                      : { bg: '#FAF5FF', text: '#6D28D9', border: '#EDE9FE' };
 
                   return (
                     <div
@@ -858,7 +858,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {/* Row 1: Site Material Composition & Destination Markets */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-            
+
             {/* Card 1: Plant Packaging Material Composition */}
             <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
@@ -986,7 +986,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
 
           {/* Row 2: Plant-Specific Recent Packaging Records (Only this factory's records!) */}
-          <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+          {/* <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
               <div>
                 <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
@@ -1084,7 +1084,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 );
               })}
             </div>
-          </div>
+          </div> */}
 
           {/* Row 3: Destination Markets & Product Allocation Matrix (Site Filtered Modular Section) */}
           <MarketProductMatrix records={recentRecords} onViewRecord={onViewRecord} />
