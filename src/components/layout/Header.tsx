@@ -67,10 +67,6 @@ export const Header: React.FC<HeaderProps> = ({
         <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.01em' }}>
           {activePlant.id === 'ALL_PLANTS' ? 'Global Operations Network' : activePlant.name}
         </span>
-        <span style={{ color: '#CBD5E1', fontSize: '0.85rem' }}>•</span>
-
-
-
       </div>
 
       {/* Right: Quick Demo Persona Switcher & Sign Out */}

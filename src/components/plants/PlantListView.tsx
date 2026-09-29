@@ -34,7 +34,7 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 8;
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
   // Edit Modal State
   const [editingPlant, setEditingPlant] = useState<Plant | null>(null);
@@ -210,7 +210,7 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
       </div>
 
       {/* Quick Stats Ribbon - Minimal & Light */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.75rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
         <div className="glass-card" style={{ padding: '0.75rem 1rem' }}>
           <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Plants</div>
           <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{stats.total}</div>
@@ -230,11 +230,6 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
           <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Approach C</div>
           <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{stats.approachC}</div>
           <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>Operator Station Input</div>
-        </div>
-        <div className="glass-card" style={{ padding: '0.75rem 1rem' }}>
-          <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Global Status</div>
-          <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--color-success)', marginTop: '2px' }}>100%</div>
-          <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>Active PPWR Ledger</div>
         </div>
       </div>
 
@@ -525,34 +520,74 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0.65rem 0.5rem',
+          padding: '0.85rem 1rem',
           borderTop: '1px solid var(--border-subtle)',
-          fontSize: '0.78rem',
-          color: 'var(--text-secondary)'
+          fontSize: '0.8rem',
+          color: 'var(--text-secondary)',
+          background: 'var(--bg-card)',
+          borderRadius: '0 0 10px 10px',
+          flexWrap: 'wrap',
+          gap: '0.75rem'
         }}
       >
-        <div>
-          Showing <strong>{filteredPlants.length > 0 ? (validCurrentPage - 1) * itemsPerPage + 1 : 0}</strong> - <strong>{Math.min(validCurrentPage * itemsPerPage, filteredPlants.length)}</strong> of <strong>{filteredPlants.length}</strong> factories
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          <div>
+            Showing <strong style={{ color: 'var(--text-primary)' }}>{filteredPlants.length > 0 ? (validCurrentPage - 1) * itemsPerPage + 1 : 0}</strong> - <strong style={{ color: 'var(--text-primary)' }}>{Math.min(validCurrentPage * itemsPerPage, filteredPlants.length)}</strong> of <strong style={{ color: 'var(--text-primary)' }}>{filteredPlants.length}</strong> factories
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Show:</span>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              style={{
+                height: '30px',
+                padding: '0 10px',
+                fontSize: '0.76rem',
+                fontWeight: 600,
+                borderRadius: '6px',
+                border: '1px solid var(--border-subtle)',
+                background: 'var(--bg-surface)',
+                color: 'var(--text-primary)',
+                cursor: 'pointer',
+                outline: 'none'
+              }}
+            >
+              <option value={5}>5 per page</option>
+              <option value={10}>10 per page</option>
+              <option value={20}>20 per page</option>
+              <option value={50}>50 per page</option>
+            </select>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           <button
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={validCurrentPage <= 1}
             className="btn btn-secondary btn-sm"
-            style={{ height: '28px', padding: '0 8px', fontSize: '0.72rem' }}
+            style={{ height: '30px', padding: '0 10px', fontSize: '0.74rem', opacity: validCurrentPage <= 1 ? 0.5 : 1 }}
           >
-            <ChevronLeft size={12} />
+            <ChevronLeft size={13} />
             <span>Prev</span>
           </button>
 
-          <div style={{ display: 'flex', gap: '2px' }}>
+          <div style={{ display: 'flex', gap: '4px' }}>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
               <button
                 key={pageNum}
                 onClick={() => setCurrentPage(pageNum)}
                 className={`btn btn-sm ${pageNum === validCurrentPage ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ minWidth: '28px', height: '28px', padding: '0 5px', fontSize: '0.74rem' }}
+                style={{
+                  minWidth: '30px',
+                  height: '30px',
+                  padding: '0 6px',
+                  fontSize: '0.76rem',
+                  fontWeight: pageNum === validCurrentPage ? 700 : 500
+                }}
               >
                 {pageNum}
               </button>
@@ -563,10 +598,10 @@ export const PlantListView: React.FC<PlantListViewProps> = ({
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={validCurrentPage >= totalPages}
             className="btn btn-secondary btn-sm"
-            style={{ height: '28px', padding: '0 8px', fontSize: '0.72rem' }}
+            style={{ height: '30px', padding: '0 10px', fontSize: '0.74rem', opacity: validCurrentPage >= totalPages ? 0.5 : 1 }}
           >
             <span>Next</span>
-            <ChevronRight size={12} />
+            <ChevronRight size={13} />
           </button>
         </div>
       </div>

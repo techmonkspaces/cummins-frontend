@@ -73,22 +73,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       {/* Uniform KPI Metrics Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
-        {/* Metric 1 */}
-        <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-            <span>{isConsolidated ? 'Total Factories' : 'Site Status'}</span>
-            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F0F9FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Building2 size={15} color="#0284C7" />
+      <div style={{ display: 'grid', gridTemplateColumns: isConsolidated ? 'repeat(5, 1fr)' : 'repeat(4, 1fr)', gap: '1rem' }}>
+        {/* Metric 1 - Only for Super Admin / Consolidated view */}
+        {isConsolidated && (
+          <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              <span>Total Factories</span>
+              <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F0F9FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Building2 size={15} color="#0284C7" />
+              </div>
+            </div>
+            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
+              {plants.length}
             </div>
           </div>
-          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
-            {isConsolidated ? '3' : 'Active'}
-          </div>
-          <div style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 600, marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-            <CheckCircle2 size={11} /> {isConsolidated ? 'Columbus, Darlington, Scoresby' : '100% Operational'}
-          </div>
-        </div>
+        )}
 
         {/* Metric 2 */}
         <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
@@ -101,9 +100,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
             {isConsolidated ? '82' : (activePlant.usersCount || 24)}
           </div>
-          <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
-            {isConsolidated ? 'All 3 Demo Plants' : 'Assigned to this plant'}
-          </div>
+
         </div>
 
         {/* Metric 3 */}
@@ -117,9 +114,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
             {isConsolidated ? '18,940' : activePlant.id === 'PLANT-DARLINGTON' ? '13,351' : activePlant.id === 'PLANT-COLUMBUS' ? '4,520' : (kpis.totalProductsPacked > 0 ? kpis.totalProductsPacked.toLocaleString() : '1,150')}
           </div>
-          <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
-            {isConsolidated ? 'All Factories' : 'Units Processed'}
-          </div>
+
         </div>
 
         {/* Metric 4 */}
@@ -133,9 +128,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
             {isConsolidated ? '2,536' : (activePlant.recordsCount || 1248).toLocaleString()}
           </div>
-          <div style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 600, marginTop: '2px' }}>
-            100% Confirmed
-          </div>
+
         </div>
 
         {/* Metric 5 */}
@@ -149,9 +142,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#DA291C', marginTop: '6px' }}>
             {isConsolidated ? '17,450 kg' : activePlant.id === 'PLANT-DARLINGTON' ? '8,973 kg' : activePlant.id === 'PLANT-COLUMBUS' ? '4,210 kg' : `${Math.round(totalPackagingWeight).toLocaleString()} kg`}
           </div>
-          <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '2px' }}>
-            {isConsolidated ? 'Enterprise Total' : 'Standardized SI Mass'}
-          </div>
+
         </div>
       </div>
 
