@@ -172,10 +172,10 @@ body {
   width: 100%;
   max-width: 420px;
   background: #FFFFFF;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
-  border: 1px solid var(--border-light);
-  padding: 1.5rem 1.75rem;
+  border-radius: 14px;
+  box-shadow: 0 24px 38px -12px rgba(15, 23, 42, 0.16), 0 8px 18px -4px rgba(15, 23, 42, 0.10), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  border: 1px solid #CBD5E1;
+  padding: 1.65rem 1.85rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -224,9 +224,9 @@ body {
 
 .demo-preset-box {
   margin-top: 0.85rem;
-  padding: 0.65rem 0.75rem;
-  background: var(--bg-surface-secondary);
-  border: 1px solid var(--border-light);
+  padding: 0.75rem 0.85rem;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 8px;
 }
 
