@@ -145,6 +145,55 @@ class RecordsService {
     return newRecord;
   }
 
+  public createBatchRecords(recordsParams: Array<{
+    product: Product;
+    productQuantity: number;
+    method: RecordingMethod;
+    plantId?: string;
+    plantName?: string;
+    destinationCountry?: string;
+    materials: PackagingLineItem[];
+    status: RecordStatus;
+    period?: string;
+    notes?: string;
+  }>): PackagingRecord[] {
+    const created: PackagingRecord[] = [];
+    const today = new Date().toISOString().split('T')[0];
+
+    recordsParams.forEach((params, idx) => {
+      const nextNum = 1001 + this.records.length + idx;
+      const id = `PR-${nextNum}`;
+      const ppwrSummary = this.calculatePpwrSummary(params.materials, params.productQuantity);
+
+      const newRecord: PackagingRecord = {
+        id,
+        productId: params.product.sku,
+        productName: params.product.name,
+        productSku: params.product.sku,
+        productQuantity: params.productQuantity,
+        method: params.method,
+        plantId: params.plantId,
+        plantName: params.plantName,
+        destinationCountry: params.destinationCountry || 'Germany',
+        materials: params.materials,
+        totalPackagingWeightKg: ppwrSummary.totalPackagingWeightKg,
+        perUnitPackagingWeightKg: ppwrSummary.perUnitPackagingWeightKg,
+        status: params.status,
+        period: params.period,
+        notes: params.notes,
+        createdAt: today,
+        confirmedAt: params.status === 'CONFIRMED' ? today : undefined,
+        operatorId: 'OP-7749 (Line A)',
+        ppwrSummary
+      };
+      created.push(newRecord);
+    });
+
+    this.records = [...created, ...this.records];
+    this.saveToStorage();
+    return created;
+  }
+
   public updateRecordStatus(id: string, status: RecordStatus): PackagingRecord | undefined {
     const record = this.records.find(r => r.id === id);
     if (record) {

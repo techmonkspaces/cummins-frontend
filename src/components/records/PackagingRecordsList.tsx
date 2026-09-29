@@ -70,11 +70,11 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
   const getMethodBadge = (method: RecordingMethod) => {
     switch (method) {
       case 'INVENTORY':
-        return <span className="clean-pill pill-neutral">Approach A · Inventory</span>;
+        return <span style={{ fontSize: '0.78rem', color: '#334155', fontWeight: 500 }}>Approach A · Inventory</span>;
       case 'CALCULATED':
-        return <span className="clean-pill pill-neutral">Approach B · Calculated</span>;
+        return <span style={{ fontSize: '0.78rem', color: '#334155', fontWeight: 500 }}>Approach B · Calculated</span>;
       case 'USER_INPUT':
-        return <span className="clean-pill pill-neutral">Approach C · User Input</span>;
+        return <span style={{ fontSize: '0.78rem', color: '#334155', fontWeight: 500 }}>Approach C · User Input</span>;
     }
   };
 
@@ -96,15 +96,16 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
       <div className="glass-card" style={{ padding: '1.25rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-              <span className="badge badge-confirmed">
-                <ShieldCheck size={12} /> Compliance Audit Trail
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.25rem' }}>
+              <span style={{ fontSize: '0.74rem', color: '#059669', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <ShieldCheck size={13} color="#059669" /> Compliance Audit Trail
               </span>
-              <span className="text-xs text-muted">
+              <span style={{ fontSize: '0.72rem', color: '#94A3B8' }}>•</span>
+              <span style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 500 }}>
                 {records.length} total captured batches
               </span>
             </div>
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0F172A' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A' }}>
               Packaging Consumption Records Ledger
             </h2>
           </div>
@@ -256,51 +257,51 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding: '7px 12px' }}>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#0F172A', background: '#F8FAFC', padding: '2px 6px', borderRadius: '4px', border: '1px solid #E2E8F0', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '8px 12px' }}>
+                      <span style={{ fontSize: '0.78rem', color: '#1E293B', fontWeight: 500, whiteSpace: 'nowrap' }}>
                         {record.plantName ? record.plantName.replace('Cummins ', '') : 'Plant'}
                       </span>
                     </td>
-                    <td style={{ padding: '7px 12px' }}>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#334155', background: '#F1F5F9', padding: '2px 6px', borderRadius: '4px', border: '1px solid #CBD5E1', whiteSpace: 'nowrap' }}>
-                        {record.destinationCountry || 'Germany (EU)'}
+                    <td style={{ padding: '8px 12px' }}>
+                      <span style={{ fontSize: '0.78rem', color: '#334155', fontWeight: 500, whiteSpace: 'nowrap' }}>
+                        {record.destinationCountry || 'Germany'}
                       </span>
                     </td>
-                    <td style={{ padding: '7px 12px', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
                       {getMethodBadge(record.method)}
                     </td>
-                    <td style={{ padding: '7px 12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                      <span className="font-mono font-bold" style={{ fontSize: '0.82rem', color: '#0F172A' }}>
+                    <td style={{ padding: '8px 12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      <span className="font-mono font-bold" style={{ fontSize: '0.8rem', color: '#0F172A' }}>
                         {record.productQuantity.toLocaleString()}
                       </span>
                     </td>
-                    <td style={{ padding: '7px 12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                      <span className="font-mono font-bold" style={{ color: '#DA291C', fontSize: '0.84rem' }}>
+                    <td style={{ padding: '8px 12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      <span className="font-mono font-bold" style={{ color: 'var(--cummins-red)', fontSize: '0.82rem' }}>
                         {record.totalPackagingWeightKg.toFixed(2)} kg
                       </span>
                     </td>
-                    <td style={{ padding: '7px 12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                      <span className="font-mono font-bold" style={{ color: '#0284C7', fontSize: '0.8rem' }}>
+                    <td style={{ padding: '8px 12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      <span className="font-mono font-bold" style={{ color: '#0F172A', fontSize: '0.8rem' }}>
                         {record.perUnitPackagingWeightKg.toFixed(3)} kg/u
                       </span>
                     </td>
-                    <td style={{ padding: '7px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '8px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {record.status === 'CONFIRMED' ? (
-                        <span className="badge badge-confirmed" style={{ fontSize: '0.68rem', padding: '2px 7px' }}>
-                          <CheckCircle2 size={10} /> Confirmed
+                        <span style={{ fontSize: '0.74rem', color: '#059669', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <CheckCircle2 size={12} color="#059669" /> Confirmed
                         </span>
                       ) : canApprove ? (
                         <button
-                          className="badge badge-draft"
+                          className="btn btn-outline btn-sm"
                           onClick={() => onStatusChange(record.id, 'CONFIRMED')}
-                          style={{ cursor: 'pointer', fontSize: '0.68rem', padding: '2px 7px' }}
+                          style={{ cursor: 'pointer', fontSize: '0.7rem', padding: '2px 6px' }}
                           title="Click to confirm and approve draft record"
                         >
-                          <Clock size={10} /> Draft (Approve)
+                          <Clock size={11} /> Draft (Approve)
                         </button>
                       ) : (
-                        <span className="badge badge-draft" style={{ fontSize: '0.68rem', padding: '2px 7px' }}>
-                          <Clock size={10} /> Draft
+                        <span style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <Clock size={11} /> Draft
                         </span>
                       )}
                     </td>

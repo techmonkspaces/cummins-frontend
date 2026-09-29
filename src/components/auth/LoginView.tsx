@@ -3,9 +3,7 @@ import {
   Lock,
   Mail,
   ArrowRight,
-  Sparkles,
-  ShieldCheck,
-  UserCheck
+  Sparkles
 } from 'lucide-react';
 import { CumminsLogo } from '../layout/CumminsLogo';
 import { UserPersona } from '../../types';
@@ -38,26 +36,17 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     onLogin(matched);
   };
 
-  const handleQuickLaunch = () => {
-    const matched = MOCK_PERSONAS.find(p => p.id === selectedPersonaId) || MOCK_PERSONAS[0];
-    onLogin(matched);
-  };
-
   return (
     <div className="login-page-container">
-      {/* Background Accent Gradients */}
-      <div className="login-bg-glow login-bg-glow-1" />
-      <div className="login-bg-glow login-bg-glow-2" />
-
       {/* Main Centered Minimalist Login Card */}
       <div className="login-card">
         {/* Brand Header */}
         <div className="login-header">
-          <CumminsLogo height={40} showWordmark={true} />
-          <div className="login-app-badge">EU PPWR Compliance Station</div>
+          <CumminsLogo height={34} showWordmark={true} />
+          <div className="login-app-badge">EU PPWR Packaging Compliance Station</div>
           <h1 className="login-title">Sign In to Station</h1>
           <p className="login-subtitle">
-            Enter your credentials or select a demo preset to explore.
+            Select your role to access plant packaging records and analytics
           </p>
         </div>
 
@@ -66,7 +55,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
           <div className="form-group">
             <label className="form-label">Email Address</label>
             <div className="input-with-icon">
-              <Mail size={16} className="input-icon" />
+              <Mail size={15} className="input-icon" />
               <input
                 type="email"
                 className="form-input font-mono"
@@ -81,10 +70,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
           <div className="form-group">
             <div className="form-label-row">
               <label className="form-label">Password</label>
-              <span className="form-link-muted">Reset Key</span>
+              <span className="form-link-muted">Demo Access</span>
             </div>
             <div className="input-with-icon">
-              <Lock size={16} className="input-icon" />
+              <Lock size={15} className="input-icon" />
               <input
                 type="password"
                 className="form-input font-mono"
@@ -98,42 +87,32 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
 
           <button
             type="submit"
-            className="btn btn-primary btn-lg login-submit-btn"
+            className="btn btn-primary btn-md login-submit-btn"
           >
-            <span>Sign In</span>
-            <ArrowRight size={17} />
+            <span>Enter Station</span>
+            <ArrowRight size={15} />
           </button>
         </form>
 
-
-        {/* Demo Preset Dropdown Section */}
+        {/* Demo Preset Dropdown Section — Placed Below the Sign In Button */}
         <div className="demo-preset-box">
-          <div className="demo-preset-header">
-            <span className="demo-preset-title">
-              <Sparkles size={14} className="text-red" />
-              <span>Select Demo Persona:</span>
-            </span>
+          <div className="demo-preset-title">
+            <Sparkles size={13} className="text-red" />
+            <span>Choose Your Role & Location:</span>
           </div>
 
-          <div className="demo-preset-controls">
-            <select
-              className="form-select demo-select"
-              value={selectedPersonaId}
-              onChange={handleDropdownChange}
-            >
-              {MOCK_PERSONAS.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.dropdownLabel || p.name}
-                </option>
-              ))}
-            </select>
-
-
-          </div>
-
-
+          <select
+            className="form-select demo-select"
+            value={selectedPersonaId}
+            onChange={handleDropdownChange}
+          >
+            {MOCK_PERSONAS.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.dropdownLabel || p.name}
+              </option>
+            ))}
+          </select>
         </div>
-
 
       </div>
     </div>

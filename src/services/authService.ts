@@ -19,12 +19,10 @@ class AuthService {
         const matched = MOCK_PERSONAS.find(p => p.id === parsed.id || p.email === parsed.email);
         this.currentUser = matched || parsed;
       } else {
-        // Default demo session: Super Admin
-        this.currentUser = MOCK_PERSONAS[0];
-        this.saveUser();
+        this.currentUser = null;
       }
     } catch {
-      this.currentUser = MOCK_PERSONAS[0];
+      this.currentUser = null;
     }
   }
 

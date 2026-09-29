@@ -28,7 +28,7 @@ interface PackagingSummaryProps {
   method: RecordingMethod;
   materials: PackagingLineItem[];
   destinationCountry: string;
-  onChangeDestinationCountry: (country: string) => void;
+  onChangeDestinationCountry?: (country: string) => void;
   period?: string;
   notes?: string;
   onSave: (status: RecordStatus) => void;
@@ -41,7 +41,6 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
   method,
   materials,
   destinationCountry,
-  onChangeDestinationCountry,
   period,
   notes,
   onSave,
@@ -155,27 +154,10 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
           </div>
 
           <div>
-            <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase', marginBottom: '2px' }}>Destination Market</div>
-            <select
-              value={destinationCountry}
-              onChange={(e) => onChangeDestinationCountry(e.target.value)}
-              className="form-select"
-              style={{
-                height: '30px',
-                padding: '0 8px',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                borderRadius: '6px',
-                border: '1px solid #CBD5E1',
-                background: '#FFFFFF',
-                color: '#0F172A',
-                width: '100%'
-              }}
-            >
-              {CUMMINS_DESTINATION_COUNTRIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
+            <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Destination Market</div>
+            <div className="font-mono font-bold text-sm" style={{ color: '#0F172A' }}>
+              {destinationCountry}
+            </div>
           </div>
 
           <div>

@@ -8,9 +8,10 @@ import {
   Scale, 
   CheckCircle2, 
   Sparkles, 
-  Info 
+  Info,
+  Globe2 
 } from 'lucide-react';
-import { Product, PackagingLineItem, PackagingMaterialMaster } from '../../types';
+import { Product, PackagingLineItem, PackagingMaterialMaster, CUMMINS_DESTINATION_COUNTRIES } from '../../types';
 import { MOCK_PRODUCTS } from '../../data/mockData';
 import { ProductSearchCombobox } from './ProductSearchCombobox';
 import { MaterialSearchCombobox } from './MaterialSearchCombobox';
@@ -22,6 +23,7 @@ interface ApproachUserInputProps {
     product?: Product;
     productQuantity: number;
     materials: PackagingLineItem[];
+    destinationCountry?: string;
     notes?: string;
   }) => void;
   onBack: () => void;
@@ -155,6 +157,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
   const defaultProd = initialProduct || MOCK_PRODUCTS[0];
   const [selectedProduct, setSelectedProduct] = useState<Product>(defaultProd);
   const [productQuantity, setProductQuantity] = useState<number>(1);
+  const [destinationCountry, setDestinationCountry] = useState<string>('Germany');
   const [items, setItems] = useState<UserInputItemEntry[]>(
     getDefaultMaterialsForProduct(defaultProd.sku)
   );
@@ -269,6 +272,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
       product: selectedProduct,
       productQuantity,
       materials: lineItems,
+      destinationCountry,
       notes: operatorNotes
     });
   };
@@ -328,7 +332,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
         </div>
       </div>
 
-      {/* Target Product Selection Card */}
+      {/* Target Product & Batch Configuration Card */}
       <div 
         style={{
           background: '#FFFFFF',
@@ -338,7 +342,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
           boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
         }}
       >
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1.2fr', gap: '1rem' }}>
           <div>
             <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
               Target Product SKU & Profile
@@ -376,6 +380,33 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
                 fontFamily: 'var(--font-mono)'
               }}
             />
+          </div>
+
+          <div>
+            <label style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
+              Country Sold To
+            </label>
+            <select
+              value={destinationCountry}
+              onChange={(e) => setDestinationCountry(e.target.value)}
+              className="form-select"
+              style={{
+                width: '100%',
+                height: '38px',
+                padding: '0 10px',
+                background: '#FFFFFF',
+                border: '1px solid #CBD5E1',
+                borderRadius: '6px',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                color: '#0F172A',
+                cursor: 'pointer'
+              }}
+            >
+              {CUMMINS_DESTINATION_COUNTRIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
           </div>
         </div>
       </div>

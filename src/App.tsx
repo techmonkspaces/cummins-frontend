@@ -31,10 +31,10 @@ import { MOCK_PRODUCTS, MOCK_PACKAGING_INVENTORY } from './data/mockData';
 import { Sparkles, CheckCircle2, Building2 } from 'lucide-react';
 
 export const App: React.FC = () => {
-  // Auth State
-  const initialUser = authService.getCurrentUser() || plantService.getActivePersona();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const [currentUser, setCurrentUser] = useState<UserPersona>(initialUser);
+  // Auth State (Defaults to Login Screen unless a session is stored)
+  const initialUser = authService.getCurrentUser();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!initialUser);
+  const [currentUser, setCurrentUser] = useState<UserPersona | null>(initialUser);
   const [isSuperAdminSession, setIsSuperAdminSession] = useState<boolean>(initialUser?.role === 'SUPER_ADMIN');
 
   // Navigation State - Data entry users go directly to their logging station
@@ -122,7 +122,7 @@ export const App: React.FC = () => {
     setActivePlant(updated);
 
     // If logged in as Super Admin, preserve Super Admin privileges so Scope dropdown and full controls remain accessible during demo
-    if (currentUser.role === 'SUPER_ADMIN') {
+    if (currentUser?.role === 'SUPER_ADMIN') {
       showToast('Scope Switched', `Active factory scope: ${updated.name}.`, 'info');
       return;
     }
@@ -181,7 +181,7 @@ export const App: React.FC = () => {
   };
 
   // If user is not authenticated, show Login Screen
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !currentUser) {
     return <LoginView onLogin={handleLogin} />;
   }
 

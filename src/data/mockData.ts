@@ -157,26 +157,85 @@ export const MOCK_PLANTS: Plant[] = [
     status: 'Active'
   },
 
-  // ─── UNITED KINGDOM & EUROPE (EMEA) ──────────────────────────────────────
+  // ─── INDIA & SOUTH ASIA (APAC) ───────────────────────────────────────────
   {
-    id: 'PLANT-DAVENTRY',
-    name: 'Daventry High-Horsepower Engine Plant',
-    shortName: 'Daventry HHP',
-    code: 'UK-DAV-02',
-    location: 'Royal Oak Way South, Daventry, Northamptonshire',
-    country: 'United Kingdom',
-    region: 'EMEA',
-    flag: '🇬🇧',
-    configuredMethod: 'CALCULATED',
-    primaryErpSystem: 'SAP EWM',
-    description: 'Premier European facility for QSK45, QSK60, and QSK78 marine and mining engines with automated crating calculations.',
-    activeSkus: ['VL-310', 'TC-550'],
-    managerName: 'Edward Davies',
-    roleTitle: 'Senior Logistics Specialist',
-    usersCount: 20,
-    recordsCount: 1320,
+    id: 'PLANT-PUNE',
+    name: 'Kothrud Engine Plant (KTC)',
+    shortName: 'Pune KTC Campus',
+    code: 'IN-PUN-01',
+    location: 'Kothrud, Pune, Maharashtra',
+    country: 'India',
+    region: 'APAC',
+    flag: '🇮🇳',
+    configuredMethod: 'INVENTORY',
+    primaryErpSystem: 'SAP S/4HANA (PP/MM)',
+    description: 'Cummins India corporate headquarters and flagship manufacturing campus for heavy-duty & mid-range diesel engines with automated ERP inventory deduction.',
+    activeSkus: ['GA-102', 'BP-201', 'TC-550'],
+    managerName: 'Rajesh Kulkarni',
+    roleTitle: 'India Packaging Operations Director',
+    usersCount: 34,
+    recordsCount: 2180,
     status: 'Active'
   },
+  {
+    id: 'PLANT-PHALTAN',
+    name: 'Phaltan Mega Site (HHP & Genset Plant)',
+    shortName: 'Phaltan Mega Site',
+    code: 'IN-PHL-02',
+    location: 'MIDC Industrial Area, Phaltan, Satara, Maharashtra',
+    country: 'India',
+    region: 'APAC',
+    flag: '🇮🇳',
+    configuredMethod: 'CALCULATED',
+    primaryErpSystem: 'SAP EWM',
+    description: 'Ultra-modern 300-acre mega manufacturing facility for High-Horsepower engines, generator sets, and remanufactured powertrains with CAD-based packaging rules.',
+    activeSkus: ['VL-310', 'TC-550', 'SP-415'],
+    managerName: 'Amit Deshmukh',
+    roleTitle: 'Packaging Standards & Logistics Lead',
+    usersCount: 28,
+    recordsCount: 1890,
+    status: 'Active'
+  },
+  {
+    id: 'PLANT-JAMSHEDPUR',
+    name: 'Tata Cummins Joint Venture Plant (TCPL)',
+    shortName: 'TCPL Jamshedpur',
+    code: 'IN-JSR-03',
+    location: 'Telco Colony, Jamshedpur, Jharkhand',
+    country: 'India',
+    region: 'APAC',
+    flag: '🇮🇳',
+    configuredMethod: 'USER_INPUT',
+    primaryErpSystem: 'SAP S/4HANA (PP/MM)',
+    description: 'High-volume commercial automotive engine production plant with integrated floor packing scale terminals and direct line logging.',
+    activeSkus: ['GA-102', 'IN-108', 'BP-201'],
+    managerName: 'Sanjay Sharma',
+    roleTitle: 'Assembly Line Packaging Supervisor',
+    usersCount: 22,
+    recordsCount: 1450,
+    status: 'Active'
+  },
+  {
+    id: 'PLANT-DEWAS',
+    name: 'Dewas Turbo Technologies Plant (CTT)',
+    shortName: 'Dewas CTT',
+    code: 'IN-DEW-04',
+    location: 'Industrial Area 1, Dewas, Madhya Pradesh',
+    country: 'India',
+    region: 'APAC',
+    flag: '🇮🇳',
+    configuredMethod: 'INVENTORY',
+    primaryErpSystem: 'SAP S/4HANA (PP/MM)',
+    description: 'Holset turbocharger and air handling engineering facility with automated barcode scanning and carton inventory reconciliation.',
+    activeSkus: ['TC-550', 'IN-108'],
+    managerName: 'Pooja Verma',
+    roleTitle: 'Materials & Dispatch Lead',
+    usersCount: 16,
+    recordsCount: 920,
+    status: 'Active'
+  },
+
+  // ─── UNITED KINGDOM & EUROPE (EMEA) ──────────────────────────────────────
   {
     id: 'PLANT-DAVENTRY',
     name: 'Daventry High-Horsepower Engine Plant',
@@ -579,6 +638,27 @@ export const MOCK_USERS_LIST = [
     status: 'Active',
     lastLogin: 'Today, 09:45 AM'
   },
+  // Pune Factory (India - Approach A)
+  {
+    id: 'USR-IN-01',
+    name: 'Rajesh Kulkarni',
+    email: 'pune.admin@cummins.com',
+    role: 'Factory Admin',
+    factory: 'Kothrud Engine Plant (KTC), Pune',
+    department: 'Plant Logistics & Materials',
+    status: 'Active',
+    lastLogin: 'Today, 11:20 AM'
+  },
+  {
+    id: 'USR-IN-02',
+    name: 'Amit Deshmukh',
+    email: 'phaltan.admin@cummins.com',
+    role: 'Factory Admin',
+    factory: 'Phaltan Mega Site, Satara',
+    department: 'Packaging Engineering Lead',
+    status: 'Active',
+    lastLogin: 'Today, 09:10 AM'
+  },
   // Columbus Factory (USA - Approach A)
   {
     id: 'USR-002',
@@ -964,17 +1044,17 @@ export const INITIAL_PACKAGING_RECORDS: PackagingRecord[] = [
     productId: 'GA-102',
     productName: 'Gear Assembly',
     productSku: 'GA-102',
-    productQuantity: 1000,
+    productQuantity: 5000,
     method: 'INVENTORY',
     plantId: 'PLANT-COLUMBUS',
-    plantName: 'Columbus Engine Plant',
+    plantName: 'Columbus Engine Plant (CEP)',
     destinationCountry: 'Germany (EU)',
     period: 'September 2026',
     status: 'CONFIRMED',
     createdAt: '2026-09-22',
     confirmedAt: '2026-09-22',
     notes: 'Monthly batch packaging inventory reconciliation. Consumption drawn from SAP MM issue logs.',
-    totalPackagingWeightKg: 600.0,
+    totalPackagingWeightKg: 3000.0,
     perUnitPackagingWeightKg: 0.600,
     materials: [
       {
@@ -982,46 +1062,46 @@ export const INITIAL_PACKAGING_RECORDS: PackagingRecord[] = [
         materialId: 'MAT-001',
         materialName: 'Cardboard Box',
         category: 'Paper/Cardboard',
-        quantity: 500,
+        quantity: 2500,
         unit: 'kg',
-        weight: 500,
+        weight: 2500,
         weightUnit: 'kg',
-        weightKg: 500
+        weightKg: 2500
       },
       {
         id: 'MAT-REC-2',
         materialId: 'MAT-003',
         materialName: 'Kraft Paper Cushioning',
         category: 'Paper',
-        quantity: 80,
+        quantity: 400,
         unit: 'kg',
-        weight: 80,
+        weight: 400,
         weightUnit: 'kg',
-        weightKg: 80
+        weightKg: 400
       },
       {
         id: 'MAT-REC-3',
         materialId: 'MAT-007',
         materialName: 'Packaging Seam Tape',
         category: 'Plastic',
-        quantity: 20,
+        quantity: 100,
         unit: 'kg',
-        weight: 20,
+        weight: 100,
         weightUnit: 'kg',
-        weightKg: 20
+        weightKg: 100
       }
     ],
     ppwrSummary: {
-      paperCardboardKg: 580,
+      paperCardboardKg: 2900,
       paperCardboardPct: 96.67,
-      plasticKg: 20,
+      plasticKg: 100,
       plasticPct: 3.33,
       otherKg: 0,
       otherPct: 0,
-      totalPackagingWeightKg: 600.0,
+      totalPackagingWeightKg: 3000.0,
       perUnitPackagingWeightKg: 0.600,
       avgRecyclablePct: 96.7,
-      estimatedCo2eKg: 492.0
+      estimatedCo2eKg: 2460.0
     }
   },
   {
@@ -1029,16 +1109,16 @@ export const INITIAL_PACKAGING_RECORDS: PackagingRecord[] = [
     productId: 'GA-102',
     productName: 'Gear Assembly',
     productSku: 'GA-102',
-    productQuantity: 100,
+    productQuantity: 4000,
     method: 'CALCULATED',
     plantId: 'PLANT-DARLINGTON',
-    plantName: 'Darlington Engine Plant',
+    plantName: 'Darlington Engine & Emission Plant',
     destinationCountry: 'France (EU)',
     status: 'CONFIRMED',
     createdAt: '2026-09-22',
     confirmedAt: '2026-09-22',
     notes: 'Generated via Cummins Top-Down Rule Engine based on 8.0kg payload and CAD geometry.',
-    totalPackagingWeightKg: 67.5,
+    totalPackagingWeightKg: 2700.0,
     perUnitPackagingWeightKg: 0.675,
     materials: [
       {
@@ -1046,57 +1126,57 @@ export const INITIAL_PACKAGING_RECORDS: PackagingRecord[] = [
         materialId: 'MAT-001',
         materialName: 'Cardboard Box',
         category: 'Paper/Cardboard',
-        quantity: 100,
+        quantity: 4000,
         unit: 'pcs',
-        weight: 45.0,
+        weight: 1800.0,
         weightUnit: 'kg',
-        weightKg: 45.0
+        weightKg: 1800.0
       },
       {
         id: 'MAT-REC-5',
         materialId: 'MAT-003',
         materialName: 'Kraft Paper Cushioning',
         category: 'Paper',
-        quantity: 12.0,
+        quantity: 480.0,
         unit: 'kg',
-        weight: 12.0,
+        weight: 480.0,
         weightUnit: 'kg',
-        weightKg: 12.0
+        weightKg: 480.0
       },
       {
         id: 'MAT-REC-6',
         materialId: 'MAT-004',
         materialName: 'Thermocol / EPS End-Caps',
         category: 'Plastic',
-        quantity: 100,
+        quantity: 4000,
         unit: 'pcs',
-        weight: 8.0,
+        weight: 320.0,
         weightUnit: 'kg',
-        weightKg: 8.0
+        weightKg: 320.0
       },
       {
         id: 'MAT-REC-7',
         materialId: 'MAT-007',
         materialName: 'Packaging Seam Tape',
         category: 'Plastic',
-        quantity: 2.5,
+        quantity: 100.0,
         unit: 'kg',
-        weight: 2.5,
+        weight: 100.0,
         weightUnit: 'kg',
-        weightKg: 2.5
+        weightKg: 100.0
       }
     ],
     ppwrSummary: {
-      paperCardboardKg: 57.0,
+      paperCardboardKg: 2280.0,
       paperCardboardPct: 84.44,
-      plasticKg: 10.5,
+      plasticKg: 420.0,
       plasticPct: 15.56,
       otherKg: 0,
       otherPct: 0,
-      totalPackagingWeightKg: 67.5,
+      totalPackagingWeightKg: 2700.0,
       perUnitPackagingWeightKg: 0.675,
       avgRecyclablePct: 92.4,
-      estimatedCo2eKg: 58.2
+      estimatedCo2eKg: 2328.0
     }
   },
   {
@@ -1104,16 +1184,16 @@ export const INITIAL_PACKAGING_RECORDS: PackagingRecord[] = [
     productId: 'GA-102',
     productName: 'Gear Assembly',
     productSku: 'GA-102',
-    productQuantity: 1,
+    productQuantity: 8000,
     method: 'USER_INPUT',
     plantId: 'PLANT-SCORESBY',
-    plantName: 'Scoresby Plant',
+    plantName: 'Scoresby Power Systems Regional Plant',
     destinationCountry: 'Australia',
     status: 'CONFIRMED',
     createdAt: '2026-09-22',
     confirmedAt: '2026-09-22',
     notes: 'Station #4 floor packing entry. Verified with digital bench scale.',
-    totalPackagingWeightKg: 0.180,
+    totalPackagingWeightKg: 1440.0,
     perUnitPackagingWeightKg: 0.180,
     materials: [
       {
@@ -1121,57 +1201,57 @@ export const INITIAL_PACKAGING_RECORDS: PackagingRecord[] = [
         materialId: 'MAT-001',
         materialName: 'Cardboard Box',
         category: 'Paper/Cardboard',
-        quantity: 1,
+        quantity: 8000,
         unit: 'pcs',
-        weight: 0.100,
+        weight: 800.0,
         weightUnit: 'kg',
-        weightKg: 0.100
+        weightKg: 800.0
       },
       {
         id: 'MAT-REC-9',
         materialId: 'MAT-003',
         materialName: 'Kraft Paper Cushioning',
         category: 'Paper',
-        quantity: 100,
+        quantity: 8000,
         unit: 'g',
-        weight: 0.050,
+        weight: 400.0,
         weightUnit: 'kg',
-        weightKg: 0.050
+        weightKg: 400.0
       },
       {
         id: 'MAT-REC-10',
         materialId: 'MAT-004',
         materialName: 'Thermocol / EPS End-Caps',
         category: 'Plastic',
-        quantity: 60,
+        quantity: 8000,
         unit: 'g',
-        weight: 0.020,
+        weight: 160.0,
         weightUnit: 'kg',
-        weightKg: 0.020
+        weightKg: 160.0
       },
       {
         id: 'MAT-REC-11',
         materialId: 'MAT-007',
         materialName: 'Packaging Seam Tape',
         category: 'Plastic',
-        quantity: 20,
+        quantity: 8000,
         unit: 'g',
-        weight: 0.010,
+        weight: 80.0,
         weightUnit: 'kg',
-        weightKg: 0.010
+        weightKg: 80.0
       }
     ],
     ppwrSummary: {
-      paperCardboardKg: 0.150,
+      paperCardboardKg: 1200.0,
       paperCardboardPct: 83.33,
-      plasticKg: 0.030,
+      plasticKg: 240.0,
       plasticPct: 16.67,
       otherKg: 0,
       otherPct: 0,
-      totalPackagingWeightKg: 0.180,
+      totalPackagingWeightKg: 1440.0,
       perUnitPackagingWeightKg: 0.180,
       avgRecyclablePct: 91.5,
-      estimatedCo2eKg: 0.16
+      estimatedCo2eKg: 1280.0
     }
   },
   {
@@ -1179,17 +1259,17 @@ export const INITIAL_PACKAGING_RECORDS: PackagingRecord[] = [
     productId: 'BP-201',
     productName: 'Brake Assembly',
     productSku: 'BP-201',
-    productQuantity: 500,
+    productQuantity: 2500,
     method: 'INVENTORY',
     plantId: 'PLANT-COLUMBUS',
-    plantName: 'Columbus Engine Plant',
+    plantName: 'Columbus Engine Plant (CEP)',
     destinationCountry: 'United States (USA)',
     period: 'September 2026',
     status: 'CONFIRMED',
     createdAt: '2026-09-20',
     confirmedAt: '2026-09-20',
     notes: 'Brake caliper line batch issue reconciliation.',
-    totalPackagingWeightKg: 240.0,
+    totalPackagingWeightKg: 1200.0,
     perUnitPackagingWeightKg: 0.480,
     materials: [
       {
@@ -1197,35 +1277,35 @@ export const INITIAL_PACKAGING_RECORDS: PackagingRecord[] = [
         materialId: 'MAT-001',
         materialName: 'Cardboard Box',
         category: 'Paper/Cardboard',
-        quantity: 200,
+        quantity: 1000,
         unit: 'kg',
-        weight: 200,
+        weight: 1000,
         weightUnit: 'kg',
-        weightKg: 200
+        weightKg: 1000
       },
       {
         id: 'MAT-REC-13',
         materialId: 'MAT-006',
         materialName: 'VCI Anti-Rust Poly Bag',
         category: 'Plastic',
-        quantity: 40,
+        quantity: 200,
         unit: 'kg',
-        weight: 40,
+        weight: 200,
         weightUnit: 'kg',
-        weightKg: 40
+        weightKg: 200
       }
     ],
     ppwrSummary: {
-      paperCardboardKg: 200,
+      paperCardboardKg: 1000,
       paperCardboardPct: 83.33,
-      plasticKg: 40,
+      plasticKg: 200,
       plasticPct: 16.67,
       otherKg: 0,
       otherPct: 0,
-      totalPackagingWeightKg: 240.0,
+      totalPackagingWeightKg: 1200.0,
       perUnitPackagingWeightKg: 0.480,
       avgRecyclablePct: 95.0,
-      estimatedCo2eKg: 215.0
+      estimatedCo2eKg: 1075.0
     }
   },
   {
@@ -1233,16 +1313,16 @@ export const INITIAL_PACKAGING_RECORDS: PackagingRecord[] = [
     productId: 'VL-310',
     productName: 'Industrial Valve',
     productSku: 'VL-310',
-    productQuantity: 50,
+    productQuantity: 1000,
     method: 'CALCULATED',
     plantId: 'PLANT-DARLINGTON',
-    plantName: 'Darlington Engine Plant',
+    plantName: 'Darlington Engine & Emission Plant',
     destinationCountry: 'United Kingdom (UK)',
     status: 'CONFIRMED',
     createdAt: '2026-09-21',
     confirmedAt: '2026-09-21',
     notes: '12kg heavy valve automated calculation with reinforced EPS corner caps.',
-    totalPackagingWeightKg: 46.0,
+    totalPackagingWeightKg: 920.0,
     perUnitPackagingWeightKg: 0.920,
     materials: [
       {
@@ -1250,35 +1330,207 @@ export const INITIAL_PACKAGING_RECORDS: PackagingRecord[] = [
         materialId: 'MAT-001',
         materialName: 'Cardboard Box',
         category: 'Paper/Cardboard',
-        quantity: 50,
+        quantity: 1000,
         unit: 'pcs',
-        weight: 32.5,
+        weight: 650.0,
         weightUnit: 'kg',
-        weightKg: 32.5
+        weightKg: 650.0
       },
       {
         id: 'MAT-REC-15',
         materialId: 'MAT-004',
         materialName: 'Thermocol / EPS End-Caps',
         category: 'Plastic',
-        quantity: 100,
+        quantity: 2000,
         unit: 'pcs',
-        weight: 13.5,
+        weight: 270.0,
         weightUnit: 'kg',
-        weightKg: 13.5
+        weightKg: 270.0
       }
     ],
     ppwrSummary: {
-      paperCardboardKg: 32.5,
+      paperCardboardKg: 650.0,
       paperCardboardPct: 70.65,
-      plasticKg: 13.5,
+      plasticKg: 270.0,
       plasticPct: 29.35,
       otherKg: 0,
       otherPct: 0,
-      totalPackagingWeightKg: 46.0,
+      totalPackagingWeightKg: 920.0,
       perUnitPackagingWeightKg: 0.920,
       avgRecyclablePct: 88.0,
-      estimatedCo2eKg: 44.2
+      estimatedCo2eKg: 884.0
+    }
+  },
+  {
+    id: 'PR-1006',
+    productId: 'BP-201',
+    productName: 'Brake Assembly',
+    productSku: 'BP-201',
+    productQuantity: 1500,
+    method: 'USER_INPUT',
+    plantId: 'PLANT-SCORESBY',
+    plantName: 'Scoresby Power Systems Regional Plant',
+    destinationCountry: 'United Kingdom (UK)',
+    status: 'CONFIRMED',
+    createdAt: '2026-09-24',
+    confirmedAt: '2026-09-24',
+    notes: 'Station #2 assembly manual packaging entry with timber skid pad.',
+    totalPackagingWeightKg: 360.0,
+    perUnitPackagingWeightKg: 0.240,
+    materials: [
+      {
+        id: 'MAT-REC-16',
+        materialId: 'MAT-001',
+        materialName: 'Cardboard Box',
+        category: 'Paper/Cardboard',
+        quantity: 1500,
+        unit: 'pcs',
+        weight: 270.0,
+        weightUnit: 'kg',
+        weightKg: 270.0
+      },
+      {
+        id: 'MAT-REC-17',
+        materialId: 'MAT-006',
+        materialName: 'VCI Anti-Rust Poly Bag',
+        category: 'Plastic',
+        quantity: 1500,
+        unit: 'pcs',
+        weight: 90.0,
+        weightUnit: 'kg',
+        weightKg: 90.0
+      }
+    ],
+    ppwrSummary: {
+      paperCardboardKg: 270.0,
+      paperCardboardPct: 75.0,
+      plasticKg: 90.0,
+      plasticPct: 25.0,
+      otherKg: 0,
+      otherPct: 0,
+      totalPackagingWeightKg: 360.0,
+      perUnitPackagingWeightKg: 0.240,
+      avgRecyclablePct: 90.0,
+      estimatedCo2eKg: 285.0
+    }
+  },
+  {
+    id: 'PR-1007',
+    productId: 'GA-102',
+    productName: 'Gear Assembly',
+    productSku: 'GA-102',
+    productQuantity: 800,
+    method: 'INVENTORY',
+    plantId: 'PLANT-PUNE',
+    plantName: 'Kothrud Engine Plant (KTC)',
+    destinationCountry: 'Germany (EU)',
+    period: 'September 2026',
+    status: 'CONFIRMED',
+    createdAt: '2026-09-25',
+    confirmedAt: '2026-09-25',
+    notes: 'Pune plant export consignment to Europe via Nhava Sheva. Automated SAP MM 261 inventory deduction.',
+    totalPackagingWeightKg: 480.0,
+    perUnitPackagingWeightKg: 0.600,
+    materials: [
+      {
+        id: 'MAT-REC-18',
+        materialId: 'MAT-001',
+        materialName: 'Cardboard Box',
+        category: 'Paper/Cardboard',
+        quantity: 800,
+        unit: 'pcs',
+        weight: 400,
+        weightUnit: 'kg',
+        weightKg: 400
+      },
+      {
+        id: 'MAT-REC-19',
+        materialId: 'MAT-003',
+        materialName: 'Kraft Paper Cushioning',
+        category: 'Paper',
+        quantity: 800,
+        unit: 'pcs',
+        weight: 64,
+        weightUnit: 'kg',
+        weightKg: 64
+      },
+      {
+        id: 'MAT-REC-20',
+        materialId: 'MAT-007',
+        materialName: 'Packaging Seam Tape',
+        category: 'Plastic',
+        quantity: 800,
+        unit: 'pcs',
+        weight: 16,
+        weightUnit: 'kg',
+        weightKg: 16
+      }
+    ],
+    ppwrSummary: {
+      paperCardboardKg: 464,
+      paperCardboardPct: 96.67,
+      plasticKg: 16,
+      plasticPct: 3.33,
+      otherKg: 0,
+      otherPct: 0,
+      totalPackagingWeightKg: 480.0,
+      perUnitPackagingWeightKg: 0.600,
+      avgRecyclablePct: 96.7,
+      estimatedCo2eKg: 394.0
+    }
+  },
+  {
+    id: 'PR-1008',
+    productId: 'TC-550',
+    productName: 'Turbocharger Core',
+    productSku: 'TC-550',
+    productQuantity: 350,
+    method: 'INVENTORY',
+    plantId: 'PLANT-PUNE',
+    plantName: 'Kothrud Engine Plant (KTC)',
+    destinationCountry: 'France (EU)',
+    period: 'September 2026',
+    status: 'CONFIRMED',
+    createdAt: '2026-09-26',
+    confirmedAt: '2026-09-26',
+    notes: 'Heavy-duty industrial turbocharger crated dispatch with VCI protection.',
+    totalPackagingWeightKg: 280.0,
+    perUnitPackagingWeightKg: 0.800,
+    materials: [
+      {
+        id: 'MAT-REC-21',
+        materialId: 'MAT-001',
+        materialName: 'Cardboard Box',
+        category: 'Paper/Cardboard',
+        quantity: 350,
+        unit: 'pcs',
+        weight: 220,
+        weightUnit: 'kg',
+        weightKg: 220
+      },
+      {
+        id: 'MAT-REC-22',
+        materialId: 'MAT-006',
+        materialName: 'VCI Anti-Rust Poly Bag',
+        category: 'Plastic',
+        quantity: 350,
+        unit: 'pcs',
+        weight: 60,
+        weightUnit: 'kg',
+        weightKg: 60
+      }
+    ],
+    ppwrSummary: {
+      paperCardboardKg: 220,
+      paperCardboardPct: 78.57,
+      plasticKg: 60,
+      plasticPct: 21.43,
+      otherKg: 0,
+      otherPct: 0,
+      totalPackagingWeightKg: 280.0,
+      perUnitPackagingWeightKg: 0.800,
+      avgRecyclablePct: 94.0,
+      estimatedCo2eKg: 230.0
     }
   }
 ];
