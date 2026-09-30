@@ -217,19 +217,19 @@ export const MarketProductMatrix: React.FC<MarketProductMatrixProps> = ({
                   <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600 }}>
                     units
                   </span>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: barColor, background: '#FFFFFF', border: `1px solid #E2E8F0`, padding: '1px 6px', borderRadius: '4px' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--theme-progress-bar)', background: 'var(--theme-progress-bar-bg)', border: '1px solid var(--theme-progress-bar-border)', padding: '1px 6px', borderRadius: '4px' }}>
                     {market.pctOfTotal}%
                   </span>
                 </div>
               </div>
 
               {/* Graphical Unit Distribution Bar */}
-              <div style={{ height: '7px', background: '#E2E8F0', borderRadius: '999px', overflow: 'hidden', marginBottom: '7px' }}>
+              <div style={{ height: '7px', background: 'var(--theme-progress-track, #F1F5F9)', borderRadius: '999px', overflow: 'hidden', marginBottom: '7px' }}>
                 <div
                   style={{
                     width: `${barWidthPct}%`,
                     height: '100%',
-                    background: barColor,
+                    background: 'var(--theme-progress-bar)',
                     borderRadius: '999px',
                     transition: 'width 0.4s ease'
                   }}

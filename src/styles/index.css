@@ -72,17 +72,26 @@
      PPWR UNIFORM PACKAGING MATERIALS PALETTE (Centralized Control)
      Change all material colors globally across all graphs, donuts, and legends here:
      ------------------------------------------------------------------------ */
-  --mat-cardboard: #D97706;          /* Premium Kraft Box Amber / Golden Earth */
-  --mat-cardboard-bg: #FEF3C7;       /* Kraft Box Light Tint */
+  --mat-cardboard: #F59E0B;          /* Vibrant Orange */
+  --mat-cardboard-bg: #FEF3C7;       /* Orange Light Tint */
   --mat-cardboard-border: #FDE68A;
 
-  --mat-plastic: #2563EB;            /* Vibrant Technical Blue */
-  --mat-plastic-bg: #EFF6FF;         /* Plastic Light Tint */
+  --mat-plastic: #3B82F6;            /* Sky Blue */
+  --mat-plastic-bg: #EFF6FF;         /* Blue Light Tint */
   --mat-plastic-border: #BFDBFE;
 
-  --mat-cushioning: #059669;         /* Fresh Eco Cushioning Emerald */
-  --mat-cushioning-bg: #ECFDF5;      /* Cushioning Light Tint */
+  --mat-cushioning: #10B981;         /* Emerald Green */
+  --mat-cushioning-bg: #ECFDF5;      /* Green Light Tint */
   --mat-cushioning-border: #A7F3D0;
+
+  /* ------------------------------------------------------------------------
+     THEME ACCENT & DISTRIBUTION PROGRESS LINE
+     Control the main product distribution / theme bar color globally from here:
+     ------------------------------------------------------------------------ */
+  --theme-progress-bar: #DA291C;          /* Cummins Brand Theme Red */
+  --theme-progress-bar-bg: #FFF5F5;       /* Light Theme Tint Background */
+  --theme-progress-bar-border: #FECACA;   /* Light Theme Border */
+  --theme-progress-track: #F1F5F9;        /* Neutral Light Track */
 
   /* ------------------------------------------------------------------------
      2. TYPOGRAPHY SYSTEM

@@ -826,50 +826,52 @@ export const Dashboard: React.FC<DashboardProps> = ({
       ) : (
         /* FACTORY ADMIN SITE-SPECIFIC VIEW (Clean, Highly Focused, No Clutter) */
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          {/* Row 1: Site Material Composition & Destination Markets */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+          {/* Row 1: Site Material Composition (1/4) & Destination Markets (3/4) */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '1.25rem' }}>
 
-            {/* Card 1: Plant Packaging Material Composition */}
-            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
-                <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
-                  Packaging Material Composition
-                </h3>
-                <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 700 }}>Site Mass</span>
+            {/* Card 1: Plant Packaging Material Composition (1/4 Space) */}
+            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                  <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
+                    Packaging Material Composition
+                  </h3>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 700 }}>Site Mass</span>
+                </div>
+                <p style={{ fontSize: '0.74rem', color: '#64748B', marginBottom: '1rem' }}>
+                  {activePlant.name.replace('Cummins ', '')} material breakdown
+                </p>
               </div>
-              <p style={{ fontSize: '0.74rem', color: '#64748B', marginBottom: '1rem' }}>
-                {activePlant.name.replace('Cummins ', '')} material breakdown
-              </p>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-                <div style={{ position: 'relative', width: '120px', height: '120px', flexShrink: 0 }}>
-                  <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
-                    <circle cx="18" cy="18" r="14" fill="transparent" stroke="#F1F5F9" strokeWidth="4.5" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ position: 'relative', width: '105px', height: '105px', flexShrink: 0 }}>
+                  <svg viewBox="0 0 42 42" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
+                    <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#F1F5F9" strokeWidth="5.5" />
                     {/* Cardboard Box */}
                     <circle
-                      cx="18" cy="18" r="14"
+                      cx="21" cy="21" r="15.91549430918954"
                       fill="transparent"
                       stroke="var(--mat-cardboard)"
-                      strokeWidth="4.5"
-                      strokeDasharray={`${dynamicMetrics.cardboardStrokePct} 100`}
+                      strokeWidth="5.5"
+                      strokeDasharray={`${dynamicMetrics.cardboardStrokePct} ${100 - dynamicMetrics.cardboardStrokePct}`}
                       strokeDashoffset="0"
                     />
                     {/* Plastics */}
                     <circle
-                      cx="18" cy="18" r="14"
+                      cx="21" cy="21" r="15.91549430918954"
                       fill="transparent"
                       stroke="var(--mat-plastic)"
-                      strokeWidth="4.5"
-                      strokeDasharray={`${dynamicMetrics.plasticStrokePct} 100`}
+                      strokeWidth="5.5"
+                      strokeDasharray={`${dynamicMetrics.plasticStrokePct} ${100 - dynamicMetrics.plasticStrokePct}`}
                       strokeDashoffset={`-${dynamicMetrics.cardboardStrokePct}`}
                     />
                     {/* Cushioning */}
                     <circle
-                      cx="18" cy="18" r="14"
+                      cx="21" cy="21" r="15.91549430918954"
                       fill="transparent"
                       stroke="var(--mat-cushioning)"
-                      strokeWidth="4.5"
-                      strokeDasharray={`${dynamicMetrics.cushioningStrokePct} 100`}
+                      strokeWidth="5.5"
+                      strokeDasharray={`${dynamicMetrics.cushioningStrokePct} ${100 - dynamicMetrics.cushioningStrokePct}`}
                       strokeDashoffset={`-${dynamicMetrics.cardboardStrokePct + dynamicMetrics.plasticStrokePct}`}
                     />
                   </svg>
