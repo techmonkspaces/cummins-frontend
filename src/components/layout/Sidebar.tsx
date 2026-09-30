@@ -271,7 +271,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 style={getNavBtnStyle(activeTab === 'packaging')}
               >
                 <PackagePlus size={17} color={activeTab === 'packaging' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
-                <span style={{ flex: 1 }}>Record Packaging</span>
+                <span style={{ flex: 1 }}>Add Record </span>
               </button>
 
               {/* Packaging Inventory */}
@@ -281,7 +281,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 style={getNavBtnStyle(activeTab === 'inventory')}
               >
                 <Layers size={17} color={activeTab === 'inventory' ? 'var(--cummins-red)' : 'var(--text-muted)'} />
-                <span style={{ flex: 1 }}>Packaging Inventory</span>
+                <span style={{ flex: 1 }}>Inventory</span>
               </button>
 
               {/* Packaging Records */}

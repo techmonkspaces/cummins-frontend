@@ -38,35 +38,51 @@
   --text-light: #94A3B8;
   --text-inverse: #FFFFFF;
 
-  /* Status Colors */
-  --color-success: #059669;
-  --color-success-bg: #ECFDF5;
-  --color-success-border: #A7F3D0;
+  /* Status & Approach Colors (Monochromatic Grayscale + Cummins Red Accent) */
+  --color-success: #0F172A;
+  --color-success-bg: #F8FAFC;
+  --color-success-border: #E2E8F0;
 
-  --color-warning: #D97706;
-  --color-warning-bg: #FFFBEB;
-  --color-warning-border: #FDE68A;
+  --color-warning: #475569;
+  --color-warning-bg: #F8FAFC;
+  --color-warning-border: #E2E8F0;
 
-  --color-info: #0284C7;
-  --color-info-bg: #F0F9FF;
-  --color-info-border: #BAE6FD;
+  --color-info: #0F172A;
+  --color-info-bg: #F8FAFC;
+  --color-info-border: #E2E8F0;
 
-  --color-purple: #7C3AED;
-  --color-purple-bg: #FAF5FF;
-  --color-purple-border: #DDD6FE;
+  --color-purple: #334155;
+  --color-purple-bg: #F8FAFC;
+  --color-purple-border: #E2E8F0;
 
-  /* Method Approaches Colors */
-  --method-inventory: #0284C7;
-  --method-inventory-bg: #F0F9FF;
-  --method-inventory-border: #BAE6FD;
+  /* Method Approaches Colors (Black & White Minimalist) */
+  --method-inventory: #0F172A;
+  --method-inventory-bg: #F8FAFC;
+  --method-inventory-border: #CBD5E1;
 
-  --method-calculated: #7C3AED;
-  --method-calculated-bg: #FAF5FF;
-  --method-calculated-border: #DDD6FE;
+  --method-calculated: #0F172A;
+  --method-calculated-bg: #F8FAFC;
+  --method-calculated-border: #CBD5E1;
 
-  --method-user-input: #059669;
-  --method-user-input-bg: #ECFDF5;
-  --method-user-input-border: #A7F3D0;
+  --method-user-input: #0F172A;
+  --method-user-input-bg: #F8FAFC;
+  --method-user-input-border: #CBD5E1;
+
+  /* ------------------------------------------------------------------------
+     PPWR UNIFORM PACKAGING MATERIALS PALETTE (Centralized Control)
+     Change all material colors globally across all graphs, donuts, and legends here:
+     ------------------------------------------------------------------------ */
+  --mat-cardboard: #D97706;          /* Premium Kraft Box Amber / Golden Earth */
+  --mat-cardboard-bg: #FEF3C7;       /* Kraft Box Light Tint */
+  --mat-cardboard-border: #FDE68A;
+
+  --mat-plastic: #2563EB;            /* Vibrant Technical Blue */
+  --mat-plastic-bg: #EFF6FF;         /* Plastic Light Tint */
+  --mat-plastic-border: #BFDBFE;
+
+  --mat-cushioning: #059669;         /* Fresh Eco Cushioning Emerald */
+  --mat-cushioning-bg: #ECFDF5;      /* Cushioning Light Tint */
+  --mat-cushioning-border: #A7F3D0;
 
   /* ------------------------------------------------------------------------
      2. TYPOGRAPHY SYSTEM
@@ -92,7 +108,7 @@
   --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
   --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
   --shadow-glow-red: 0 4px 14px rgba(218, 41, 28, 0.22);
-  --shadow-glow-blue: 0 4px 14px rgba(2, 132, 199, 0.18);
+  --shadow-glow-blue: 0 4px 14px rgba(15, 23, 42, 0.10);
 
   /* ------------------------------------------------------------------------
      4. RADIUS & SPACING
@@ -149,10 +165,10 @@ body {
 .text-secondary { color: var(--text-secondary); }
 .text-primary { color: var(--text-primary); }
 .text-red { color: var(--cummins-red); }
-.text-green { color: var(--color-success); }
-.text-blue { color: var(--color-info); }
-.text-purple { color: var(--color-purple); }
-.text-amber { color: var(--color-warning); }
+.text-green { color: var(--text-primary); }
+.text-blue { color: var(--text-primary); }
+.text-purple { color: var(--text-secondary); }
+.text-amber { color: var(--text-muted); }
 
 /* ==========================================================================
    LOGIN SCREEN (MINIMALIST & CONVINCING ENTERPRISE UI)
@@ -267,7 +283,7 @@ body {
 
 .form-link-muted {
   font-size: 0.75rem;
-  color: var(--color-info);
+  color: var(--cummins-red);
   cursor: pointer;
   text-decoration: none;
 }
@@ -419,13 +435,14 @@ body {
 
 .btn-outline-danger {
   background: var(--bg-surface);
-  color: #DC2626;
-  border-color: var(--cummins-red-border);
+  color: #0F172A;
+  border-color: var(--border-medium);
 }
 
 .btn-outline-danger:hover {
   background: var(--cummins-red-light);
-  border-color: #EF4444;
+  border-color: var(--cummins-red);
+  color: var(--cummins-red);
 }
 
 .btn-sm {
@@ -544,31 +561,31 @@ body {
 
 .badge-inventory {
   background: #F8FAFC;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
 }
 
 .badge-calculated {
   background: #F8FAFC;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
 }
 
 .badge-user-input {
   background: #F8FAFC;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
 }
 
 .badge-confirmed {
   background: #F8FAFC;
-  color: var(--color-success);
-  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
 }
 
 .badge-draft {
   background: #F8FAFC;
-  color: var(--color-warning);
+  color: var(--text-secondary);
   border: 1px solid var(--border-subtle);
 }
 
@@ -648,7 +665,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -702,7 +719,7 @@ body {
 }
 
 /* ==========================================================================
-   METHOD CARD CONTROLS
+   METHOD CARD CONTROLS (BLACK AND WHITE + CUMMINS RED FOCUS)
    ========================================================================== */
 .method-card {
   position: relative;
@@ -724,20 +741,10 @@ body {
   border-color: var(--border-medium);
 }
 
-.method-card.selected-inventory {
-  border-color: var(--method-inventory);
-  background: linear-gradient(180deg, var(--method-inventory-bg) 0%, var(--bg-surface) 100%);
-  box-shadow: var(--shadow-glow-blue);
-}
-
-.method-card.selected-calculated {
-  border-color: var(--method-calculated);
-  background: linear-gradient(180deg, var(--method-calculated-bg) 0%, var(--bg-surface) 100%);
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.18);
-}
-
+.method-card.selected-inventory,
+.method-card.selected-calculated,
 .method-card.selected-user-input {
-  border-color: var(--method-user-input);
-  background: linear-gradient(180deg, var(--method-user-input-bg) 0%, var(--bg-surface) 100%);
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.18);
+  border-color: var(--cummins-red);
+  background: #FFFFFF;
+  box-shadow: var(--shadow-glow-red);
 }

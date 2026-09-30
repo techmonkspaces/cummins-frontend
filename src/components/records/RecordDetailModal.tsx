@@ -79,7 +79,7 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
             </div>
             <div>
               <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Quantity Packed</div>
-              <div className="font-mono font-bold text-base" style={{ color: '#0284C7' }}>
+              <div className="font-mono font-bold text-base" style={{ color: '#0F172A' }}>
                 {record.productQuantity.toLocaleString()} units
               </div>
             </div>
@@ -91,7 +91,7 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
             </div>
             <div>
               <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Per-Unit Consumption</div>
-              <div className="font-mono font-bold text-base" style={{ color: '#059669' }}>
+              <div className="font-mono font-bold text-base" style={{ color: '#0F172A' }}>
                 {record.perUnitPackagingWeightKg.toFixed(3)} kg/u
               </div>
             </div>
@@ -113,8 +113,6 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
                 <thead>
                   <tr>
                     <th style={{ whiteSpace: 'nowrap' }}>Packaging Component</th>
-                    {/* <th style={{ whiteSpace: 'nowrap' }}>Packaging Class</th> */}
-                    {/* <th style={{ whiteSpace: 'nowrap' }}>Single Use / Reusable</th> */}
                     <th style={{ whiteSpace: 'nowrap' }}>Dimensions</th>
                     <th style={{ whiteSpace: 'nowrap' }}>Weight %</th>
                     <th style={{ whiteSpace: 'nowrap' }}>Total Pkg Mass</th>
@@ -128,28 +126,11 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
                       ? ((m.weightKg / record.totalPackagingWeightKg) * 100).toFixed(1)
                       : '0.0';
 
-                    // Packaging Class, Use Type & Dimensions from Inventory Master
                     const master = MOCK_PACKAGING_INVENTORY.find(
                       inv => inv.id === m.materialId || inv.name.toLowerCase() === m.materialName.toLowerCase()
                     );
 
-                    let pClass = m.packagingClass || master?.packagingClass;
-                    let isReusable = (m.useType || master?.useType) === 'Reusable';
                     let dimensions = m.dimensions || master?.dimensions || '-';
-
-                    if (!pClass) {
-                      const matNameLower = m.materialName.toLowerCase();
-                      if (matNameLower.includes('box') || matNameLower.includes('carton') || matNameLower.includes('tray')) {
-                        pClass = 'Primary';
-                        if (dimensions === '-') dimensions = '35 × 25 × 20 cm';
-                      } else if (matNameLower.includes('tape') || matNameLower.includes('film') || matNameLower.includes('bag') || matNameLower.includes('wrap')) {
-                        pClass = 'Secondary';
-                        if (dimensions === '-') dimensions = matNameLower.includes('tape') ? '50 mm × 66 m' : '1000 mm × 50 m';
-                      } else {
-                        pClass = 'Tertiary';
-                        if (dimensions === '-') dimensions = matNameLower.includes('end-cap') ? '15 × 10 × 8 cm' : '70 gsm / 5-ply';
-                      }
-                    }
 
                     return (
                       <tr key={m.id}>
@@ -159,22 +140,6 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
                             <span className="font-mono text-xs" style={{ color: '#64748B' }}>{m.materialId} • {m.category}</span>
                           </div>
                         </td>
-                        {/* <td style={{ whiteSpace: 'nowrap' }}>
-                          <span className={`badge ${pClass === 'Primary' ? 'badge-calculated' : pClass === 'Secondary' ? 'badge-inventory' : 'badge-neutral'}`} style={{ fontSize: '0.72rem', fontWeight: 600 }}>
-                            {pClass}
-                          </span>
-                        </td>
-                        <td style={{ whiteSpace: 'nowrap' }}>
-                          <span className="badge" style={{ 
-                            fontSize: '0.72rem', 
-                            fontWeight: 600,
-                            background: isReusable ? '#ECFDF5' : '#EFF6FF',
-                            color: isReusable ? '#059669' : '#1E40AF',
-                            border: `1px solid ${isReusable ? '#A7F3D0' : '#BFDBFE'}`
-                          }}>
-                            {isReusable ? 'Reusable' : 'Single-Use'}
-                          </span>
-                        </td> */}
                         <td style={{ whiteSpace: 'nowrap' }}>
                           <span className="font-mono text-xs" style={{ color: '#475569' }}>
                             {dimensions}
@@ -191,7 +156,7 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
                           </span>
                         </td>
                         <td style={{ whiteSpace: 'nowrap' }}>
-                          <span className="font-mono text-xs" style={{ color: '#0284C7' }}>
+                          <span className="font-mono text-xs" style={{ color: '#0F172A' }}>
                             {perUnit.toFixed(4)} kg/u
                           </span>
                         </td>
@@ -206,28 +171,22 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
           {/* Material Breakdown Summary */}
           <div style={{ padding: '0.85rem 1rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.6rem', color: '#0F172A', fontSize: '0.85rem', fontWeight: 700 }}>
-              <ShieldCheck size={16} color="#059669" /> Material Category & Packaging Type Breakdown
+              <ShieldCheck size={16} color="#0F172A" /> Material Category & Packaging Type Breakdown
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
               <div>
                 <span className="text-xs text-muted">Paper / Cardboard:</span>
-                <div className="font-mono font-semibold" style={{ color: '#D97706' }}>
+                <div className="font-mono font-semibold" style={{ color: '#0F172A' }}>
                   {record.ppwrSummary.paperCardboardKg.toFixed(2)} kg ({record.ppwrSummary.paperCardboardPct}%)
                 </div>
               </div>
               <div>
                 <span className="text-xs text-muted">Plastic / Polymer:</span>
-                <div className="font-mono font-semibold" style={{ color: '#DB2777' }}>
+                <div className="font-mono font-semibold" style={{ color: '#475569' }}>
                   {record.ppwrSummary.plasticKg.toFixed(2)} kg ({record.ppwrSummary.plasticPct}%)
                 </div>
               </div>
-              {/* <div>
-                <span className="text-xs text-muted">Packaging Format Type:</span>
-                <div className="font-mono font-semibold" style={{ color: '#1E40AF' }}>
-                  100% Single-Use Packaging
-                </div>
-              </div> */}
             </div>
           </div>
 
@@ -257,7 +216,7 @@ export const RecordDetailModal: React.FC<RecordDetailModalProps> = ({
             <button
               className="btn btn-secondary btn-sm"
               onClick={onOpenExport}
-              style={{ color: '#0284C7', border: '1px solid #BAE6FD', background: '#F0F9FF' }}
+              style={{ color: '#0F172A', border: '1px solid #CBD5E1', background: '#F8FAFC' }}
             >
               <Share2 size={15} />
               <span>Export JSON Payload</span>

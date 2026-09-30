@@ -104,13 +104,13 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: '#F8FAFC', padding: '0.5rem 1.25rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
               <div>
                 <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Available Total Mass</div>
-                <div className="font-mono font-bold text-base" style={{ color: '#0284C7' }}>
+                <div className="font-mono font-bold text-base" style={{ color: '#0F172A' }}>
                   {Math.round(totalStockKg).toLocaleString()} kg
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Commodity Master</div>
-                <div className="font-mono font-bold text-base" style={{ color: '#059669' }}>
+                <div className="font-mono font-bold text-base" style={{ color: '#0F172A' }}>
                   Active Catalog
                 </div>
               </div>
@@ -197,7 +197,7 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
                     </span>
                   </td>
                   <td>
-                    <span className="font-mono font-semibold text-xs" style={{ color: '#0284C7', background: '#F0F9FF', padding: '2px 6px', borderRadius: '4px', border: '1px solid #BAE6FD' }}>
+                    <span className="font-mono font-semibold text-xs" style={{ color: '#0F172A', background: '#F1F5F9', padding: '2px 6px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
                       {mat.ppwrMaterialCode}
                     </span>
                   </td>
@@ -219,18 +219,18 @@ export const PackagingInventoryView: React.FC<PackagingInventoryViewProps> = ({
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                       <div style={{ width: '40px', height: '6px', background: '#E2E8F0', borderRadius: '3px', overflow: 'hidden' }}>
-                        <div style={{ width: `${mat.recycledContentPct}%`, height: '100%', background: '#059669' }} />
+                        <div style={{ width: `${mat.recycledContentPct}%`, height: '100%', background: '#0F172A' }} />
                       </div>
-                      <span className="font-mono text-xs" style={{ color: '#059669', fontWeight: 600 }}>{mat.recycledContentPct}%</span>
+                      <span className="font-mono text-xs" style={{ color: '#0F172A', fontWeight: 600 }}>{mat.recycledContentPct}%</span>
                     </div>
                   </td>
                   <td>
                     {mat.recyclable ? (
-                      <span style={{ color: '#059669', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '3px', fontWeight: 600 }}>
+                      <span style={{ color: '#0F172A', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '3px', fontWeight: 600 }}>
                         <CheckCircle2 size={13} /> Yes
                       </span>
                     ) : (
-                      <span style={{ color: '#DC2626', fontSize: '0.75rem', fontWeight: 500 }}>
+                      <span style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: 500 }}>
                         Non-Recyclable
                       </span>
                     )}

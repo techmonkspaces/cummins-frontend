@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 import { 
-  Edit3, 
   Plus, 
   Trash2, 
   ArrowRight, 
-  Package, 
-  Scale, 
-  CheckCircle2, 
-  Sparkles, 
-  Info,
-  Globe2 
+  Scale
 } from 'lucide-react';
 import { Product, PackagingLineItem, PackagingMaterialMaster, CUMMINS_DESTINATION_COUNTRIES } from '../../types';
 import { MOCK_PRODUCTS } from '../../data/mockData';
@@ -161,7 +155,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
   const [items, setItems] = useState<UserInputItemEntry[]>(
     getDefaultMaterialsForProduct(defaultProd.sku)
   );
-  const [operatorNotes, setOperatorNotes] = useState<string>('Floor packing bench log.');
+  const [operatorNotes] = useState<string>('Floor packing bench log.');
 
   // Sync with initialProduct when it changes
   React.useEffect(() => {
@@ -185,8 +179,6 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
   };
 
   const currentAvailableUnits = getCompatibleUnitsForMaterial(newMaterialId, availableMaterials);
-  const selectedMaterialMaster = availableMaterials.find(m => m.id === newMaterialId);
-  const currentUnitMeta = currentAvailableUnits.find(u => u.value === newUnit);
 
   const handleAddNewItem = () => {
     if (newQuantity <= 0) return;
@@ -287,7 +279,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
           borderRadius: '10px',
           padding: '1rem 1.25rem',
           border: '1px solid #E2E8F0',
-          borderLeft: '4px solid #059669',
+          borderLeft: '4px solid #DA291C',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -298,7 +290,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
       >
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#059669', background: '#ECFDF5', padding: '2px 7px', borderRadius: '4px', border: '1px solid #A7F3D0' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#0F172A', background: '#F1F5F9', padding: '2px 7px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
               {selectedProduct.sku}
             </span>
             <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
@@ -313,9 +305,9 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span 
             style={{ 
-              background: '#ECFDF5', 
-              color: '#059669', 
-              border: '1px solid #A7F3D0', 
+              background: '#F1F5F9', 
+              color: '#0F172A', 
+              border: '1px solid #E2E8F0', 
               padding: '3px 8px', 
               borderRadius: '6px', 
               fontSize: '0.72rem', 
@@ -324,9 +316,8 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
               alignItems: 'center',
               gap: '4px'
             }}
-            data-tooltip="Standardized SI mass computed automatically per unit"
           >
-            <Scale size={12} color="#059669" />
+            <Scale size={12} color="#0F172A" />
             Active Bench Logger
           </span>
         </div>
@@ -354,7 +345,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
                 setSelectedProduct(p);
                 setItems(getDefaultMaterialsForProduct(p.sku));
               }}
-              accentColor="#059669"
+              accentColor="#DA291C"
             />
           </div>
 
@@ -428,7 +419,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
               materials={availableMaterials}
               selectedMaterialId={newMaterialId}
               onSelectMaterial={(m) => handleMaterialSelect(m.id)}
-              accentColor="#059669"
+              accentColor="#DA291C"
             />
           </div>
 
@@ -450,7 +441,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
               className="form-select font-mono"
               value={newUnit}
               onChange={(e) => setNewUnit(e.target.value)}
-              style={{ height: '36px', fontSize: '0.82rem', fontWeight: 700, borderColor: '#10B981' }}
+              style={{ height: '36px', fontSize: '0.82rem', fontWeight: 700, borderColor: '#CBD5E1' }}
             >
               {currentAvailableUnits.map(u => (
                 <option key={u.value} value={u.value}>
@@ -486,7 +477,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
           <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Logged Packaging Items ({items.length})
           </h3>
-          <span style={{ fontSize: '0.7rem', color: '#059669', fontWeight: 700 }}>
+          <span style={{ fontSize: '0.7rem', color: '#0F172A', fontWeight: 700 }}>
             ● SI Unit Normalization Active
           </span>
         </div>
@@ -497,7 +488,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
               <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
                 <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Material</th>
                 <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Logged Qty & Unit</th>
-                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#059669', textTransform: 'uppercase', textAlign: 'right' }}>Normalized Mass</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', textAlign: 'right' }}>Normalized Mass</th>
                 <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'center' }}>Action</th>
               </tr>
             </thead>
@@ -551,7 +542,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
                         </select>
                       </div>
                     </td>
-                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#059669', fontFamily: 'var(--font-mono)', fontSize: '0.84rem' }}>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono)', fontSize: '0.84rem' }}>
                       {weightGrams.toFixed(0)} g ({weightKg.toFixed(3)} kg)
                     </td>
                     <td style={{ padding: '10px 12px', textAlign: 'center' }}>
@@ -561,7 +552,7 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
                         style={{
                           background: 'transparent',
                           border: 'none',
-                          color: items.length <= 1 ? '#CBD5E1' : '#EF4444',
+                          color: items.length <= 1 ? '#CBD5E1' : '#DA291C',
                           cursor: items.length <= 1 ? 'not-allowed' : 'pointer',
                           padding: '3px'
                         }}
@@ -575,11 +566,11 @@ export const ApproachUserInput: React.FC<ApproachUserInputProps> = ({
               })}
             </tbody>
             <tfoot>
-              <tr style={{ background: '#ECFDF5', borderTop: '2px solid #A7F3D0' }}>
-                <td colSpan={2} style={{ padding: '10px 12px', fontWeight: 800, color: '#065F46', fontSize: '0.84rem' }}>
+              <tr style={{ background: '#F8FAFC', borderTop: '2px solid #CBD5E1' }}>
+                <td colSpan={2} style={{ padding: '10px 12px', fontWeight: 800, color: '#0F172A', fontSize: '0.84rem' }}>
                   Total Packaging Mass {productQuantity > 1 ? `(Per Unit & Batch of ${productQuantity})` : '(Per Unit)'}
                 </td>
-                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#059669', fontSize: '0.94rem', fontFamily: 'var(--font-mono)' }}>
+                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#DA291C', fontSize: '0.94rem', fontFamily: 'var(--font-mono)' }}>
                   {totalPerUnitGrams.toFixed(0)} g / unit {productQuantity > 1 ? `• Total Batch: ${(totalPerUnitKg * productQuantity).toFixed(2)} kg` : `(${totalPerUnitKg.toFixed(3)} kg)`}
                 </td>
                 <td></td>

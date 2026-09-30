@@ -53,29 +53,19 @@ export const ProductList: React.FC<ProductListProps> = ({
 
   const getFragilityColor = (fragility: string) => {
     switch (fragility) {
-      case 'High': return '#DC2626';
-      case 'Medium': return '#D97706';
-      case 'Heavy Duty': return '#7C3AED';
-      default: return '#059669';
+      case 'High': return '#0F172A';
+      case 'Medium': return '#334155';
+      case 'Heavy Duty': return '#0F172A';
+      default: return '#475569';
     }
   };
 
   const getFragilityBg = (fragility: string) => {
-    switch (fragility) {
-      case 'High': return '#FEF2F2';
-      case 'Medium': return '#FFFBEB';
-      case 'Heavy Duty': return '#FAF5FF';
-      default: return '#ECFDF5';
-    }
+    return '#F1F5F9';
   };
 
   const getFragilityBorder = (fragility: string) => {
-    switch (fragility) {
-      case 'High': return '#FECACA';
-      case 'Medium': return '#FDE68A';
-      case 'Heavy Duty': return '#DDD6FE';
-      default: return '#A7F3D0';
-    }
+    return '#E2E8F0';
   };
 
   const handleCreateProduct = (e: React.FormEvent) => {

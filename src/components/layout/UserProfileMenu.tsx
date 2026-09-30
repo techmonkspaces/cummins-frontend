@@ -1,15 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  User, 
   ChevronDown, 
   Crown, 
   Building2, 
   Edit3, 
   LogOut, 
-  Check, 
-  ShieldCheck, 
-  KeyRound,
-  UserCheck
+  Check
 } from 'lucide-react';
 import { UserPersona, UserRoleType } from '../../types';
 import { MOCK_PERSONAS } from '../../data/mockData';
@@ -40,11 +36,11 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
 
   const getRoleIcon = (role: UserRoleType) => {
     switch (role) {
-      case 'SUPER_ADMIN': return <Crown size={14} color="#FBBF24" />;
+      case 'SUPER_ADMIN': return <Crown size={14} color="#DA291C" />;
       case 'FACTORY_ADMIN':
-      case 'FACTORY_MANAGER': return <Building2 size={14} color="#0284C7" />;
+      case 'FACTORY_MANAGER': return <Building2 size={14} color="#0F172A" />;
       case 'PACKAGING_MANAGER':
-      case 'DATA_ENTRY': return <Edit3 size={14} color="#059669" />;
+      case 'DATA_ENTRY': return <Edit3 size={14} color="#0F172A" />;
     }
   };
 
@@ -52,21 +48,21 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
     switch (role) {
       case 'SUPER_ADMIN':
         return (
-          <span style={{ fontSize: '0.68rem', fontWeight: 800, background: '#FEE2E2', color: '#DA291C', padding: '2px 8px', borderRadius: '4px', border: '1px solid #FECACA' }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 800, background: '#FFF5F5', color: '#DA291C', padding: '2px 8px', borderRadius: '4px', border: '1px solid #FECACA' }}>
             SUPER ADMIN
           </span>
         );
       case 'FACTORY_ADMIN':
       case 'FACTORY_MANAGER':
         return (
-          <span style={{ fontSize: '0.68rem', fontWeight: 800, background: '#F0F9FF', color: '#0284C7', padding: '2px 8px', borderRadius: '4px', border: '1px solid #BAE6FD' }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 800, background: '#F1F5F9', color: '#0F172A', padding: '2px 8px', borderRadius: '4px', border: '1px solid #CBD5E1' }}>
             FACTORY ADMIN
           </span>
         );
       case 'PACKAGING_MANAGER':
       case 'DATA_ENTRY':
         return (
-          <span style={{ fontSize: '0.68rem', fontWeight: 800, background: '#ECFDF5', color: '#059669', padding: '2px 8px', borderRadius: '4px', border: '1px solid #A7F3D0' }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 800, background: '#F1F5F9', color: '#0F172A', padding: '2px 8px', borderRadius: '4px', border: '1px solid #CBD5E1' }}>
             PACKAGING MANAGER
           </span>
         );
@@ -97,7 +93,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
             width: '30px',
             height: '30px',
             borderRadius: '50%',
-            background: currentUser.role === 'SUPER_ADMIN' ? '#0F172A' : currentUser.role === 'FACTORY_MANAGER' ? '#0284C7' : '#059669',
+            background: currentUser.role === 'SUPER_ADMIN' ? '#DA291C' : '#0F172A',
             color: '#FFFFFF',
             display: 'flex',
             alignItems: 'center',
@@ -220,7 +216,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
                 width: '100%',
                 padding: '8px 12px',
                 borderRadius: '6px',
-                background: '#FEF2F2',
+                background: '#FFF5F5',
                 color: '#DA291C',
                 border: '1px solid #FECACA',
                 display: 'flex',

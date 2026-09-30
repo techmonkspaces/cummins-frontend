@@ -72,7 +72,7 @@ export const PpwrExportModal: React.FC<PpwrExportModalProps> = ({
             <pre 
               style={{ 
                 background: '#0F172A', 
-                color: '#38BDF8', 
+                color: '#F8FAFC', 
                 padding: '1rem', 
                 borderRadius: '8px', 
                 fontSize: '0.78rem', 
@@ -91,7 +91,7 @@ export const PpwrExportModal: React.FC<PpwrExportModalProps> = ({
         {/* Footer */}
         <div className="modal-footer">
           <button className="btn btn-secondary btn-sm" onClick={handleCopy}>
-            {copied ? <Check size={14} color="#059669" /> : <Copy size={14} />}
+            {copied ? <Check size={14} color="#0F172A" /> : <Copy size={14} />}
             <span>{copied ? 'Copied to Clipboard!' : 'Copy JSON'}</span>
           </button>
 

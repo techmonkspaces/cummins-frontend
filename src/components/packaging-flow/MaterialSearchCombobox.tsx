@@ -13,7 +13,7 @@ export const MaterialSearchCombobox: React.FC<MaterialSearchComboboxProps> = ({
   materials,
   selectedMaterialId,
   onSelectMaterial,
-  accentColor = '#059669'
+  accentColor = '#DA291C'
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');

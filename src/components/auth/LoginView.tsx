@@ -44,7 +44,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
         <div className="login-header">
           <CumminsLogo height={34} showWordmark={true} />
           <div className="login-app-badge">EU PPWR Packaging Compliance Station</div>
-          <h1 className="login-title">Sign In to Station</h1>
+          <h1 className="login-title">Sign In</h1>
           <p className="login-subtitle">
             Select your role to access plant packaging records and analytics
           </p>
@@ -89,7 +89,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             type="submit"
             className="btn btn-primary btn-md login-submit-btn"
           >
-            <span>Enter Station</span>
+            <span>Login</span>
             <ArrowRight size={15} />
           </button>
         </form>

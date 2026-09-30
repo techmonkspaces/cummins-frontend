@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 import {
   Database,
-  ArrowRight,
   Calculator,
   Calendar,
-  PackageCheck,
   CheckCircle2,
-  Info,
-  Layers,
-  Sparkles,
-  Boxes,
-  FileSpreadsheet,
   Globe2
 } from 'lucide-react';
 import { Product, PackagingLineItem, PackagingMaterialMaster, CUMMINS_DESTINATION_COUNTRIES, RecordStatus } from '../../types';
@@ -70,9 +63,9 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
 
   // Actual Plant Factory Packaging Consumption for the Period (SAP Goods Issues)
   const factoryPackagingConsumed = [
-    { id: 'MAT-001', name: 'Cardboard Box', category: 'Paper/Cardboard', totalUsedKg: 500, color: '#0284C7' },
-    { id: 'MAT-003', name: 'Kraft Paper Cushioning', category: 'Paper', totalUsedKg: 80, color: '#059669' },
-    { id: 'MAT-007', name: 'Packaging Seam Tape', category: 'Plastic', totalUsedKg: 20, color: '#7C3AED' },
+    { id: 'MAT-001', name: 'Cardboard Box', category: 'Paper/Cardboard', totalUsedKg: 500, color: '#0F172A' },
+    { id: 'MAT-003', name: 'Kraft Paper Cushioning', category: 'Paper', totalUsedKg: 80, color: '#475569' },
+    { id: 'MAT-007', name: 'Packaging Seam Tape', category: 'Plastic', totalUsedKg: 20, color: '#64748B' },
   ];
 
   const totalPlantPackagingKg = factoryPackagingConsumed.reduce((sum, item) => sum + item.totalUsedKg, 0);
@@ -148,7 +141,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
           borderRadius: '10px',
           padding: '1.1rem 1.5rem',
           border: '1px solid #E2E8F0',
-          borderLeft: '4px solid #0284C7',
+          borderLeft: '4px solid #DA291C',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -159,13 +152,13 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
       >
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#0284C7', background: '#F0F9FF', padding: '2px 7px', borderRadius: '4px', border: '1px solid #BAE6FD' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#0F172A', background: '#F1F5F9', padding: '2px 7px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
               APPROACH A
             </span>
             <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
               Plant-Wide Packaging Reconciliation (Multi-SKU Mass Allocation)
             </h2>
-            <span style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 700, background: '#ECFDF5', padding: '2px 7px', borderRadius: '4px', border: '1px solid #A7F3D0' }}>
+            <span style={{ fontSize: '0.75rem', color: '#0F172A', fontWeight: 700, background: '#F1F5F9', padding: '2px 7px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
               4 Active Plant SKUs
             </span>
           </div>
@@ -197,7 +190,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
       >
         <div>
           <label style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '3px' }}>
-            <Calendar size={12} color="#0284C7" />
+            <Calendar size={12} color="#0F172A" />
             Reconciliation Period
           </label>
           <select
@@ -224,7 +217,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
 
         <div>
           <label style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '3px' }}>
-            <Globe2 size={12} color="#0284C7" />
+            <Globe2 size={12} color="#0F172A" />
             Country Sold To
           </label>
           <select
@@ -280,10 +273,10 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
           <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 700, display: 'block', marginBottom: '3px' }}>
             Total Packaging Deducted
           </span>
-          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0284C7' }}>
+          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#DA291C' }}>
             {totalPlantPackagingKg.toLocaleString()} kg
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#059669', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.7rem', color: '#475569', fontWeight: 600 }}>
             {totalRatePerKg.toFixed(4)} kg pkg / kg product
           </div>
         </div>
@@ -301,34 +294,30 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
       >
         <div style={{ padding: '0.85rem 1.25rem', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Database size={15} color="#0284C7" />
+            <Database size={15} color="#0F172A" />
             <h3 style={{ fontSize: '0.84rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              1. Total Plant Packaging Consumption (Period Batch Goods Issues)
+              1. Total Plant Packaging Materials Consumed in Period (SAP S/4HANA Movement Type 261)
             </h3>
           </div>
-          {/* <span style={{ fontSize: '0.72rem', color: '#64748B' }}>
-            SAP S/4HANA Material Movement 261
-          </span> */}
         </div>
 
-        <div style={{ padding: '1rem 1.25rem' }}>
+        <div style={{ padding: '0.75rem 1.25rem' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
                 <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Packaging Material</th>
                 <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Category</th>
                 <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>Total Quantity Used (kg)</th>
-                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#0284C7', textTransform: 'uppercase', textAlign: 'right' }}>Quantity used per kg of product sold</th>
+                <th style={{ padding: '8px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase', textAlign: 'right' }}>Quantity used per kg of product sold</th>
               </tr>
             </thead>
             <tbody>
               {factoryPackagingConsumed.map((item) => {
                 const rate = item.totalUsedKg / totalPlantProductNetKg;
-
                 return (
                   <tr key={item.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
                     <td style={{ padding: '9px 12px', fontWeight: 700, color: '#0F172A', fontSize: '0.82rem' }}>
-                      {item.name}
+                      {item.name} <span style={{ fontSize: '0.7rem', color: '#64748B' }}>({item.id})</span>
                     </td>
                     <td style={{ padding: '9px 12px', fontSize: '0.76rem', color: '#64748B' }}>
                       {item.category}
@@ -336,7 +325,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
                     <td style={{ padding: '9px 12px', textAlign: 'right', fontWeight: 800, color: '#0F172A', fontSize: '0.84rem' }}>
                       {item.totalUsedKg.toLocaleString()} kg
                     </td>
-                    <td style={{ padding: '9px 12px', textAlign: 'right', fontWeight: 800, color: item.color, fontFamily: 'var(--font-mono)', fontSize: '0.84rem' }}>
+                    <td style={{ padding: '9px 12px', textAlign: 'right', fontWeight: 800, color: '#0F172A', fontSize: '0.84rem', fontFamily: 'var(--font-mono)' }}>
                       {rate.toFixed(6)} kg/kg
                     </td>
                   </tr>
@@ -344,14 +333,14 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
               })}
             </tbody>
             <tfoot>
-              <tr style={{ background: '#F0F9FF', borderTop: '2px solid #BAE6FD' }}>
-                <td colSpan={2} style={{ padding: '9px 12px', fontWeight: 800, color: '#0369A1', fontSize: '0.82rem' }}>
+              <tr style={{ background: '#F8FAFC', borderTop: '2px solid #E2E8F0' }}>
+                <td colSpan={2} style={{ padding: '9px 12px', fontWeight: 800, color: '#0F172A', fontSize: '0.82rem' }}>
                   Total Plant Packaging Batch
                 </td>
-                <td style={{ padding: '9px 12px', textAlign: 'right', fontWeight: 900, color: '#0369A1', fontSize: '0.9rem' }}>
+                <td style={{ padding: '9px 12px', textAlign: 'right', fontWeight: 900, color: '#0F172A', fontSize: '0.9rem' }}>
                   {totalPlantPackagingKg.toLocaleString()} kg
                 </td>
-                <td style={{ padding: '9px 12px', textAlign: 'right', fontWeight: 900, color: '#0284C7', fontSize: '0.9rem', fontFamily: 'var(--font-mono)' }}>
+                <td style={{ padding: '9px 12px', textAlign: 'right', fontWeight: 900, color: '#0F172A', fontSize: '0.9rem', fontFamily: 'var(--font-mono)' }}>
                   {totalRatePerKg.toFixed(6)} kg/kg
                 </td>
               </tr>
@@ -372,12 +361,12 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
       >
         <div style={{ padding: '0.85rem 1.25rem', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Calculator size={15} color="#059669" />
+            <Calculator size={15} color="#0F172A" />
             <h3 style={{ fontSize: '0.84rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               2. SKU-Level Packaging Mass Allocation (All 4 Active Factory SKUs)
             </h3>
           </div>
-          <span style={{ fontSize: '0.72rem', color: '#059669', background: '#ECFDF5', padding: '2px 8px', borderRadius: '4px', fontWeight: 700, border: '1px solid #A7F3D0' }}>
+          <span style={{ fontSize: '0.72rem', color: '#0F172A', background: '#F1F5F9', padding: '2px 8px', borderRadius: '4px', fontWeight: 700, border: '1px solid #E2E8F0' }}>
             Mass-Proportional Ledger
           </span>
         </div>
@@ -392,11 +381,11 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
                 <th style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>Unit Net Weight</th>
                 <th style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>Total Net Mass</th>
                 {factoryPackagingConsumed.map(mat => (
-                  <th key={mat.id} style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: 700, color: mat.color, textTransform: 'uppercase', textAlign: 'right' }}>
+                  <th key={mat.id} style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', textAlign: 'right' }}>
                     {mat.name} (g/u)
                   </th>
                 ))}
-                <th style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: 700, color: '#059669', textTransform: 'uppercase', textAlign: 'right' }}>Allocated Rate</th>
+                <th style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', textAlign: 'right' }}>Allocated Rate</th>
                 <th style={{ padding: '8px 10px', fontSize: '0.7rem', fontWeight: 700, color: '#DA291C', textTransform: 'uppercase', textAlign: 'right' }}>Total SKU Pkg Mass</th>
               </tr>
             </thead>
@@ -421,7 +410,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
                       transition: 'background 0.15s ease'
                     }}
                   >
-                    <td style={{ padding: '9px 10px', fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '0.8rem', color: '#0284C7' }}>
+                    <td style={{ padding: '9px 10px', fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '0.8rem', color: '#0F172A' }}>
                       {row.sku}
                     </td>
                     <td style={{ padding: '9px 10px', fontWeight: 700, color: '#0F172A', fontSize: '0.82rem' }}>
@@ -437,11 +426,11 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
                       {row.totalProductWeightKg.toLocaleString()} kg
                     </td>
                     {materialAllocations.map(m => (
-                      <td key={m.id} style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: m.color, fontSize: '0.82rem', fontFamily: 'var(--font-mono)' }}>
+                      <td key={m.id} style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#475569', fontSize: '0.82rem', fontFamily: 'var(--font-mono)' }}>
                         {m.perUnitGrams.toFixed(1)} g
                       </td>
                     ))}
-                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#059669', fontSize: '0.84rem', fontFamily: 'var(--font-mono)' }}>
+                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#475569', fontSize: '0.84rem', fontFamily: 'var(--font-mono)' }}>
                       {rowTotalPkgGrams.toFixed(1)} g/unit
                     </td>
                     <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#DA291C', fontSize: '0.84rem', fontFamily: 'var(--font-mono)' }}>
@@ -464,7 +453,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
                   {totalPlantProductNetKg.toLocaleString()} kg
                 </td>
                 {factoryPackagingConsumed.map(mat => (
-                  <td key={mat.id} style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: mat.color, fontSize: '0.82rem' }}>
+                  <td key={mat.id} style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#0F172A', fontSize: '0.82rem' }}>
                     {mat.totalUsedKg} kg
                   </td>
                 ))}
@@ -478,7 +467,7 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
 
           {/* Reconciliation Formula Footer */}
           <div style={{ marginTop: '0.85rem', background: '#F8FAFC', borderRadius: '6px', padding: '8px 12px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Calculator size={13} color="#0284C7" />
+            <Calculator size={13} color="#0F172A" />
             <span style={{ fontSize: '0.74rem', color: '#475569' }}>
               Reconciliation Formula: <strong>Allocated Material per Unit (g) = Unit Net Weight (kg) × (Period Material Consumption ÷ Total Plant Product Net Mass) × 1000</strong>
             </span>
@@ -514,4 +503,3 @@ export const ApproachInventory: React.FC<ApproachInventoryProps> = ({
     </div>
   );
 };
-

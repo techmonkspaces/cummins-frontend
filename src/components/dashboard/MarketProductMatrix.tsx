@@ -47,14 +47,14 @@ const COUNTRY_FLAGS: Record<string, string> = {
 };
 
 const BAR_COLORS = [
-  '#0284C7', // Sky Blue
-  '#059669', // Emerald
-  '#7C3AED', // Violet
-  '#D97706', // Amber
-  '#DB2777', // Pink
-  '#475569', // Slate
-  '#2563EB', // Blue
-  '#0D9488', // Teal
+  '#0F172A', // Dark Slate / Charcoal
+  '#334155', // Charcoal
+  '#475569', // Medium Slate
+  '#64748B', // Neutral Slate
+  '#94A3B8', // Light Slate
+  '#1E293B', // Deep Charcoal
+  '#64748B', // Charcoal
+  '#CBD5E1', // Silver Gray
 ];
 
 export const MarketProductMatrix: React.FC<MarketProductMatrixProps> = ({
@@ -142,13 +142,13 @@ export const MarketProductMatrix: React.FC<MarketProductMatrixProps> = ({
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.1rem' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F0FDF4', border: '1px solid #BBF7D0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <BarChart3 size={15} color="#059669" />
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <BarChart3 size={15} color="#0F172A" />
             </div>
             <h3 style={{ fontSize: '0.96rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
               Product Units Sold by Destination Market
             </h3>
-            <span style={{ fontSize: '0.7rem', color: '#059669', background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '2px 7px', borderRadius: '4px', fontWeight: 700 }}>
+            <span style={{ fontSize: '0.7rem', color: '#0F172A', background: '#F1F5F9', border: '1px solid #E2E8F0', padding: '2px 7px', borderRadius: '4px', fontWeight: 700 }}>
               {totalGlobalUnits.toLocaleString()} Total Units
             </span>
           </div>
@@ -253,7 +253,7 @@ export const MarketProductMatrix: React.FC<MarketProductMatrixProps> = ({
                       gap: '5px'
                     }}
                   >
-                    <strong style={{ color: '#0284C7', fontFamily: 'var(--font-mono)' }}>{prod.sku}</strong>
+                    <strong style={{ color: '#0F172A', fontFamily: 'var(--font-mono)' }}>{prod.sku}</strong>
                     <span style={{ color: '#64748B' }}>{prod.name}</span>
                     <strong style={{ color: '#0F172A', fontFamily: 'var(--font-mono)' }}>
                       {prod.units.toLocaleString()} u

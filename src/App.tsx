@@ -188,7 +188,17 @@ export const App: React.FC = () => {
   // Filter records based on role / active plant
   const displayedRecords = currentUser.role === 'SUPER_ADMIN' 
     ? records 
-    : records.filter(r => r.plantId === activePlant.id || r.plantName?.toLowerCase().includes(activePlant.shortName.toLowerCase()));
+    : records.filter(r => {
+        if (!r) return false;
+        if (r.plantId && activePlant.id && r.plantId === activePlant.id) return true;
+        const pName = (r.plantName || '').toLowerCase();
+        const pId = (r.plantId || '').toLowerCase();
+        const actId = (activePlant.id || '').toLowerCase().replace('plant-', '');
+        const actShort = (activePlant.shortName || '').toLowerCase().split(' ')[0];
+        const actName = (activePlant.name || '').toLowerCase().split(' ')[0];
+
+        return pName.includes(actShort) || pName.includes(actName) || pId.includes(actId);
+      });
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#F8FAFC' }}>

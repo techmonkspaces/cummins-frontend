@@ -58,16 +58,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const isConsolidated = isSuperAdmin;
   const [massUnit, setMassUnit] = useState<'kg' | 't'>('kg');
 
-  // 1. Real-Time Dynamic Aggregate Calculations from active records
+  // 1. Real-Time Dynamic Aggregate Calculations strictly from active records
   const dynamicMetrics = useMemo(() => {
     let totalMass = 0;
     let totalQty = 0;
     let cardboardMass = 0;
     let plasticMass = 0;
-    let paperMass = 0;
-    let otherMass = 0;
-    let metalMass = 0;
-    const countryMassMap: Record<string, number> = {};
+    let cushioningMass = 0;
+
+    const countryMassMap: Record<string, {
+      total: number;
+      cardboard: number;
+      plastic: number;
+      cushioning: number;
+    }> = {};
 
     recentRecords.forEach((r) => {
       const recordMass = r.totalPackagingWeightKg > 0
@@ -80,7 +84,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
       // Extract destination country cleanly
       let rawCountry = r.destinationCountry || 'Germany';
       const cleanCountry = rawCountry.replace(/\s*\(.*?\)\s*/g, '').trim() || 'Germany';
-      countryMassMap[cleanCountry] = (countryMassMap[cleanCountry] || 0) + recordMass;
+
+      if (!countryMassMap[cleanCountry]) {
+        countryMassMap[cleanCountry] = { total: 0, cardboard: 0, plastic: 0, cushioning: 0 };
+      }
+
+      let recCardboard = 0;
+      let recPlastic = 0;
+      let recCushioning = 0;
 
       // Aggregate materials from materials list or ppwrSummary
       if (r.materials && r.materials.length > 0) {
@@ -89,155 +100,146 @@ export const Dashboard: React.FC<DashboardProps> = ({
           const nameLower = (m.materialName || '').toLowerCase();
           const catLower = (m.category || '').toLowerCase();
 
-          if (catLower.includes('cardboard') || nameLower.includes('cardboard') || nameLower.includes('box') || nameLower.includes('corrugated')) {
-            cardboardMass += mWeight;
-          } else if (catLower === 'paper' || nameLower.includes('paper') || nameLower.includes('cushion') || nameLower.includes('kraft')) {
-            paperMass += mWeight;
-          } else if (catLower.includes('plastic') || nameLower.includes('eps') || nameLower.includes('foam') || nameLower.includes('poly') || nameLower.includes('vci')) {
-            plasticMass += mWeight;
-          } else if (catLower.includes('metal') || nameLower.includes('steel') || nameLower.includes('strap') || nameLower.includes('timber') || nameLower.includes('wood')) {
-            metalMass += mWeight;
+          if (catLower.includes('cardboard') || nameLower.includes('cardboard') || nameLower.includes('box') || nameLower.includes('carton') || nameLower.includes('corrugated')) {
+            recCardboard += mWeight;
+          } else if (catLower.includes('plastic') || nameLower.includes('plastic') || nameLower.includes('film') || nameLower.includes('poly') || nameLower.includes('strap') || nameLower.includes('vci') || nameLower.includes('ldpe') || nameLower.includes('hdpe') || nameLower.includes('liner')) {
+            recPlastic += mWeight;
           } else {
-            otherMass += mWeight;
+            // Cushioning, foam, paper cushioning, void-fill, EPS, thermocol, etc.
+            recCushioning += mWeight;
           }
         });
       } else if (r.ppwrSummary) {
         const rawFibre = r.ppwrSummary.paperCardboardKg || 0;
         const rawPlast = r.ppwrSummary.plasticKg || 0;
         const rawOther = r.ppwrSummary.otherKg || 0;
-        cardboardMass += rawFibre * 0.85;
-        paperMass += rawFibre * 0.15;
-        plasticMass += rawPlast * 0.85;
-        otherMass += (rawPlast * 0.15) + (rawOther * 0.6);
-        metalMass += rawOther * 0.4;
+        recCardboard = rawFibre * 0.82;
+        recCushioning = rawFibre * 0.18 + rawOther;
+        recPlastic = rawPlast;
       } else {
-        cardboardMass += recordMass * 0.42;
-        plasticMass += recordMass * 0.28;
-        paperMass += recordMass * 0.15;
-        otherMass += recordMass * 0.10;
-        metalMass += recordMass * 0.05;
+        recCardboard = recordMass * 0.66;
+        recPlastic = recordMass * 0.20;
+        recCushioning = recordMass * 0.14;
       }
+
+      countryMassMap[cleanCountry].total += recordMass;
+      countryMassMap[cleanCountry].cardboard += recCardboard;
+      countryMassMap[cleanCountry].plastic += recPlastic;
+      countryMassMap[cleanCountry].cushioning += recCushioning;
+
+      cardboardMass += recCardboard;
+      plasticMass += recPlastic;
+      cushioningMass += recCushioning;
     });
 
-    const finalTotalMass = totalMass > 0 ? totalMass : (isConsolidated ? 17450 : 8973);
-    const finalTotalQty = totalQty > 0 ? totalQty : (isConsolidated ? 18940 : 13351);
+    const totalMatMass = cardboardMass + plasticMass + cushioningMass;
+    let pCard = totalMatMass > 0 ? (cardboardMass / totalMatMass) * 100 : 0;
+    let pPlast = totalMatMass > 0 ? (plasticMass / totalMatMass) * 100 : 0;
+    let pCush = totalMatMass > 0 ? (cushioningMass / totalMatMass) * 100 : 0;
 
-    // Calculate real normalized proportions summing to exactly 100%
-    const totalMatMass = cardboardMass + plasticMass + paperMass + otherMass + metalMass;
-    let pCard = totalMatMass > 0 ? (cardboardMass / totalMatMass) * 100 : 42;
-    let pPlast = totalMatMass > 0 ? (plasticMass / totalMatMass) * 100 : 28;
-    let pPaper = totalMatMass > 0 ? (paperMass / totalMatMass) * 100 : 15;
-    let pOther = totalMatMass > 0 ? (otherMass / totalMatMass) * 100 : 10;
-    let pMetal = totalMatMass > 0 ? (metalMass / totalMatMass) * 100 : 5;
+    const roundPlast = Math.round(pPlast);
+    const roundCush = Math.round(pCush);
+    const roundCard = totalMatMass > 0 ? Math.max(0, 100 - (roundPlast + roundCush)) : 0;
 
-    // Minimum allocations
-    if (pPaper < 2) pPaper = 5;
-    if (pOther < 1) pOther = 3;
-    if (pMetal < 1) pMetal = 2;
-    if (pPlast < 3) pPlast = 10;
+    // Dynamic Country Distribution strictly from actual recorded transactions
+    const shipmentsList = Object.entries(countryMassMap).map(([country, data]) => {
+      const cTotal = data.total;
+      const cTotalMat = (data.cardboard + data.plastic + data.cushioning) || 1;
+      const cPlastPct = Math.round((data.plastic / cTotalMat) * 100);
+      const cCushPct = Math.round((data.cushioning / cTotalMat) * 100);
+      const cCardPct = Math.max(0, 100 - (cPlastPct + cCushPct));
 
-    const roundPlast = Math.max(2, Math.round(pPlast));
-    const roundPaper = Math.max(2, Math.round(pPaper));
-    const roundOther = Math.max(1, Math.round(pOther));
-    const roundMetal = Math.max(1, Math.round(pMetal));
-    const roundCard = Math.max(10, 100 - (roundPlast + roundPaper + roundOther + roundMetal));
-
-    // Dynamic Country Distribution
-    let shipmentsList = Object.entries(countryMassMap).map(([country, weight]) => {
-      const pct = totalMass > 0 ? Math.max(1, Math.round((weight / totalMass) * 100)) : 0;
-      return { country, weight: Math.round(weight * 10) / 10, pct };
+      return {
+        country,
+        weight: Math.round(cTotal * 10) / 10,
+        materials: {
+          cardboard: Math.round(data.cardboard * 10) / 10,
+          plastic: Math.round(data.plastic * 10) / 10,
+          cushioning: Math.round(data.cushioning * 10) / 10,
+          cardboardPct: cCardPct,
+          plasticPct: cPlastPct,
+          cushioningPct: cCushPct
+        }
+      };
     }).sort((a, b) => b.weight - a.weight);
 
-    if (shipmentsList.length === 0) {
-      shipmentsList = [
-        { country: 'Germany', weight: 8120, pct: 47 },
-        { country: 'USA', weight: 4850, pct: 28 },
-        { country: 'France', weight: 2680, pct: 15 },
-        { country: 'Italy', weight: 1800, pct: 10 }
-      ];
-    }
-
     return {
-      totalMass: finalTotalMass,
-      totalQty: finalTotalQty,
-      cardboardMass: cardboardMass > 0 ? cardboardMass : finalTotalMass * 0.42,
-      plasticMass: plasticMass > 0 ? plasticMass : finalTotalMass * 0.28,
-      paperMass: paperMass > 0 ? paperMass : finalTotalMass * 0.15,
-      otherMass: otherMass > 0 ? otherMass : finalTotalMass * 0.10,
-      metalMass: metalMass > 0 ? metalMass : finalTotalMass * 0.05,
+      totalMass: Math.round(totalMass * 10) / 10,
+      totalQty,
+      cardboardMass: Math.round(cardboardMass * 10) / 10,
+      plasticMass: Math.round(plasticMass * 10) / 10,
+      cushioningMass: Math.round(cushioningMass * 10) / 10,
       cardboardStrokePct: roundCard,
       plasticStrokePct: roundPlast,
-      paperStrokePct: roundPaper,
-      otherStrokePct: roundOther,
-      metalStrokePct: roundMetal,
+      cushioningStrokePct: roundCush,
       cardboardPctStr: `${roundCard}%`,
       plasticPctStr: `${roundPlast}%`,
-      paperPctStr: `${roundPaper}%`,
-      otherPctStr: `${roundOther}%`,
-      metalPctStr: `${roundMetal}%`,
+      cushioningPctStr: `${roundCush}%`,
       shipmentsList
     };
-  }, [recentRecords, isConsolidated, activePlant]);
+  }, [recentRecords]);
 
   const totalPackagingWeight = dynamicMetrics.totalMass;
   const marketShipments = dynamicMetrics.shipmentsList;
+  const maxMarketWeight = useMemo(() => {
+    return Math.max(...marketShipments.map(m => m.weight), 1);
+  }, [marketShipments]);
 
   const [compositionFilter, setCompositionFilter] = useState<'mass' | 'pct'>('mass');
   const [trendPeriod, setTrendPeriod] = useState<'daily' | 'weekly' | 'monthly'>('daily');
 
-  // Real-Time Dynamic Plant Mass Breakdown for Bar Chart from recentRecords
+  // Real-Time Dynamic Plant Mass Breakdown for 10 Key Factories in the Bar Chart from actual records
   const plantMassData = useMemo(() => {
-    // Ensure our 3 core showcase demo factories always exist in the ledger
-    const massMap: Record<string, { name: string; weightKg: number }> = {
-      'Columbus': { name: 'Columbus', weightKg: 0 },
-      'Darlington': { name: 'Darlington', weightKg: 0 },
-      'Scoresby': { name: 'Scoresby', weightKg: 0 },
-    };
+    // 10 Global Cummins Factories
+    const targetPlants = [
+      { key: 'Columbus', plantId: 'PLANT-COLUMBUS', shortLabel: 'Columbus', fullName: 'Columbus Engine Plant (CEP)', color: '#0F172A' },
+      { key: 'Darlington', plantId: 'PLANT-DARLINGTON', shortLabel: 'Darlington', fullName: 'Darlington Engine & Emission Plant', color: '#1E293B' },
+      { key: 'Scoresby', plantId: 'PLANT-SCORESBY', shortLabel: 'Scoresby', fullName: 'Scoresby Power Systems Regional Plant', color: '#334155' },
+      { key: 'Seymour', plantId: 'PLANT-SEYMOUR', shortLabel: 'Seymour', fullName: 'Seymour Engine Plant (SEP)', color: '#475569' },
+      { key: 'Jamestown', plantId: 'PLANT-JAMESTOWN', shortLabel: 'Jamestown', fullName: 'Jamestown Engine Plant (JEP)', color: '#64748B' },
+      { key: 'Fridley', plantId: 'PLANT-FRIDLEY', shortLabel: 'Fridley', fullName: 'Fridley Power Generation Plant', color: '#0F172A' },
+      { key: 'RockyMount', plantId: 'PLANT-ROCKY-MOUNT', shortLabel: 'Rocky Mt', fullName: 'Rocky Mount Engine Plant (RMEP)', color: '#1E293B' },
+      { key: 'Charleston', plantId: 'PLANT-CHARLESTON', shortLabel: 'Charleston', fullName: 'Charleston Turbo Technologies', color: '#334155' },
+      { key: 'Pune', plantId: 'PLANT-PUNE', shortLabel: 'Pune', fullName: 'Kothrud Engine Plant (Pune)', color: '#475569' },
+      { key: 'Phaltan', plantId: 'PLANT-PHALTAN', shortLabel: 'Phaltan', fullName: 'Phaltan Mega Site (HHP & Genset)', color: '#64748B' }
+    ];
+
+    const massMap: Record<string, number> = {};
+    targetPlants.forEach(p => {
+      massMap[p.key] = 0;
+    });
 
     recentRecords.forEach((r) => {
-      const pId = r.plantId || '';
-      const pName = r.plantName || '';
+      const pId = (r.plantId || '').toUpperCase();
+      const pName = (r.plantName || '').toUpperCase();
       const recWeight = r.totalPackagingWeightKg > 0
         ? r.totalPackagingWeightKg
         : (r.perUnitPackagingWeightKg || 0.5) * (r.productQuantity || 1);
 
-      let key = 'Other';
-      if (pId.includes('COLUMBUS') || pName.includes('Columbus')) key = 'Columbus';
-      else if (pId.includes('DARLINGTON') || pName.includes('Darlington')) key = 'Darlington';
-      else if (pId.includes('SCORESBY') || pName.includes('Scoresby')) key = 'Scoresby';
-      else if (pId.includes('PUNE') || pName.includes('Pune') || pName.includes('Kothrud')) key = 'Pune';
-      else if (pId.includes('PHALTAN') || pName.includes('Phaltan')) key = 'Phaltan';
-      else {
-        key = pName.replace('Cummins ', '').split(' ')[0] || 'Site';
-      }
-
-      if (!massMap[key]) {
-        massMap[key] = { name: key, weightKg: 0 };
-      }
-      massMap[key].weightKg += recWeight;
+      if (pId.includes('COLUMBUS') || pName.includes('COLUMBUS')) massMap['Columbus'] += recWeight;
+      else if (pId.includes('DARLINGTON') || pName.includes('DARLINGTON')) massMap['Darlington'] += recWeight;
+      else if (pId.includes('SCORESBY') || pName.includes('SCORESBY')) massMap['Scoresby'] += recWeight;
+      else if (pId.includes('SEYMOUR') || pName.includes('SEYMOUR')) massMap['Seymour'] += recWeight;
+      else if (pId.includes('JAMESTOWN') || pName.includes('JAMESTOWN')) massMap['Jamestown'] += recWeight;
+      else if (pId.includes('FRIDLEY') || pName.includes('FRIDLEY')) massMap['Fridley'] += recWeight;
+      else if (pId.includes('ROCKY') || pName.includes('ROCKY')) massMap['RockyMount'] += recWeight;
+      else if (pId.includes('CHARLESTON') || pName.includes('CHARLESTON')) massMap['Charleston'] += recWeight;
+      else if (pId.includes('PUNE') || pName.includes('PUNE') || pName.includes('KOTHRUD')) massMap['Pune'] += recWeight;
+      else if (pId.includes('PHALTAN') || pName.includes('PHALTAN')) massMap['Phaltan'] += recWeight;
     });
 
-    const defaultColors = ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#06B6D4'];
-
-    // 3 Primary Showcase Demo Factories (Approach A, B, C)
-    const coreDemoKeys = ['Columbus', 'Darlington', 'Scoresby'];
-    const result: { name: string; weightKg: number; color: string }[] = [];
-
-    coreDemoKeys.forEach((k, idx) => {
-      const item = massMap[k] || { name: k, weightKg: 0 };
-      result.push({
-        name: item.name,
-        weightKg: Math.round(item.weightKg * 10) / 10,
-        color: defaultColors[idx % defaultColors.length]
-      });
-    });
-
-    return result;
+    return targetPlants.map(p => ({
+      name: p.key,
+      shortLabel: p.shortLabel,
+      fullName: p.fullName,
+      weightKg: Math.round(massMap[p.key] * 10) / 10,
+      color: p.color
+    }));
   }, [recentRecords]);
 
   // Dynamic Y-axis scale based on actual max plant mass
-  const maxBarWeight = Math.max(...plantMassData.map(p => p.weightKg), 1000);
-  const maxPlantMass = Math.ceil(maxBarWeight / 2000) * 2000 || 10000;
+  const maxBarWeight = Math.max(...plantMassData.map(p => p.weightKg), 600);
+  const maxPlantMass = Math.ceil(maxBarWeight / 200) * 200 || 1000;
   const yAxisTicks = useMemo(() => {
     return [
       maxPlantMass,
@@ -344,8 +346,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.15rem 1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               <span>Total Factories</span>
-              <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F0F9FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Building2 size={15} color="#0284C7" />
+              <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Building2 size={15} color="#0F172A" />
               </div>
             </div>
             <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
@@ -358,8 +360,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.15rem 1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             <span>Active Users</span>
-            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#FAF5FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Users size={15} color="#7C3AED" />
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Users size={15} color="#0F172A" />
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
@@ -371,8 +373,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.15rem 1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             <span>Products Packed</span>
-            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#FFF5F5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Package size={15} color="#DA291C" />
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Package size={15} color="#0F172A" />
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
@@ -384,8 +386,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.15rem 1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             <span>Packaging Records</span>
-            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <FileText size={15} color="#059669" />
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FileText size={15} color="#0F172A" />
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
@@ -397,11 +399,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '1.15rem 1.25rem', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             <span>Total Packaging Mass</span>
-            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#FFFBEB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Scale size={15} color="#D97706" />
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Scale size={15} color="#0F172A" />
             </div>
           </div>
-          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--cummins-red)', marginTop: '6px' }}>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
             {formatMass(totalPackagingWeight)}
           </div>
         </div>
@@ -411,98 +413,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {isConsolidated ? (
         /* SUPER ADMIN CONSOLIDATED VIEW */
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          {/* Row 1: 3-Column Charts Grid matching exact mockup */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.25rem' }}>
+          {/* Row 1: 2-Column Grid (Packaging Material Composition: 2/5, Packaging Mass by Plant: 3/5) */}
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 3fr', gap: '1.25rem' }}>
 
-            {/* Chart 1: Packaging Mass by Plant (Bar Chart) */}
-            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '300px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
-                  Packaging Mass by Plant
-                </h3>
-                <div style={{ display: 'inline-flex', background: '#F1F5F9', padding: '2px', borderRadius: '6px', fontSize: '0.72rem' }}>
-                  <button
-                    onClick={() => setMassUnit('kg')}
-                    style={{
-                      border: 'none',
-                      padding: '2px 8px',
-                      borderRadius: '4px',
-                      background: massUnit === 'kg' ? '#E0F2FE' : 'transparent',
-                      color: massUnit === 'kg' ? '#0284C7' : '#64748B',
-                      fontWeight: 700,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    kg
-                  </button>
-                  <button
-                    onClick={() => setMassUnit('t')}
-                    style={{
-                      border: 'none',
-                      padding: '2px 8px',
-                      borderRadius: '4px',
-                      background: massUnit === 't' ? '#E0F2FE' : 'transparent',
-                      color: massUnit === 't' ? '#0284C7' : '#64748B',
-                      fontWeight: 700,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    t
-                  </button>
-                </div>
-              </div>
-
-              {/* Bar Chart with Dynamic Y-Axis Gridlines */}
-              <div style={{ position: 'relative', height: '190px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                {/* Horizontal Grid lines */}
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', pointerEvents: 'none' }}>
-                  {yAxisTicks.map((labelVal, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', width: '100%', height: '1px' }}>
-                      <span style={{ width: '42px', fontSize: '0.66rem', color: '#94A3B8', textAlign: 'right', paddingRight: '8px' }}>
-                        {labelVal.toLocaleString()}
-                      </span>
-                      <div style={{ flex: 1, borderBottom: idx === 5 ? '1px solid #CBD5E1' : '1px dashed #F1F5F9' }} />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Bars Area */}
-                <div style={{ position: 'absolute', left: '46px', right: '12px', top: '10px', bottom: '26px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around' }}>
-                  {plantMassData.map((p) => {
-                    const barHeightPct = Math.min(100, Math.max(12, (p.weightKg / maxPlantMass) * 100));
-                    return (
-                      <div key={p.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%', width: '56px', gap: '6px' }}>
-                        <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#0F172A', whiteSpace: 'nowrap' }}>
-                          {formatMass(p.weightKg)}
-                        </span>
-                        <div
-                          style={{
-                            width: '100%',
-                            height: `${barHeightPct}%`,
-                            background: p.color,
-                            borderRadius: '8px 8px 0 0',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.06)',
-                            transition: 'height 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-                          }}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* X-Axis Labels */}
-                <div style={{ position: 'absolute', left: '46px', right: '12px', bottom: '0px', display: 'flex', justifyContent: 'space-around', paddingTop: '4px' }}>
-                  {plantMassData.map((p) => (
-                    <span key={p.name} style={{ width: '56px', textAlign: 'center', fontSize: '0.72rem', color: '#64748B', fontWeight: 600 }}>
-                      {p.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Chart 2: Packaging Material Composition (Donut Chart with Real Percentages & Weights) */}
-            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '300px' }}>
+            {/* Left Card (2/5 space): Packaging Material Composition (Donut Chart with 3 Uniform Colors from index.css) */}
+            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '320px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
                 <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
                   Packaging Material Composition
@@ -516,213 +431,213 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flex: 1 }}>
                 {/* SVG Circular Donut Chart with mathematically exact dynamic slices */}
-                <div style={{ position: 'relative', width: '130px', height: '130px', flexShrink: 0 }}>
+                <div style={{ position: 'relative', width: '140px', height: '140px', flexShrink: 0 }}>
                   <svg viewBox="0 0 42 42" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
                     <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#F1F5F9" strokeWidth="5.5" />
-                    {/* Corrugated Board */}
+                    {/* Cardboard Box */}
                     <circle
                       cx="21" cy="21" r="15.91549430918954"
                       fill="transparent"
-                      stroke="#10B981"
+                      stroke="var(--mat-cardboard)"
                       strokeWidth="5.5"
                       strokeDasharray={`${dynamicMetrics.cardboardStrokePct} ${100 - dynamicMetrics.cardboardStrokePct}`}
                       strokeDashoffset="0"
                     />
-                    {/* Plastic (LDPE/HDPE) */}
+                    {/* Plastics */}
                     <circle
                       cx="21" cy="21" r="15.91549430918954"
                       fill="transparent"
-                      stroke="#3B82F6"
+                      stroke="var(--mat-plastic)"
                       strokeWidth="5.5"
                       strokeDasharray={`${dynamicMetrics.plasticStrokePct} ${100 - dynamicMetrics.plasticStrokePct}`}
                       strokeDashoffset={`-${dynamicMetrics.cardboardStrokePct}`}
                     />
-                    {/* Paper */}
+                    {/* Cushioning */}
                     <circle
                       cx="21" cy="21" r="15.91549430918954"
                       fill="transparent"
-                      stroke="#F59E0B"
+                      stroke="var(--mat-cushioning)"
                       strokeWidth="5.5"
-                      strokeDasharray={`${dynamicMetrics.paperStrokePct} ${100 - dynamicMetrics.paperStrokePct}`}
+                      strokeDasharray={`${dynamicMetrics.cushioningStrokePct} ${100 - dynamicMetrics.cushioningStrokePct}`}
                       strokeDashoffset={`-${dynamicMetrics.cardboardStrokePct + dynamicMetrics.plasticStrokePct}`}
-                    />
-                    {/* Others */}
-                    <circle
-                      cx="21" cy="21" r="15.91549430918954"
-                      fill="transparent"
-                      stroke="#8B5CF6"
-                      strokeWidth="5.5"
-                      strokeDasharray={`${dynamicMetrics.otherStrokePct} ${100 - dynamicMetrics.otherStrokePct}`}
-                      strokeDashoffset={`-${dynamicMetrics.cardboardStrokePct + dynamicMetrics.plasticStrokePct + dynamicMetrics.paperStrokePct}`}
-                    />
-                    {/* Metal */}
-                    <circle
-                      cx="21" cy="21" r="15.91549430918954"
-                      fill="transparent"
-                      stroke="#94A3B8"
-                      strokeWidth="5.5"
-                      strokeDasharray={`${dynamicMetrics.metalStrokePct} ${100 - dynamicMetrics.metalStrokePct}`}
-                      strokeDashoffset={`-${dynamicMetrics.cardboardStrokePct + dynamicMetrics.plasticStrokePct + dynamicMetrics.paperStrokePct + dynamicMetrics.otherStrokePct}`}
                     />
                   </svg>
                   <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-                    <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono)' }}>
+                    <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono)' }}>
                       {formatMass(totalPackagingWeight)}
                     </span>
-                    <span style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 600 }}>Total</span>
+                    <span style={{ fontSize: '0.66rem', color: '#64748B', fontWeight: 600 }}>Total</span>
                   </div>
                 </div>
 
-                {/* Dynamic Legend List */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.72rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }} />
-                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Corrugated Board</span>
+                {/* Dynamic Legend List with 3 Uniform Material Colors from index.css */}
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.76rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--mat-cardboard)' }} />
+                      <span style={{ color: '#0F172A', fontWeight: 700 }}>Cardboard Box</span>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.cardboardStrokePct}%</span>
-                      <span style={{ color: '#64748B', marginLeft: '6px', fontSize: '0.68rem' }}>{formatMass(dynamicMetrics.cardboardMass)}</span>
+                      <span style={{ color: '#64748B', marginLeft: '6px', fontSize: '0.7rem' }}>{formatMass(dynamicMetrics.cardboardMass)}</span>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.72rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3B82F6' }} />
-                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Plastic (LDPE/HDPE)</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.76rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--mat-plastic)' }} />
+                      <span style={{ color: '#0F172A', fontWeight: 700 }}>Plastic</span>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.plasticStrokePct}%</span>
-                      <span style={{ color: '#64748B', marginLeft: '6px', fontSize: '0.68rem' }}>{formatMass(dynamicMetrics.plasticMass)}</span>
+                      <span style={{ color: '#64748B', marginLeft: '6px', fontSize: '0.7rem' }}>{formatMass(dynamicMetrics.plasticMass)}</span>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.72rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#F59E0B' }} />
-                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Paper</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.76rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--mat-cushioning)' }} />
+                      <span style={{ color: '#0F172A', fontWeight: 700 }}>Cushioning</span>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.paperStrokePct}%</span>
-                      <span style={{ color: '#64748B', marginLeft: '6px', fontSize: '0.68rem' }}>{formatMass(dynamicMetrics.paperMass)}</span>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.72rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#8B5CF6' }} />
-                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Others</span>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.otherStrokePct}%</span>
-                      <span style={{ color: '#64748B', marginLeft: '6px', fontSize: '0.68rem' }}>{formatMass(dynamicMetrics.otherMass)}</span>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.72rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#94A3B8' }} />
-                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Metal</span>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.metalStrokePct}%</span>
-                      <span style={{ color: '#64748B', marginLeft: '6px', fontSize: '0.68rem' }}>{formatMass(dynamicMetrics.metalMass)}</span>
+                      <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.cushioningStrokePct}%</span>
+                      <span style={{ color: '#64748B', marginLeft: '6px', fontSize: '0.7rem' }}>{formatMass(dynamicMetrics.cushioningMass)}</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Chart 3: Packaging Records Trend (Smooth Dynamic Area Spline) */}
-            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '300px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
-                  Packaging Records Trend
-                </h3>
-                <div
-                  onClick={() => setTrendPeriod(p => p === 'daily' ? 'weekly' : 'daily')}
-                  style={{ border: '1px solid #E2E8F0', borderRadius: '6px', padding: '3px 8px', fontSize: '0.72rem', color: '#64748B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
-                >
-                  <span>{trendPeriod === 'daily' ? 'Daily' : 'Weekly'}</span>
-                  <span style={{ fontSize: '0.65rem' }}>▼</span>
+            {/* Right Card (3/5 space): Packaging Mass by Plant (Bar Chart for all 10 factories with angled readable labels) */}
+            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '320px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <div>
+                  <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
+                    Packaging Mass by Plant
+                  </h3>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B' }}>10 Global manufacturing facilities</span>
+                </div>
+                <div style={{ display: 'inline-flex', background: '#F1F5F9', padding: '2px', borderRadius: '6px', fontSize: '0.72rem' }}>
+                  <button
+                    onClick={() => setMassUnit('kg')}
+                    style={{
+                      border: 'none',
+                      padding: '2px 8px',
+                      borderRadius: '4px',
+                      background: massUnit === 'kg' ? '#0F172A' : 'transparent',
+                      color: massUnit === 'kg' ? '#FFFFFF' : '#64748B',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    kg
+                  </button>
+                  <button
+                    onClick={() => setMassUnit('t')}
+                    style={{
+                      border: 'none',
+                      padding: '2px 8px',
+                      borderRadius: '4px',
+                      background: massUnit === 't' ? '#0F172A' : 'transparent',
+                      color: massUnit === 't' ? '#FFFFFF' : '#64748B',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    t
+                  </button>
                 </div>
               </div>
 
-              {/* Trend Chart with Y-Axis & Real-Time Dynamic SVG Curve */}
-              <div style={{ position: 'relative', height: '190px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                {/* Horizontal Grid lines with dynamic Y-Axis values */}
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', pointerEvents: 'none' }}>
-                  {trendData.yTicks.map((labelVal, idx) => (
+              {/* Bar Chart with Dynamic Y-Axis Gridlines & Angled Vertical Plant Labels */}
+              <div style={{ position: 'relative', height: '225px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                {/* Horizontal Grid lines */}
+                <div style={{ position: 'absolute', inset: 0, bottom: '48px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', pointerEvents: 'none' }}>
+                  {yAxisTicks.map((labelVal, idx) => (
                     <div key={idx} style={{ display: 'flex', alignItems: 'center', width: '100%', height: '1px' }}>
-                      <span style={{ width: '28px', fontSize: '0.66rem', color: '#94A3B8', textAlign: 'right', paddingRight: '6px' }}>
-                        {labelVal}
+                      <span style={{ width: '36px', fontSize: '0.62rem', color: '#94A3B8', textAlign: 'right', paddingRight: '6px' }}>
+                        {labelVal >= 1000 ? `${(labelVal / 1000).toFixed(massUnit === 't' ? 1 : 0)}${massUnit === 't' ? 'k' : ''}` : labelVal.toLocaleString()}
                       </span>
-                      <div style={{ flex: 1, borderBottom: idx === trendData.yTicks.length - 1 ? '1px solid #CBD5E1' : '1px dashed #F1F5F9' }} />
+                      <div style={{ flex: 1, borderBottom: idx === 5 ? '1px solid #CBD5E1' : '1px dashed #F1F5F9' }} />
                     </div>
                   ))}
                 </div>
 
-                {/* SVG Real Mathematical Area & Line Path */}
-                <div style={{ position: 'absolute', left: '32px', right: '10px', top: '10px', bottom: '26px' }}>
-                  <svg viewBox="0 0 320 140" preserveAspectRatio="none" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
-                    <defs>
-                      <linearGradient id="trendGreenGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10B981" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
+                {/* Bars Area */}
+                <div style={{ position: 'absolute', left: '42px', right: '12px', top: '10px', bottom: '48px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '8px' }}>
+                  {plantMassData.map((p) => {
+                    const barHeightPct = Math.min(100, Math.max(8, (p.weightKg / maxPlantMass) * 100));
+                    const displayMass = massUnit === 't'
+                      ? `${(p.weightKg / 1000).toFixed(1)}t`
+                      : (p.weightKg >= 1000 ? `${(p.weightKg / 1000).toFixed(1)}k` : `${Math.round(p.weightKg)}`);
 
-                    {/* Dynamic Area fill */}
-                    <path
-                      d={trendData.areaD}
-                      fill="url(#trendGreenGrad)"
-                    />
-                    {/* Dynamic Line stroke */}
-                    <path
-                      d={trendData.pathD}
-                      fill="none"
-                      stroke="#10B981"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    />
-
-                    {/* Active point indicator on latest record */}
-                    <circle cx={trendData.lastPoint.x} cy={trendData.lastPoint.y} r="4.5" fill="#10B981" stroke="#FFFFFF" strokeWidth="2" />
-                  </svg>
-
-                  {/* Dynamic Tooltip Overlay */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      right: '10px',
-                      top: '-6px',
-                      background: '#FFFFFF',
-                      border: '1px solid #E2E8F0',
-                      borderRadius: '8px',
-                      padding: '4px 10px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
-                      fontSize: '0.7rem',
-                      zIndex: 2
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 800, color: '#0F172A' }}>
-                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981' }} />
-                      <span>{trendData.totalRecords} records</span>
-                    </div>
-                    <div style={{ color: '#64748B', fontSize: '0.64rem', marginTop: '1px' }}>
-                      {trendData.latestDateLabel}
-                    </div>
-                  </div>
+                    return (
+                      <div
+                        key={p.name}
+                        title={`${p.fullName}: ${formatMass(p.weightKg)}`}
+                        style={{
+                          flex: 1,
+                          minWidth: 0,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'flex-end',
+                          height: '100%',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <span style={{ fontSize: '0.60rem', fontWeight: 800, color: '#0F172A', whiteSpace: 'nowrap', marginBottom: '4px', textAlign: 'center' }}>
+                          {displayMass}
+                        </span>
+                        <div
+                          style={{
+                            width: '100%',
+                            maxWidth: '26px',
+                            height: `${barHeightPct}%`,
+                            background: p.color,
+                            borderRadius: '4px 4px 0 0',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.06)',
+                            transition: 'height 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
 
-                {/* Dynamic X-Axis Labels from actual date buckets */}
-                <div style={{ position: 'absolute', left: '32px', right: '10px', bottom: '0px', display: 'flex', justifyContent: 'space-between', paddingTop: '4px' }}>
-                  {trendData.points.map((p) => (
-                    <span key={p.key} style={{ fontSize: '0.66rem', color: '#94A3B8', fontWeight: 600 }}>
-                      {p.label}
-                    </span>
+                {/* X-Axis Angled Labels for all 10 factories */}
+                <div style={{ position: 'absolute', left: '42px', right: '12px', bottom: '0px', height: '44px', display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
+                  {plantMassData.map((p) => (
+                    <div
+                      key={p.name}
+                      style={{
+                        flex: 1,
+                        minWidth: 0,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'flex-start',
+                        overflow: 'visible'
+                      }}
+                    >
+                      <span
+                        title={p.fullName}
+                        style={{
+                          display: 'inline-block',
+                          fontSize: '0.67rem',
+                          color: '#334155',
+                          fontWeight: 700,
+                          whiteSpace: 'nowrap',
+                          transform: 'rotate(-45deg)',
+                          transformOrigin: 'top left',
+                          marginLeft: '2px',
+                          marginTop: '6px'
+                        }}
+                      >
+                        {p.shortLabel}
+                      </span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -738,25 +653,78 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
                   Destination Market Distribution
                 </h3>
-                <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>
-                  Global Shipments
-                </span>
+                {/* Material Color Legend from index.css */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.68rem', fontWeight: 600 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: 'var(--mat-cardboard)' }} />
+                    <span style={{ color: '#64748B' }}>Cardboard Box</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: 'var(--mat-plastic)' }} />
+                    <span style={{ color: '#64748B' }}>Plastic</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: 'var(--mat-cushioning)' }} />
+                    <span style={{ color: '#64748B' }}>Cushioning</span>
+                  </div>
+                </div>
               </div>
               <p style={{ fontSize: '0.74rem', color: '#64748B', marginBottom: '1.15rem' }}>
-                Packaging mass exported to target regulatory compliance markets
+                Country-wise packaging materials exported to target regulatory compliance markets
               </p>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {marketShipments.map((m) => (
-                  <div key={m.country}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 700, marginBottom: '4px' }}>
-                      <span style={{ color: '#0F172A' }}>{m.country}</span>
-                      <span style={{ color: '#64748B', fontFamily: 'var(--font-mono)' }}>
-                        {formatMass(m.weight)} <span style={{ color: '#0F172A', fontWeight: 800 }}>({m.pct}%)</span>
+                  <div key={m.country} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', fontWeight: 700 }}>
+                      <span style={{ color: '#0F172A', fontWeight: 800 }}>{m.country}</span>
+                      <span style={{ color: '#0F172A', fontFamily: 'var(--font-mono)', fontWeight: 800 }}>
+                        {formatMass(m.weight)}
                       </span>
                     </div>
-                    <div style={{ height: '6px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
-                      <div style={{ width: `${m.pct}%`, height: '100%', background: 'var(--cummins-red)', borderRadius: '999px' }} />
+
+                    {/* Proportional Segmented Multi-Color Stacked Bar (Scaled to highest destination market) */}
+                    <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden', width: '100%' }}>
+                      <div
+                        style={{
+                          height: '100%',
+                          width: `${Math.max(4, Math.min(100, (m.weight / maxMarketWeight) * 100))}%`,
+                          display: 'flex',
+                          borderRadius: '999px',
+                          overflow: 'hidden',
+                          gap: '1px',
+                          transition: 'width 0.4s ease'
+                        }}
+                      >
+                        <div
+                          title={`Cardboard: ${formatMass(m.materials.cardboard)} (${m.materials.cardboardPct}%)`}
+                          style={{ width: `${m.materials.cardboardPct}%`, height: '100%', background: 'var(--mat-cardboard)', transition: 'width 0.4s ease' }}
+                        />
+                        <div
+                          title={`Plastics: ${formatMass(m.materials.plastic)} (${m.materials.plasticPct}%)`}
+                          style={{ width: `${m.materials.plasticPct}%`, height: '100%', background: 'var(--mat-plastic)', transition: 'width 0.4s ease' }}
+                        />
+                        <div
+                          title={`Cushioning: ${formatMass(m.materials.cushioning)} (${m.materials.cushioningPct}%)`}
+                          style={{ width: `${m.materials.cushioningPct}%`, height: '100%', background: 'var(--mat-cushioning)', transition: 'width 0.4s ease' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Country-wise Material Breakdown Chips under the bar */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '14px', fontSize: '0.67rem', color: '#64748B', paddingTop: '1px' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--mat-cardboard)' }} />
+                        Cardboard: <b style={{ color: '#0F172A', fontWeight: 700 }}>{formatMass(m.materials.cardboard)}</b>
+                      </span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--mat-plastic)' }} />
+                        Plastic: <b style={{ color: '#0F172A', fontWeight: 700 }}>{formatMass(m.materials.plastic)}</b>
+                      </span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--mat-cushioning)' }} />
+                        Cushioning: <b style={{ color: '#0F172A', fontWeight: 700 }}>{formatMass(m.materials.cushioning)}</b>
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -777,11 +745,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
                 {recentRecords.slice(0, 5).map((rec) => {
-                  const plantColor = rec.plantId === 'PLANT-DARLINGTON'
-                    ? { bg: '#EFF6FF', text: '#1D4ED8', border: '#DBEAFE' }
-                    : rec.plantId === 'PLANT-COLUMBUS'
-                      ? { bg: '#ECFDF5', text: '#047857', border: '#D1FAE5' }
-                      : { bg: '#FAF5FF', text: '#6D28D9', border: '#EDE9FE' };
+                  const plantColor = { bg: '#F8FAFC', text: '#0F172A', border: '#E2E8F0' };
 
                   return (
                     <div
@@ -800,7 +764,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         transition: 'all 0.15s ease'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = 'var(--cummins-red)';
+                        e.currentTarget.style.borderColor = '#0F172A';
                         e.currentTarget.style.background = '#F8FAFC';
                       }}
                       onMouseLeave={(e) => {
@@ -839,7 +803,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </span>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--cummins-red)', fontFamily: 'var(--font-mono)' }}>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono)' }}>
                           {(rec.perUnitPackagingWeightKg * 1000).toFixed(0)} g
                         </span>
                       </div>
@@ -875,37 +839,32 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div style={{ position: 'relative', width: '120px', height: '120px', flexShrink: 0 }}>
                   <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
                     <circle cx="18" cy="18" r="14" fill="transparent" stroke="#F1F5F9" strokeWidth="4.5" />
+                    {/* Cardboard Box */}
                     <circle
                       cx="18" cy="18" r="14"
                       fill="transparent"
-                      stroke="#0284C7"
+                      stroke="var(--mat-cardboard)"
                       strokeWidth="4.5"
                       strokeDasharray={`${dynamicMetrics.cardboardStrokePct} 100`}
                       strokeDashoffset="0"
                     />
+                    {/* Plastics */}
                     <circle
                       cx="18" cy="18" r="14"
                       fill="transparent"
-                      stroke="#7C3AED"
+                      stroke="var(--mat-plastic)"
                       strokeWidth="4.5"
                       strokeDasharray={`${dynamicMetrics.plasticStrokePct} 100`}
                       strokeDashoffset={`-${dynamicMetrics.cardboardStrokePct}`}
                     />
+                    {/* Cushioning */}
                     <circle
                       cx="18" cy="18" r="14"
                       fill="transparent"
-                      stroke="#F59E0B"
+                      stroke="var(--mat-cushioning)"
                       strokeWidth="4.5"
-                      strokeDasharray={`${dynamicMetrics.paperStrokePct} 100`}
+                      strokeDasharray={`${dynamicMetrics.cushioningStrokePct} 100`}
                       strokeDashoffset={`-${dynamicMetrics.cardboardStrokePct + dynamicMetrics.plasticStrokePct}`}
-                    />
-                    <circle
-                      cx="18" cy="18" r="14"
-                      fill="transparent"
-                      stroke="#94A3B8"
-                      strokeWidth="4.5"
-                      strokeDasharray={`${dynamicMetrics.otherStrokePct} 100`}
-                      strokeDashoffset={`-${dynamicMetrics.cardboardStrokePct + dynamicMetrics.plasticStrokePct + dynamicMetrics.paperStrokePct}`}
                     />
                   </svg>
                   <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
@@ -916,37 +875,29 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </div>
                 </div>
 
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.74rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0284C7' }} />
-                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Corrugated Board</span>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--mat-cardboard)' }} />
+                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Cardboard Box</span>
                     </div>
                     <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.cardboardPctStr}</span>
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.74rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#7C3AED' }} />
-                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Plastics (LDPE/EPS)</span>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--mat-plastic)' }} />
+                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Plastic</span>
                     </div>
                     <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.plasticPctStr}</span>
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.74rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#F59E0B' }} />
-                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Paper Cushioning</span>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--mat-cushioning)' }} />
+                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Cushioning</span>
                     </div>
-                    <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.paperPctStr}</span>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.74rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#94A3B8' }} />
-                      <span style={{ color: '#0F172A', fontWeight: 600 }}>Tape & Others</span>
-                    </div>
-                    <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.otherPctStr}</span>
+                    <span style={{ fontWeight: 800, color: '#0F172A' }}>{dynamicMetrics.cushioningPctStr}</span>
                   </div>
                 </div>
               </div>
@@ -958,25 +909,78 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
                   Destination Market Distribution
                 </h3>
-                <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>
-                  {activePlant.name.replace('Cummins ', '')} Shipments
-                </span>
+                {/* Material Color Legend */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.66rem', fontWeight: 600 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                    <span style={{ width: '7px', height: '7px', borderRadius: '2px', background: 'var(--mat-cardboard)' }} />
+                    <span style={{ color: '#64748B' }}>Cardboard Box</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                    <span style={{ width: '7px', height: '7px', borderRadius: '2px', background: 'var(--mat-plastic)' }} />
+                    <span style={{ color: '#64748B' }}>Plastic</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                    <span style={{ width: '7px', height: '7px', borderRadius: '2px', background: 'var(--mat-cushioning)' }} />
+                    <span style={{ color: '#64748B' }}>Cushioning</span>
+                  </div>
+                </div>
               </div>
               <p style={{ fontSize: '0.74rem', color: '#64748B', marginBottom: '1.15rem' }}>
-                Shipments logged to target compliance markets
+                {activePlant.name.replace('Cummins ', '')} material shipments to target markets
               </p>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {marketShipments.map((m) => (
-                  <div key={m.country}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 700, marginBottom: '4px' }}>
-                      <span style={{ color: '#0F172A' }}>{m.country}</span>
-                      <span style={{ color: '#64748B', fontFamily: 'var(--font-mono)' }}>
-                        {formatMass(m.weight)} <span style={{ color: '#0F172A', fontWeight: 800 }}>({m.pct}%)</span>
+                  <div key={m.country} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', fontWeight: 700 }}>
+                      <span style={{ color: '#0F172A', fontWeight: 800 }}>{m.country}</span>
+                      <span style={{ color: '#0F172A', fontFamily: 'var(--font-mono)', fontWeight: 800 }}>
+                        {formatMass(m.weight)}
                       </span>
                     </div>
-                    <div style={{ height: '6px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden' }}>
-                      <div style={{ width: `${m.pct}%`, height: '100%', background: 'var(--cummins-red)', borderRadius: '999px' }} />
+
+                    {/* Proportional Segmented Multi-Color Stacked Bar (Scaled to highest destination market) */}
+                    <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '999px', overflow: 'hidden', width: '100%' }}>
+                      <div
+                        style={{
+                          height: '100%',
+                          width: `${Math.max(4, Math.min(100, (m.weight / maxMarketWeight) * 100))}%`,
+                          display: 'flex',
+                          borderRadius: '999px',
+                          overflow: 'hidden',
+                          gap: '1px',
+                          transition: 'width 0.4s ease'
+                        }}
+                      >
+                        <div
+                          title={`Cardboard: ${formatMass(m.materials.cardboard)} (${m.materials.cardboardPct}%)`}
+                          style={{ width: `${m.materials.cardboardPct}%`, height: '100%', background: 'var(--mat-cardboard)', transition: 'width 0.4s ease' }}
+                        />
+                        <div
+                          title={`Plastics: ${formatMass(m.materials.plastic)} (${m.materials.plasticPct}%)`}
+                          style={{ width: `${m.materials.plasticPct}%`, height: '100%', background: 'var(--mat-plastic)', transition: 'width 0.4s ease' }}
+                        />
+                        <div
+                          title={`Cushioning: ${formatMass(m.materials.cushioning)} (${m.materials.cushioningPct}%)`}
+                          style={{ width: `${m.materials.cushioningPct}%`, height: '100%', background: 'var(--mat-cushioning)', transition: 'width 0.4s ease' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Country-wise Material Breakdown Chips */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '12px', fontSize: '0.67rem', color: '#64748B', paddingTop: '1px' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--mat-cardboard)' }} />
+                        Cardboard: <b style={{ color: '#0F172A', fontWeight: 700 }}>{formatMass(m.materials.cardboard)}</b>
+                      </span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--mat-plastic)' }} />
+                        Plastic: <b style={{ color: '#0F172A', fontWeight: 700 }}>{formatMass(m.materials.plastic)}</b>
+                      </span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--mat-cushioning)' }} />
+                        Cushioning: <b style={{ color: '#0F172A', fontWeight: 700 }}>{formatMass(m.materials.cushioning)}</b>
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -1004,11 +1008,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
               {recentRecords.map((rec) => {
-                const plantColor = rec.plantId === 'PLANT-DARLINGTON' 
-                  ? { bg: '#EFF6FF', text: '#1D4ED8', border: '#DBEAFE' } 
-                  : rec.plantId === 'PLANT-COLUMBUS' 
-                  ? { bg: '#ECFDF5', text: '#047857', border: '#D1FAE5' } 
-                  : { bg: '#FAF5FF', text: '#6D28D9', border: '#EDE9FE' };
+                const plantColor = { bg: '#F8FAFC', text: '#0F172A', border: '#E2E8F0' };
 
                 return (
                   <div
@@ -1027,7 +1027,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       transition: 'all 0.15s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--cummins-red)';
+                      e.currentTarget.style.borderColor = '#0F172A';
                       e.currentTarget.style.background = '#F8FAFC';
                     }}
                     onMouseLeave={(e) => {
@@ -1059,7 +1059,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     </div>
 
                     <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--cummins-red)', fontFamily: 'var(--font-mono)' }}>
+                      <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono)' }}>
                         {(rec.perUnitPackagingWeightKg * 1000).toFixed(0)} g/unit
                       </span>
                     </div>
@@ -1072,9 +1072,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           borderRadius: '999px',
                           fontSize: '0.68rem',
                           fontWeight: 700,
-                          background: '#ECFDF5',
-                          color: '#059669',
-                          border: '1px solid #A7F3D0'
+                          background: '#F8FAFC',
+                          color: '#0F172A',
+                          border: '1px solid #E2E8F0'
                         }}
                       >
                         {rec.status}

@@ -3,11 +3,7 @@ import {
   Calculator, 
   ArrowRight, 
   Sparkles, 
-  Cpu, 
-  CheckCircle2, 
-  Info,
-  Layers,
-  ChevronRight
+  Cpu
 } from 'lucide-react';
 import { Product, PackagingLineItem, PackagingMaterialMaster, CUMMINS_DESTINATION_COUNTRIES } from '../../types';
 import { calculationEngine } from '../../services/calculationEngine';
@@ -83,7 +79,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
           borderRadius: '10px',
           padding: '1rem 1.25rem',
           border: '1px solid #E2E8F0',
-          borderLeft: '4px solid #7C3AED',
+          borderLeft: '4px solid #DA291C',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -94,7 +90,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
       >
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#7C3AED', background: '#FAF5FF', padding: '2px 7px', borderRadius: '4px', border: '1px solid #DDD6FE' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#0F172A', background: '#F1F5F9', padding: '2px 7px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
               {selectedProduct.sku}
             </span>
             <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
@@ -109,9 +105,9 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span 
             style={{ 
-              background: '#FAF5FF', 
-              color: '#7C3AED', 
-              border: '1px solid #DDD6FE', 
+              background: '#F1F5F9', 
+              color: '#0F172A', 
+              border: '1px solid #E2E8F0', 
               padding: '3px 8px', 
               borderRadius: '6px', 
               fontSize: '0.72rem', 
@@ -120,9 +116,8 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
               alignItems: 'center',
               gap: '4px'
             }}
-            data-tooltip="Rule engine computes recommended packaging BOM in real-time"
           >
-            <Sparkles size={12} color="#7C3AED" />
+            <Sparkles size={12} color="#0F172A" />
             Auto Computed
           </span>
         </div>
@@ -147,7 +142,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
               products={MOCK_PRODUCTS}
               selectedProduct={selectedProduct}
               onSelectProduct={(p) => setSelectedProduct(p)}
-              accentColor="#7C3AED"
+              accentColor="#DA291C"
             />
           </div>
 
@@ -221,7 +216,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
       >
         <div style={{ padding: '0.85rem 1.25rem', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Cpu size={15} color="#7C3AED" />
+            <Cpu size={15} color="#0F172A" />
             <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Rule-Determined Packaging BOM
             </h3>
@@ -238,8 +233,8 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
                 <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Material</th>
                 <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Category</th>
                 <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Unit Allocation</th>
-                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#7C3AED', textTransform: 'uppercase', textAlign: 'right' }}>Per-Unit Mass</th>
-                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase', textAlign: 'right' }}>Batch Mass</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', textAlign: 'right' }}>Per-Unit Mass</th>
+                <th style={{ padding: '9px 12px', fontSize: '0.7rem', fontWeight: 700, color: '#DA291C', textTransform: 'uppercase', textAlign: 'right' }}>Batch Mass</th>
               </tr>
             </thead>
             <tbody>
@@ -266,7 +261,7 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
                     <td style={{ padding: '10px 12px', fontWeight: 600, color: '#334155', fontSize: '0.8rem' }}>
                       {item.unit === 'pcs' ? '1 pc' : `${(item.quantity / productQuantity).toFixed(2)} ${item.unit}`}
                     </td>
-                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#7C3AED', fontFamily: 'var(--font-mono)', fontSize: '0.84rem' }}>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#475569', fontFamily: 'var(--font-mono)', fontSize: '0.84rem' }}>
                       {perUnitWeightGrams.toFixed(0)} g
                     </td>
                     <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono)', fontSize: '0.84rem' }}>
@@ -277,14 +272,14 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
               })}
             </tbody>
             <tfoot>
-              <tr style={{ background: '#FAF5FF', borderTop: '2px solid #DDD6FE' }}>
-                <td colSpan={3} style={{ padding: '10px 12px', fontWeight: 800, color: '#6D28D9', fontSize: '0.84rem' }}>
+              <tr style={{ background: '#F8FAFC', borderTop: '2px solid #CBD5E1' }}>
+                <td colSpan={3} style={{ padding: '10px 12px', fontWeight: 800, color: '#0F172A', fontSize: '0.84rem' }}>
                   Total Batch Packaging Mass
                 </td>
-                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#7C3AED', fontSize: '0.92rem', fontFamily: 'var(--font-mono)' }}>
+                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#475569', fontSize: '0.92rem', fontFamily: 'var(--font-mono)' }}>
                   {perUnitGrams.toFixed(0)} g / unit
                 </td>
-                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#6D28D9', fontSize: '0.92rem', fontFamily: 'var(--font-mono)' }}>
+                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 900, color: '#DA291C', fontSize: '0.92rem', fontFamily: 'var(--font-mono)' }}>
                   {totalBatchWeightKg.toFixed(2)} kg
                 </td>
               </tr>
@@ -294,12 +289,12 @@ export const ApproachCalculated: React.FC<ApproachCalculatedProps> = ({
           {/* Minimal Formula Strip */}
           <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '8px 12px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Calculator size={14} color="#7C3AED" />
+              <Calculator size={14} color="#0F172A" />
               <span style={{ fontSize: '0.75rem', color: '#475569' }}>
                 {ruleExplanations[0] || 'Top-down algorithm matched CAD envelope.'}
               </span>
             </div>
-            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#7C3AED' }}>
+            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#0F172A' }}>
               ✓ Auto Verified
             </span>
           </div>

@@ -9,7 +9,7 @@ import {
 } from '../types';
 import { INITIAL_PACKAGING_RECORDS, MOCK_PACKAGING_INVENTORY } from '../data/mockData';
 
-const STORAGE_KEY = 'cummins_ppwr_packaging_records_v4';
+const STORAGE_KEY = 'cummins_ppwr_packaging_records_v5';
 
 class RecordsService {
   private records: PackagingRecord[] = [];
@@ -22,7 +22,13 @@ class RecordsService {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        this.records = JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length >= INITIAL_PACKAGING_RECORDS.length) {
+          this.records = parsed;
+        } else {
+          this.records = [...INITIAL_PACKAGING_RECORDS];
+          this.saveToStorage();
+        }
       } else {
         this.records = [...INITIAL_PACKAGING_RECORDS];
         this.saveToStorage();

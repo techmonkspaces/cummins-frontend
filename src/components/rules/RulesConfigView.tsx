@@ -7,14 +7,9 @@ import {
   Building2, 
   Package, 
   Tag, 
-  Cpu, 
-  ArrowRight,
-  ShieldAlert,
-  Info,
-  Play,
-  RotateCcw
+  Cpu
 } from 'lucide-react';
-import { MOCK_RULES, MOCK_PRODUCTS, MOCK_PACKAGING_INVENTORY } from '../../data/mockData';
+import { MOCK_RULES, MOCK_PRODUCTS } from '../../data/mockData';
 import { calculationEngine } from '../../services/calculationEngine';
 import { Product } from '../../types';
 
@@ -25,7 +20,7 @@ export const RulesConfigView: React.FC = () => {
   const [simProduct, setSimProduct] = useState<Product>(MOCK_PRODUCTS[0]);
   const [simWeightKg, setSimWeightKg] = useState<number>(MOCK_PRODUCTS[0].weightKg);
   const [simFragility, setSimFragility] = useState<'Low' | 'Medium' | 'High' | 'Heavy Duty'>(MOCK_PRODUCTS[0].fragility);
-  const [simQuantity, setSimQuantity] = useState<number>(1);
+  const [simQuantity] = useState<number>(1);
 
   // Dynamic Rule Execution on Simulator
   const tempSimProduct: Product = {
@@ -54,7 +49,7 @@ export const RulesConfigView: React.FC = () => {
       >
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <div style={{ background: '#FAF5FF', color: '#7C3AED', padding: '5px', borderRadius: '6px' }}>
+            <div style={{ background: '#FFF5F5', color: '#DA291C', padding: '5px', borderRadius: '6px', border: '1px solid #FECACA' }}>
               <Sliders size={20} />
             </div>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A' }}>
@@ -67,14 +62,14 @@ export const RulesConfigView: React.FC = () => {
         </div>
 
         <div style={{ background: '#F8FAFC', padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.75rem', color: '#64748B' }}>
-          <strong>Engine Engine Status:</strong> <span style={{ color: '#059669', fontWeight: 700 }}>● Live & Active</span>
+          <strong>Engine Status:</strong> <span style={{ color: '#0F172A', fontWeight: 700 }}>● Live & Active</span>
         </div>
       </div>
 
       {/* 4-Tier Hierarchy Architecture Card */}
       <div 
         style={{
-          background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+          background: '#0F172A',
           borderRadius: '14px',
           padding: '1.5rem',
           color: '#FFFFFF',
@@ -83,7 +78,7 @@ export const RulesConfigView: React.FC = () => {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-          <Sparkles size={18} color="#FBBF24" />
+          <Sparkles size={18} color="#DA291C" />
           <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF' }}>
             Why This 4-Tier Architecture Scales Globally
           </h2>
@@ -93,8 +88,8 @@ export const RulesConfigView: React.FC = () => {
           {/* Tier 1 */}
           <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '1rem', border: '1px solid rgba(255,255,255,0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-              <span style={{ background: '#0284C7', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>TIER 1</span>
-              <Building2 size={15} color="#38BDF8" />
+              <span style={{ background: '#DA291C', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>TIER 1</span>
+              <Building2 size={15} color="#94A3B8" />
             </div>
             <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#F8FAFC' }}>Factory Rules</div>
             <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '4px', lineHeight: 1.4 }}>
@@ -105,8 +100,8 @@ export const RulesConfigView: React.FC = () => {
           {/* Tier 2 */}
           <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '1rem', border: '1px solid rgba(255,255,255,0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-              <span style={{ background: '#7C3AED', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>TIER 2</span>
-              <Package size={15} color="#C084FC" />
+              <span style={{ background: '#334155', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>TIER 2</span>
+              <Package size={15} color="#94A3B8" />
             </div>
             <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#F8FAFC' }}>Product Class Rules</div>
             <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '4px', lineHeight: 1.4 }}>
@@ -117,8 +112,8 @@ export const RulesConfigView: React.FC = () => {
           {/* Tier 3 */}
           <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '1rem', border: '1px solid rgba(255,255,255,0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-              <span style={{ background: '#059669', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>TIER 3</span>
-              <Layers size={15} color="#34D399" />
+              <span style={{ background: '#475569', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>TIER 3</span>
+              <Layers size={15} color="#94A3B8" />
             </div>
             <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#F8FAFC' }}>Material Master Limits</div>
             <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '4px', lineHeight: 1.4 }}>
@@ -129,8 +124,8 @@ export const RulesConfigView: React.FC = () => {
           {/* Tier 4 */}
           <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '1rem', border: '1px solid rgba(255,255,255,0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-              <span style={{ background: '#DA291C', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>TIER 4</span>
-              <Tag size={15} color="#F87171" />
+              <span style={{ background: '#64748B', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>TIER 4</span>
+              <Tag size={15} color="#94A3B8" />
             </div>
             <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#F8FAFC' }}>SKU Overrides</div>
             <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '4px', lineHeight: 1.4 }}>
@@ -163,8 +158,8 @@ export const RulesConfigView: React.FC = () => {
                     fontSize: '0.72rem',
                     fontWeight: 700,
                     cursor: 'pointer',
-                    background: selectedCategory === cat ? '#FFFFFF' : 'transparent',
-                    color: selectedCategory === cat ? '#0F172A' : '#64748B',
+                    background: selectedCategory === cat ? '#0F172A' : 'transparent',
+                    color: selectedCategory === cat ? '#FFFFFF' : '#64748B',
                     boxShadow: selectedCategory === cat ? '0 1px 2px rgba(0,0,0,0.05)' : 'none'
                   }}
                 >
@@ -176,16 +171,6 @@ export const RulesConfigView: React.FC = () => {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {filteredRules.map((rule) => {
-              const badgeColor = 
-                rule.category === 'FACTORY' ? '#0284C7' :
-                rule.category === 'PRODUCT_CLASS' ? '#7C3AED' :
-                rule.category === 'MATERIAL' ? '#059669' : '#DA291C';
-
-              const badgeBg = 
-                rule.category === 'FACTORY' ? '#F0F9FF' :
-                rule.category === 'PRODUCT_CLASS' ? '#FAF5FF' :
-                rule.category === 'MATERIAL' ? '#ECFDF5' : '#FEE2E2';
-
               return (
                 <div 
                   key={rule.id}
@@ -199,7 +184,7 @@ export const RulesConfigView: React.FC = () => {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '0.68rem', fontWeight: 800, color: badgeColor, background: badgeBg, padding: '2px 7px', borderRadius: '4px', border: `1px solid ${badgeColor}30` }}>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#0F172A', background: '#F1F5F9', padding: '2px 7px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
                         {rule.category.replace('_', ' ')}
                       </span>
                       <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0F172A' }}>
@@ -220,7 +205,7 @@ export const RulesConfigView: React.FC = () => {
                       <strong style={{ color: '#0F172A' }}>Condition:</strong> <span style={{ color: '#64748B' }}>{rule.condition}</span>
                     </div>
                     <div>
-                      <strong style={{ color: '#059669' }}>Applied Action:</strong> <span style={{ color: '#334155' }}>{rule.action}</span>
+                      <strong style={{ color: '#0F172A' }}>Applied Action:</strong> <span style={{ color: '#334155' }}>{rule.action}</span>
                     </div>
                   </div>
                 </div>
@@ -244,12 +229,12 @@ export const RulesConfigView: React.FC = () => {
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #E2E8F0', paddingBottom: '0.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Cpu size={18} color="#7C3AED" />
+              <Cpu size={18} color="#0F172A" />
               <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0F172A' }}>
                 Live Rule Simulator
               </h3>
             </div>
-            <span style={{ fontSize: '0.7rem', color: '#7C3AED', background: '#FAF5FF', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
+            <span style={{ fontSize: '0.7rem', color: '#0F172A', background: '#F1F5F9', padding: '2px 6px', borderRadius: '4px', fontWeight: 700, border: '1px solid #CBD5E1' }}>
               Approach B Engine
             </span>
           </div>
@@ -286,7 +271,7 @@ export const RulesConfigView: React.FC = () => {
                   step="0.5"
                   value={simWeightKg}
                   onChange={(e) => setSimWeightKg(parseFloat(e.target.value))}
-                  style={{ width: '100%', accentColor: '#7C3AED' }}
+                  style={{ width: '100%', accentColor: '#DA291C' }}
                 />
               </div>
 
@@ -308,8 +293,8 @@ export const RulesConfigView: React.FC = () => {
           </div>
 
           {/* Engine Output Box */}
-          <div style={{ background: '#FAF5FF', padding: '1rem', borderRadius: '10px', border: '1px solid #DDD6FE' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#7C3AED', textTransform: 'uppercase', marginBottom: '8px' }}>
+          <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', marginBottom: '8px' }}>
               Generated Packaging Recipe (BOM)
             </div>
 
@@ -322,7 +307,7 @@ export const RulesConfigView: React.FC = () => {
               ))}
             </div>
 
-            <div style={{ borderTop: '1px dashed #DDD6FE', marginTop: '10px', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 800, color: '#7C3AED' }}>
+            <div style={{ borderTop: '1px dashed #CBD5E1', marginTop: '10px', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 800, color: '#DA291C' }}>
               <span>Total Calculated Mass:</span>
               <span>{(simulationResult.perUnitTotalWeightKg * 1000).toFixed(0)} g / unit</span>
             </div>
@@ -335,7 +320,7 @@ export const RulesConfigView: React.FC = () => {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
               {simulationResult.ruleExplanations.map((exp, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '0.75rem', color: '#059669' }}>
+                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '0.75rem', color: '#0F172A' }}>
                   <CheckCircle2 size={13} style={{ flexShrink: 0, marginTop: '2px' }} />
                   <span>{exp}</span>
                 </div>

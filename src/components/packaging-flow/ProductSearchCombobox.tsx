@@ -13,7 +13,7 @@ export const ProductSearchCombobox: React.FC<ProductSearchComboboxProps> = ({
   products,
   selectedProduct,
   onSelectProduct,
-  accentColor = '#0284C7'
+  accentColor = '#DA291C'
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');

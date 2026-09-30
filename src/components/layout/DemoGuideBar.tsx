@@ -54,7 +54,7 @@ export const DemoGuideBar: React.FC<DemoGuideBarProps> = ({
                 title={s.shortDesc}
               >
                 {isPast ? (
-                  <CheckCircle2 size={12} color="#10B981" />
+                  <CheckCircle2 size={12} color="#0F172A" />
                 ) : (
                   <span className="demo-step-num">{s.step}</span>
                 )}

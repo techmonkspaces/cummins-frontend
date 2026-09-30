@@ -8,9 +8,7 @@ import {
   CheckCircle2, 
   UserPlus, 
   Filter,
-  ArrowRight,
-  ExternalLink,
-  Lock
+  ArrowRight
 } from 'lucide-react';
 import { MOCK_USERS_LIST, MOCK_PERSONAS } from '../../data/mockData';
 import { UserPersona } from '../../types';
@@ -47,7 +45,7 @@ export const UsersListView: React.FC<UsersListViewProps> = ({ onImpersonateUser 
       >
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <div style={{ background: '#FEE2E2', color: '#DA291C', padding: '5px', borderRadius: '6px' }}>
+            <div style={{ background: '#FFF5F5', color: '#DA291C', padding: '5px', borderRadius: '6px', border: '1px solid #FECACA' }}>
               <Users size={20} />
             </div>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A' }}>
@@ -75,7 +73,7 @@ export const UsersListView: React.FC<UsersListViewProps> = ({ onImpersonateUser 
         <div style={{ background: '#FFFFFF', padding: '1.25rem', borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Total Active Users</span>
-            <Crown size={18} color="#F59E0B" />
+            <Crown size={18} color="#0F172A" />
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
             54 <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#64748B' }}>Across 3 Sites</span>
@@ -95,9 +93,9 @@ export const UsersListView: React.FC<UsersListViewProps> = ({ onImpersonateUser 
         <div style={{ background: '#FFFFFF', padding: '1.25rem', borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Factory Users</span>
-            <Building2 size={18} color="#0284C7" />
+            <Building2 size={18} color="#0F172A" />
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0284C7', marginTop: '6px' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0F172A', marginTop: '6px' }}>
             53 <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#64748B' }}>Plant Restricted</span>
           </div>
         </div>
@@ -184,7 +182,7 @@ export const UsersListView: React.FC<UsersListViewProps> = ({ onImpersonateUser 
                           width: '34px',
                           height: '34px',
                           borderRadius: '8px',
-                          background: isSuper ? '#DA291C' : '#0284C7',
+                          background: isSuper ? '#DA291C' : '#0F172A',
                           color: '#FFFFFF',
                           display: 'flex',
                           alignItems: 'center',
@@ -212,9 +210,9 @@ export const UsersListView: React.FC<UsersListViewProps> = ({ onImpersonateUser 
                         borderRadius: '6px',
                         fontSize: '0.75rem',
                         fontWeight: 700,
-                        background: isSuper ? '#FEE2E2' : '#F0F9FF',
-                        color: isSuper ? '#DA291C' : '#0284C7',
-                        border: isSuper ? '1px solid #FECACA' : '1px solid #BAE6FD'
+                        background: isSuper ? '#FFF5F5' : '#F1F5F9',
+                        color: isSuper ? '#DA291C' : '#0F172A',
+                        border: isSuper ? '1px solid #FECACA' : '1px solid #CBD5E1'
                       }}
                     >
                       {isSuper ? <Crown size={12} /> : <Building2 size={12} />}
@@ -226,7 +224,7 @@ export const UsersListView: React.FC<UsersListViewProps> = ({ onImpersonateUser 
                     <span 
                       style={{
                         fontWeight: 600,
-                        color: isSuper ? '#059669' : '#0F172A',
+                        color: '#0F172A',
                         fontSize: '0.85rem'
                       }}
                     >
@@ -246,10 +244,11 @@ export const UsersListView: React.FC<UsersListViewProps> = ({ onImpersonateUser 
                         gap: '4px',
                         fontSize: '0.75rem',
                         fontWeight: 600,
-                        color: '#059669',
-                        background: '#ECFDF5',
+                        color: '#0F172A',
+                        background: '#F1F5F9',
                         padding: '2px 8px',
-                        borderRadius: '999px'
+                        borderRadius: '999px',
+                        border: '1px solid #E2E8F0'
                       }}
                     >
                       <CheckCircle2 size={12} /> Active

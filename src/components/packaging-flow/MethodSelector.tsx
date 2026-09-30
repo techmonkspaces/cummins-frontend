@@ -76,7 +76,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
         >
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-              <div style={{ padding: '10px', borderRadius: '10px', background: '#F0F9FF', color: '#0284C7', border: '1px solid #BAE6FD' }}>
+              <div style={{ padding: '10px', borderRadius: '10px', background: '#F8FAFC', color: '#0F172A', border: '1px solid #E2E8F0' }}>
                 <Database size={24} />
               </div>
               <span className="badge badge-inventory">Approach A</span>
@@ -90,7 +90,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
             </p>
 
             <div style={{ background: '#F8FAFC', padding: '0.85rem', borderRadius: '8px', border: '1px solid #E2E8F0', marginBottom: '1rem' }}>
-              <div style={{ fontSize: '0.72rem', color: '#0284C7', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+              <div style={{ fontSize: '0.72rem', color: '#0F172A', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
                 Batch Allocation Model:
               </div>
               <div className="font-mono text-xs" style={{ color: '#334155', lineHeight: 1.6 }}>
@@ -98,7 +98,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
                 <div>• 500 kg Cardboard consumed</div>
                 <div>• 80 kg Cushioning consumed</div>
                 <div>• 20 kg Tape consumed</div>
-                <div style={{ color: '#0284C7', fontWeight: 700, marginTop: '4px', borderTop: '1px dashed #CBD5E1', paddingTop: '4px' }}>
+                <div style={{ color: '#0F172A', fontWeight: 700, marginTop: '4px', borderTop: '1px dashed #CBD5E1', paddingTop: '4px' }}>
                   → 500kg ÷ 1000 = <strong>0.50 kg/unit</strong>
                 </div>
               </div>
@@ -109,7 +109,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
             <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
               Best for monthly/weekly runs
             </span>
-            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: selectedMethod === 'INVENTORY' ? '#0284C7' : '#F1F5F9', border: selectedMethod === 'INVENTORY' ? 'none' : '1px solid #CBD5E1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: selectedMethod === 'INVENTORY' ? '#DA291C' : '#F1F5F9', border: selectedMethod === 'INVENTORY' ? 'none' : '1px solid #CBD5E1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
               {selectedMethod === 'INVENTORY' && <Check size={14} strokeWidth={3} />}
             </div>
           </div>
@@ -122,7 +122,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
         >
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-              <div style={{ padding: '10px', borderRadius: '10px', background: '#FAF5FF', color: '#7C3AED', border: '1px solid #DDD6FE' }}>
+              <div style={{ padding: '10px', borderRadius: '10px', background: '#F8FAFC', color: '#0F172A', border: '1px solid #E2E8F0' }}>
                 <Calculator size={24} />
               </div>
               <span className="badge badge-calculated">Approach B</span>
@@ -136,7 +136,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
             </p>
 
             <div style={{ background: '#F8FAFC', padding: '0.85rem', borderRadius: '8px', border: '1px solid #E2E8F0', marginBottom: '1rem' }}>
-              <div style={{ fontSize: '0.72rem', color: '#7C3AED', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+              <div style={{ fontSize: '0.72rem', color: '#0F172A', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
                 Rule Engine Estimation:
               </div>
               <div className="font-mono text-xs" style={{ color: '#334155', lineHeight: 1.6 }}>
@@ -144,7 +144,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
                 <div>• Paper Cushioning: 120 g</div>
                 <div>• Thermocol/EPS: 80 g</div>
                 <div>• Packaging Tape: 25 g</div>
-                <div style={{ color: '#7C3AED', fontWeight: 700, marginTop: '4px', borderTop: '1px dashed #CBD5E1', paddingTop: '4px' }}>
+                <div style={{ color: '#0F172A', fontWeight: 700, marginTop: '4px', borderTop: '1px dashed #CBD5E1', paddingTop: '4px' }}>
                   → Live rule-engine recommendation
                 </div>
               </div>
@@ -155,7 +155,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
             <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
               Editable before confirmation
             </span>
-            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: selectedMethod === 'CALCULATED' ? '#7C3AED' : '#F1F5F9', border: selectedMethod === 'CALCULATED' ? 'none' : '1px solid #CBD5E1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: selectedMethod === 'CALCULATED' ? '#DA291C' : '#F1F5F9', border: selectedMethod === 'CALCULATED' ? 'none' : '1px solid #CBD5E1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
               {selectedMethod === 'CALCULATED' && <Check size={14} strokeWidth={3} />}
             </div>
           </div>
@@ -168,7 +168,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
         >
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-              <div style={{ padding: '10px', borderRadius: '10px', background: '#ECFDF5', color: '#059669', border: '1px solid #A7F3D0' }}>
+              <div style={{ padding: '10px', borderRadius: '10px', background: '#F8FAFC', color: '#0F172A', border: '1px solid #E2E8F0' }}>
                 <Edit3 size={24} />
               </div>
               <span className="badge badge-user-input">Approach C</span>
@@ -182,7 +182,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
             </p>
 
             <div style={{ background: '#F8FAFC', padding: '0.85rem', borderRadius: '8px', border: '1px solid #E2E8F0', marginBottom: '1rem' }}>
-              <div style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+              <div style={{ fontSize: '0.72rem', color: '#0F172A', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
                 Floor Operator Log:
               </div>
               <div className="font-mono text-xs" style={{ color: '#334155', lineHeight: 1.6 }}>
@@ -190,7 +190,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
                 <div>• Cushioning: 100 g</div>
                 <div>• Thermocol/EPS: 60 g</div>
                 <div>• Packaging Tape: 20 g</div>
-                <div style={{ color: '#059669', fontWeight: 700, marginTop: '4px', borderTop: '1px dashed #CBD5E1', paddingTop: '4px' }}>
+                <div style={{ color: '#0F172A', fontWeight: 700, marginTop: '4px', borderTop: '1px dashed #CBD5E1', paddingTop: '4px' }}>
                   → Dynamic manual material picker
                 </div>
               </div>
@@ -201,7 +201,7 @@ export const MethodSelector: React.FC<MethodSelectorProps> = ({
             <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
               Real-time floor logging
             </span>
-            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: selectedMethod === 'USER_INPUT' ? '#059669' : '#F1F5F9', border: selectedMethod === 'USER_INPUT' ? 'none' : '1px solid #CBD5E1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: selectedMethod === 'USER_INPUT' ? '#DA291C' : '#F1F5F9', border: selectedMethod === 'USER_INPUT' ? 'none' : '1px solid #CBD5E1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
               {selectedMethod === 'USER_INPUT' && <Check size={14} strokeWidth={3} />}
             </div>
           </div>

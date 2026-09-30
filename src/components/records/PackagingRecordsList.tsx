@@ -95,10 +95,10 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
       {/* Header Bar */}
       <div className="glass-card" style={{ padding: '1.25rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
-          <div>
+            <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.25rem' }}>
-              <span style={{ fontSize: '0.74rem', color: '#059669', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                <ShieldCheck size={13} color="#059669" /> Compliance Audit Trail
+              <span style={{ fontSize: '0.74rem', color: '#0F172A', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <ShieldCheck size={13} color="#0F172A" /> Compliance Audit Trail
               </span>
               <span style={{ fontSize: '0.72rem', color: '#94A3B8' }}>•</span>
               <span style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 500 }}>
@@ -127,7 +127,7 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                   className="btn btn-secondary btn-sm"
                   onClick={onOpenExportModal}
                   title="Generate JSON dataset formatted for downstream integration"
-                  style={{ border: '1px solid #BAE6FD', color: '#0284C7', background: '#F0F9FF' }}
+                  style={{ border: '1px solid #CBD5E1', color: '#0F172A', background: '#F8FAFC' }}
                 >
                   <Share2 size={15} />
                   <span>Export Dataset (JSON)</span>
@@ -287,8 +287,8 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                     </td>
                     <td style={{ padding: '8px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {record.status === 'CONFIRMED' ? (
-                        <span style={{ fontSize: '0.74rem', color: '#059669', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                          <CheckCircle2 size={12} color="#059669" /> Confirmed
+                        <span style={{ fontSize: '0.74rem', color: '#0F172A', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <CheckCircle2 size={12} color="#0F172A" /> Confirmed
                         </span>
                       ) : canApprove ? (
                         <button

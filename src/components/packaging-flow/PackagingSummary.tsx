@@ -7,18 +7,15 @@ import {
   Edit3, 
   ShieldCheck, 
   Clock,
-  Send,
   X,
-  Leaf,
   FileText
 } from 'lucide-react';
 import { 
   Product, 
   PackagingLineItem, 
   RecordingMethod, 
-  PpwrSummaryBreakdown,
-  RecordStatus,
-  CUMMINS_DESTINATION_COUNTRIES
+  PpwrSummaryBreakdown, 
+  RecordStatus
 } from '../../types';
 import { recordsService } from '../../services/recordsService';
 
@@ -49,12 +46,12 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
   const [showExportModal, setShowExportModal] = useState(false);
   const ppwrSummary: PpwrSummaryBreakdown = recordsService.calculatePpwrSummary(materials, productQuantity);
 
-  // EU PPWR Recyclability Grade (A to D)
+  // EU PPWR Recyclability Grade (A to D) - Neutral Grayscale Styling
   const getRecyclabilityGrade = (pct: number): { grade: string; color: string; bg: string; label: string } => {
-    if (pct >= 95) return { grade: 'A', color: '#065F46', bg: '#ECFDF5', label: 'Excellent — Fully Recyclable (PPWR Preferred)' };
-    if (pct >= 80) return { grade: 'B', color: '#1D4ED8', bg: '#EFF6FF', label: 'Good — Mostly Recyclable (PPWR Compliant)' };
-    if (pct >= 60) return { grade: 'C', color: '#92400E', bg: '#FFFBEB', label: 'Moderate — Partially Recyclable (Improvement Needed)' };
-    return { grade: 'D', color: '#991B1B', bg: '#FEF2F2', label: 'Poor — Low Recyclability (Non-Compliant Risk)' };
+    if (pct >= 95) return { grade: 'A', color: '#0F172A', bg: '#F1F5F9', label: 'Excellent — Fully Recyclable (PPWR Preferred)' };
+    if (pct >= 80) return { grade: 'B', color: '#1E293B', bg: '#F8FAFC', label: 'Good — Mostly Recyclable (PPWR Compliant)' };
+    if (pct >= 60) return { grade: 'C', color: '#334155', bg: '#F8FAFC', label: 'Moderate — Partially Recyclable (Improvement Needed)' };
+    return { grade: 'D', color: '#DA291C', bg: '#FFF5F5', label: 'Poor — Low Recyclability (Non-Compliant Risk)' };
   };
 
   const grade = getRecyclabilityGrade(ppwrSummary.avgRecyclablePct);
@@ -162,7 +159,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
 
           <div>
             <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Batch Quantity</div>
-            <div className="font-mono font-bold text-sm" style={{ color: '#0284C7' }}>
+            <div className="font-mono font-bold text-sm" style={{ color: '#0F172A' }}>
               {productQuantity.toLocaleString()} units
             </div>
           </div>
@@ -176,7 +173,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
 
           <div>
             <div style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase' }}>Per-Unit Consumption</div>
-            <div className="font-mono font-bold text-sm" style={{ color: '#059669' }}>
+            <div className="font-mono font-bold text-sm" style={{ color: '#0F172A' }}>
               {ppwrSummary.perUnitPackagingWeightKg.toFixed(3)} kg/unit
             </div>
           </div>
@@ -249,14 +246,14 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
                       </span>
                     </td>
                     <td>
-                      <span className="font-mono text-xs" style={{ color: '#0284C7' }}>
+                      <span className="font-mono text-xs" style={{ color: '#0F172A' }}>
                         {perUnitKg >= 0.001 ? perUnitKg.toFixed(3) : perUnitKg.toFixed(4)} kg/u
                       </span>
                     </td>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                         <div style={{ width: '40px', height: '6px', background: '#E2E8F0', borderRadius: '3px', overflow: 'hidden' }}>
-                          <div style={{ width: `${sharePct}%`, height: '100%', background: mat.category === 'Plastic' ? '#DB2777' : '#D97706' }} />
+                          <div style={{ width: `${sharePct}%`, height: '100%', background: '#0F172A' }} />
                         </div>
                         <span className="font-mono text-xs text-muted">{sharePct}%</span>
                       </div>
@@ -276,7 +273,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
         {/* Material Category Fractions Card Grid */}
         <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
           <h4 style={{ fontSize: '0.92rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ShieldCheck size={17} color="#059669" />
+            <ShieldCheck size={17} color="#0F172A" />
             Material Category Breakdown
           </h4>
 
@@ -286,7 +283,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
               <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
                 Paper & Cardboard Mass
               </div>
-              <div className="font-mono font-bold text-xl" style={{ color: '#D97706', marginTop: '3px' }}>
+              <div className="font-mono font-bold text-xl" style={{ color: '#0F172A', marginTop: '3px' }}>
                 {ppwrSummary.paperCardboardKg.toFixed(2)} kg
               </div>
               <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: '2px' }}>
@@ -299,7 +296,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
               <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
                 Polymer & Plastic Mass
               </div>
-              <div className="font-mono font-bold text-xl" style={{ color: '#DB2777', marginTop: '3px' }}>
+              <div className="font-mono font-bold text-xl" style={{ color: '#475569', marginTop: '3px' }}>
                 {ppwrSummary.plasticKg.toFixed(2)} kg
               </div>
               <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: '2px' }}>
@@ -310,12 +307,12 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
         </div>
 
         {/* Live Inventory Auto-Deduction Notice */}
-        <div style={{ marginTop: '1.25rem', padding: '0.65rem 0.95rem', background: '#F0FDF4', borderRadius: '8px', border: '1px solid #BBF7D0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <div style={{ marginTop: '1.25rem', padding: '0.65rem 0.95rem', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <span className="badge" style={{ fontSize: '0.72rem', background: '#DCFCE7', color: '#15803D', border: '1px solid #86EFAC', fontWeight: 700 }}>
+            <span className="badge" style={{ fontSize: '0.72rem', background: '#F1F5F9', color: '#0F172A', border: '1px solid #CBD5E1', fontWeight: 700 }}>
               <Database size={11} /> Live Stock Sync
             </span>
-            <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.8rem', color: '#475569', fontWeight: 600 }}>
               Confirming this record will automatically deduct consumed packaging materials from the plant warehouse inventory.
             </span>
           </div>
@@ -373,7 +370,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.55)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
           <div style={{ background: '#FFFFFF', borderRadius: '16px', width: '100%', maxWidth: '680px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.35)', overflow: 'hidden' }}>
             {/* Modal Header */}
-            <div style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)', padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ background: '#0F172A', padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.75)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                   Downstream Dispatch — PPWR Compliance Engine
@@ -407,10 +404,10 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
               {/* Export Targets */}
               <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#0F172A', marginBottom: '2px' }}>Select Downstream Export Target:</div>
               {[
-                { icon: '🇪🇺', title: 'EU PPWR Digital Product Passport (DPP)', sub: 'Submit to European Single Market compliance portal (Article 9 & 10 verification)', status: 'Ready to Submit', statusColor: '#059669' },
-                { icon: '🌱', title: 'Cummins Corporate ESG / Scope 3 Data Lake', sub: `Dispatch packaging CO₂e: ${ppwrSummary.estimatedCo2eKg.toFixed(2)} kg to IntegrityNext sustainability platform`, status: 'Ready to Submit', statusColor: '#059669' },
-                { icon: '💼', title: 'SAP ERP Financial Ledger (EPR/Plastic Tax)', sub: 'Dispatch plastic mass for Extended Producer Responsibility fee calculation', status: 'Ready to Submit', statusColor: '#059669' },
-                { icon: '📄', title: 'Audit-Ready PDF Compliance Dossier', sub: 'Generate official tamper-evident certificate with cryptographic ledger hash', status: 'Generate PDF', statusColor: '#7C3AED' },
+                { icon: '🇪🇺', title: 'EU PPWR Digital Product Passport (DPP)', sub: 'Submit to European Single Market compliance portal (Article 9 & 10 verification)', status: 'Ready to Submit' },
+                { icon: '🌱', title: 'Cummins Corporate ESG / Scope 3 Data Lake', sub: `Dispatch packaging CO₂e: ${ppwrSummary.estimatedCo2eKg.toFixed(2)} kg to IntegrityNext sustainability platform`, status: 'Ready to Submit' },
+                { icon: '💼', title: 'SAP ERP Financial Ledger (EPR/Plastic Tax)', sub: 'Dispatch plastic mass for Extended Producer Responsibility fee calculation', status: 'Ready to Submit' },
+                { icon: '📄', title: 'Audit-Ready PDF Compliance Dossier', sub: 'Generate official tamper-evident certificate with cryptographic ledger hash', status: 'Generate PDF' },
               ].map((target, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', border: '1px solid #E2E8F0', borderRadius: '10px', background: '#FAFAFA', gap: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
@@ -424,7 +421,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
                     onClick={() => {
                       setTimeout(() => alert(`✅ Successfully dispatched to: ${target.title}\n\nThis would send the normalized PPWR compliance payload to the target system in a live environment.`), 100);
                     }}
-                    style={{ background: target.statusColor, color: '#FFFFFF', border: 'none', borderRadius: '7px', padding: '6px 14px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                    style={{ background: '#0F172A', color: '#FFFFFF', border: 'none', borderRadius: '7px', padding: '6px 14px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', whiteSpace: 'nowrap' }}
                   >
                     {target.status}
                   </button>
@@ -436,7 +433,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
                 <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#475569', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <FileText size={13} /> PPWR Normalized Payload Preview (JSON)
                 </div>
-                <pre style={{ background: '#0F172A', color: '#A3E635', padding: '14px', borderRadius: '8px', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', overflowX: 'auto', margin: 0, maxHeight: '160px', overflowY: 'auto' }}>
+                <pre style={{ background: '#0F172A', color: '#F1F5F9', padding: '14px', borderRadius: '8px', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', overflowX: 'auto', margin: 0, maxHeight: '160px', overflowY: 'auto' }}>
 {`{
   "ppwr_record_id": "PR-${Date.now().toString().slice(-6)}",
   "product_sku": "${product.sku}",
