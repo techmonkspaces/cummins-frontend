@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { 
-  CheckCircle2, 
-  ArrowLeft, 
-  Database, 
-  Calculator, 
-  Edit3, 
-  ShieldCheck, 
+import {
+  CheckCircle2,
+  ArrowLeft,
+  Database,
+  Calculator,
+  Edit3,
+  ShieldCheck,
   Clock,
   X,
   FileText
 } from 'lucide-react';
-import { 
-  Product, 
-  PackagingLineItem, 
-  RecordingMethod, 
-  PpwrSummaryBreakdown, 
+import {
+  Product,
+  PackagingLineItem,
+  RecordingMethod,
+  PpwrSummaryBreakdown,
   RecordStatus
 } from '../../types';
 import { recordsService } from '../../services/recordsService';
@@ -81,9 +81,9 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%', maxWidth: '1440px', margin: '0 auto' }}>
       {/* Header / Review Banner */}
-      <div 
-        className="glass-card" 
-        style={{ 
+      <div
+        className="glass-card"
+        style={{
           background: '#FFFFFF',
           border: '1px solid #E2E8F0',
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)',
@@ -94,7 +94,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
               <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#DA291C', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                PPWR Compliance Verification
+                Packaging Specification Verification
               </span>
               <span style={{ color: '#CBD5E1' }}>•</span>
               {getMethodBadge()}
@@ -108,8 +108,8 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn btn-secondary btn-sm"
               onClick={onBackToEdit}
               style={{ padding: '8px 14px', fontSize: '0.82rem', fontWeight: 600 }}
@@ -214,8 +214,8 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
               {materials.map((mat) => {
                 const itemTotalKg = mat.weightKg || 0;
                 const perUnitKg = productQuantity > 0 ? itemTotalKg / productQuantity : 0;
-                const sharePct = ppwrSummary.totalPackagingWeightKg > 0 
-                  ? Math.round((itemTotalKg / ppwrSummary.totalPackagingWeightKg) * 100) 
+                const sharePct = ppwrSummary.totalPackagingWeightKg > 0
+                  ? Math.round((itemTotalKg / ppwrSummary.totalPackagingWeightKg) * 100)
                   : 0;
 
                 return (
@@ -332,8 +332,8 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
 
       {/* Bottom Action Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FFFFFF', padding: '1rem 1.5rem', borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
-        <button 
-          type="button" 
+        <button
+          type="button"
           className="btn btn-secondary btn-sm"
           onClick={onBackToEdit}
           style={{ padding: '8px 14px', fontSize: '0.82rem', fontWeight: 600 }}
@@ -434,7 +434,7 @@ export const PackagingSummary: React.FC<PackagingSummaryProps> = ({
                   <FileText size={13} /> PPWR Normalized Payload Preview (JSON)
                 </div>
                 <pre style={{ background: '#0F172A', color: '#F1F5F9', padding: '14px', borderRadius: '8px', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', overflowX: 'auto', margin: 0, maxHeight: '160px', overflowY: 'auto' }}>
-{`{
+                  {`{
   "ppwr_record_id": "PR-${Date.now().toString().slice(-6)}",
   "product_sku": "${product.sku}",
   "product_name": "${product.name}",

@@ -552,9 +552,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               {/* Bar Chart with Dynamic Y-Axis Gridlines & Angled Vertical Plant Labels */}
-              <div style={{ position: 'relative', height: '225px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div style={{ position: 'relative', height: '240px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 {/* Horizontal Grid lines */}
-                <div style={{ position: 'absolute', inset: 0, bottom: '48px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', pointerEvents: 'none' }}>
+                <div style={{ position: 'absolute', inset: 0, bottom: '55px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', pointerEvents: 'none' }}>
                   {yAxisTicks.map((labelVal, idx) => (
                     <div key={idx} style={{ display: 'flex', alignItems: 'center', width: '100%', height: '1px' }}>
                       <span style={{ width: '36px', fontSize: '0.62rem', color: '#94A3B8', textAlign: 'right', paddingRight: '6px' }}>
@@ -566,7 +566,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
 
                 {/* Bars Area */}
-                <div style={{ position: 'absolute', left: '42px', right: '12px', top: '10px', bottom: '48px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '8px' }}>
+                <div style={{ position: 'absolute', left: '42px', right: '12px', top: '10px', bottom: '55px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '8px' }}>
                   {plantMassData.map((p) => {
                     const barHeightPct = Math.min(100, Math.max(8, (p.weightKg / maxPlantMass) * 100));
                     const displayMass = massUnit === 't'
@@ -607,8 +607,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   })}
                 </div>
 
-                {/* X-Axis Angled Labels for all 10 factories */}
-                <div style={{ position: 'absolute', left: '42px', right: '12px', bottom: '0px', height: '44px', display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
+                {/* X-Axis Angled Labels for all 10 factories (positioned cleanly below the 0-baseline) */}
+                <div style={{ position: 'absolute', left: '42px', right: '12px', bottom: '0px', height: '52px', display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
                   {plantMassData.map((p) => (
                     <div
                       key={p.name}
@@ -617,26 +617,32 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         minWidth: 0,
                         display: 'flex',
                         justifyContent: 'center',
-                        alignItems: 'flex-start',
-                        overflow: 'visible'
+                        position: 'relative'
                       }}
                     >
-                      <span
-                        title={p.fullName}
+                      <div
                         style={{
-                          display: 'inline-block',
-                          fontSize: '0.67rem',
-                          color: '#334155',
-                          fontWeight: 700,
-                          whiteSpace: 'nowrap',
+                          position: 'absolute',
+                          top: '6px',
+                          right: '50%',
                           transform: 'rotate(-45deg)',
-                          transformOrigin: 'top left',
-                          marginLeft: '2px',
-                          marginTop: '6px'
+                          transformOrigin: 'top right',
+                          whiteSpace: 'nowrap',
+                          textAlign: 'right',
+                          pointerEvents: 'none'
                         }}
                       >
-                        {p.shortLabel}
-                      </span>
+                        <span
+                          title={p.fullName}
+                          style={{
+                            fontSize: '0.67rem',
+                            color: '#334155',
+                            fontWeight: 700
+                          }}
+                        >
+                          {p.shortLabel}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -645,8 +651,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           </div>
 
-          {/* Row 2: Destination Market Distribution & Recent Packaging Records */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: '1.25rem' }}>
+          {/* Row 2: Destination Market Distribution (3/5) & Recent Packaging Records (2/5) */}
+          <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: '1.25rem' }}>
             {/* Destination Market Shipments */}
             <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
@@ -757,9 +763,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         border: '1px solid #E2E8F0',
                         background: '#FFFFFF',
                         display: 'grid',
-                        gridTemplateColumns: '85px 95px 1fr 100px 90px',
+                        gridTemplateColumns: '75px 80px 1fr 75px 65px',
                         alignItems: 'center',
-                        gap: '10px',
+                        gap: '8px',
                         cursor: 'pointer',
                         transition: 'all 0.15s ease'
                       }}

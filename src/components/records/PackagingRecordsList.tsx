@@ -13,7 +13,9 @@ import {
   ShieldCheck,
   FileSpreadsheet,
   Layers,
-  Building2
+  Building2,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { PackagingRecord, RecordingMethod, RecordStatus, Plant } from '../../types';
 import { recordsService } from '../../services/recordsService';
@@ -51,6 +53,8 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
   const [methodFilter, setMethodFilter] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [plantFilter, setPlantFilter] = useState<string>('ALL');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   const filteredRecords = records.filter((r) => {
     const q = searchQuery.toLowerCase();
@@ -66,6 +70,13 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
 
     return matchesQuery && matchesMethod && matchesStatus && matchesPlant;
   });
+
+  // Pagination Math
+  const totalPages = Math.ceil(filteredRecords.length / pageSize) || 1;
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const startIndex = (safeCurrentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, filteredRecords.length);
+  const paginatedRecords = filteredRecords.slice(startIndex, endIndex);
 
   const getMethodBadge = (method: RecordingMethod) => {
     switch (method) {
@@ -240,7 +251,7 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
                   </td>
                 </tr>
               ) : (
-                filteredRecords.map((record) => (
+                paginatedRecords.map((record) => (
                   <tr key={record.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
                     <td style={{ padding: '7px 12px' }}>
                       <span className="font-mono font-bold" style={{ color: '#0F172A', fontSize: '0.8rem' }}>
@@ -340,6 +351,129 @@ export const PackagingRecordsList: React.FC<PackagingRecordsListProps> = ({
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Footer */}
+        {filteredRecords.length > 0 && (
+          <div
+            style={{
+              padding: '12px 18px',
+              borderTop: '1px solid #E2E8F0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '12px',
+              background: '#FFFFFF',
+              borderRadius: '0 0 12px 12px'
+            }}
+          >
+            {/* Left: Summary Count */}
+            <div style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 500 }}>
+              Showing <b style={{ color: '#0F172A', fontWeight: 700 }}>{filteredRecords.length === 0 ? 0 : startIndex + 1}</b> to <b style={{ color: '#0F172A', fontWeight: 700 }}>{endIndex}</b> of <b style={{ color: '#0F172A', fontWeight: 700 }}>{filteredRecords.length}</b> records
+            </div>
+
+            {/* Right: Controls & Page Numbers */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              {/* Rows Per Page Selector */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.76rem', color: '#64748B' }}>
+                <span>Rows:</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  style={{
+                    padding: '3px 8px',
+                    borderRadius: '6px',
+                    border: '1px solid #CBD5E1',
+                    fontSize: '0.76rem',
+                    fontWeight: 600,
+                    color: '#0F172A',
+                    background: '#FFFFFF',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={safeCurrentPage <= 1}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '6px',
+                    border: '1px solid #E2E8F0',
+                    background: safeCurrentPage <= 1 ? '#F8FAFC' : '#FFFFFF',
+                    color: safeCurrentPage <= 1 ? '#CBD5E1' : '#0F172A',
+                    cursor: safeCurrentPage <= 1 ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.15s ease'
+                  }}
+                  title="Previous Page"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+
+                {/* Page Number Pills */}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                  const isCurrent = pageNum === safeCurrentPage;
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      style={{
+                        minWidth: '30px',
+                        height: '30px',
+                        padding: '0 6px',
+                        borderRadius: '6px',
+                        border: isCurrent ? '1px solid #0F172A' : '1px solid #E2E8F0',
+                        background: isCurrent ? '#0F172A' : '#FFFFFF',
+                        color: isCurrent ? '#FFFFFF' : '#475569',
+                        fontSize: '0.76rem',
+                        fontWeight: isCurrent ? 800 : 600,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={safeCurrentPage >= totalPages}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '6px',
+                    border: '1px solid #E2E8F0',
+                    background: safeCurrentPage >= totalPages ? '#F8FAFC' : '#FFFFFF',
+                    color: safeCurrentPage >= totalPages ? '#CBD5E1' : '#0F172A',
+                    cursor: safeCurrentPage >= totalPages ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.15s ease'
+                  }}
+                  title="Next Page"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
