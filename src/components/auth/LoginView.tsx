@@ -43,7 +43,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
         {/* Brand Header */}
         <div className="login-header">
           <CumminsLogo height={34} showWordmark={true} />
-          <div className="login-app-badge">EU PPWR Packaging Compliance Station</div>
           <h1 className="login-title">Sign In</h1>
           <p className="login-subtitle">
             Select your role to access plant packaging records and analytics

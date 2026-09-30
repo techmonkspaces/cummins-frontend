@@ -68,7 +68,7 @@ export const CumminsLogo: React.FC<CumminsLogoProps> = ({
                 letterSpacing: '-0.02em'
               }}
             >
-              PPWR
+              Tool
             </span>
           </div>
           <span
